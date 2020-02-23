@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Authors>Lukas Möller</Authors>
+    <PackageId>Zebra.CoreLibrary</PackageId>
+    <Product>Zebra CoreLibrary</Product>
+    <Company />
+    <RootNamespace>Zebra.Library</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Context\Generated\" />
+    <Folder Include="Entities\Generated\" />
+    <Folder Include="Enums\Custom\" />
+    <Folder Include="Enums\Generated\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ZebraModel.tt">
+      <LastGenOutput>ZebraModel.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ZebraModel.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ZebraModel.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>
