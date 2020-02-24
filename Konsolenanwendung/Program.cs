@@ -8,14 +8,28 @@ namespace Konsolenanwendung
 {
     class Program
     {
-        private static List<string> cmdlist = new List<string> {"createpiece", "createpart", "createsheet", "exit", "listpieces", "listparts", "listsheets", "clear", "help" };
+        private static List<ZebraCommand> cmdlist = new List<ZebraCommand> {
+            new ZebraCommand("createpiece", "Creates new Piece. Args: Name and Arranger"),
+            new ZebraCommand("createpart", "Creates new Part. Args: Name"),
+            new ZebraCommand("createsheet", "Creates new Sheet. Args: PieceID, SheetID"),
+            new ZebraCommand("exit","Exits the console."),
+            new ZebraCommand("listpieces","Lists all Pieces"),
+            new ZebraCommand("listparts","Lists all Parts"),
+            new ZebraCommand("listsheets", "Lists all Sheets"),
+            new ZebraCommand("clear", "Clears the Console Window"),
+            new ZebraCommand("help", "Shows all Commands")};
+
         private static ZebraDBManager manager = new ZebraDBManager();
+
+        private static void HLine() => Console.WriteLine("-".PadRight(Console.BufferWidth, '-'));
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Zebra Konsole");
-            Console.WriteLine("Für alle Befehle help eingeben");
-            Console.WriteLine("Parameter müssen durch ; getrennt sein.");
+            cmdlist.Sort();
+            
+            Console.WriteLine("Zebra Console");
+            Console.WriteLine("Type help for a list of all commands");
+            Console.WriteLine("Parameters have to be seperated by a semicolon (;)");
             Console.WriteLine();
 
             while (true)
@@ -38,40 +52,17 @@ namespace Konsolenanwendung
                     string[] cpargs = input.Substring(input.IndexOf(' ', StringComparison.OrdinalIgnoreCase) + 1, input.Length - 1 - input.IndexOf(' ', StringComparison.OrdinalIgnoreCase)).Split(';');
                     manager.NewSheet(Int16.Parse(cpargs[0]), Int16.Parse(cpargs[1]));
                 }
-                else if (input.StartsWith("exit"))
-                {
-                    return;
-                }
-                else if (input.StartsWith("clear"))
-                {
-                    Console.Clear();
-                }
-                else if (input.StartsWith("listpieces"))
-                {
-                    ListAllPieces();
-                }
-                else if (input.StartsWith("listparts"))
-                {
-                    ListAllParts();
-                }
-                else if (input.StartsWith("listsheets"))
-                {
-                    ListAllSheets();
-                }
-                else if (input.StartsWith("help"))
-                {
-                    Console.WriteLine("Gültige Befehle:");
-                    foreach (string cmd in cmdlist) Console.WriteLine(cmd);
-                    Console.WriteLine("Die Argumente müssen durch ; getrennt sein");
-                    Console.WriteLine();
-                }
+                else if (input.StartsWith("exit")) return;                
+                else if (input.StartsWith("clear")) Console.Clear();
+                else if (input.StartsWith("listpieces")) ListAllPieces();               
+                else if (input.StartsWith("listparts")) ListAllParts();
+                else if (input.StartsWith("listsheets")) ListAllSheets();                
+                else if (input.StartsWith("help")) ShowHelp();
                 else
                 {
-                    Console.WriteLine("Befehl nicht gefunden.");
-                    Console.WriteLine("Gültige Befehle:");
-                    foreach (string cmd in cmdlist) Console.WriteLine(cmd);
-                    Console.WriteLine("Die Argumente müssen durch ; getrennt sein");
-
+                    Console.WriteLine();
+                    Console.WriteLine("Command not found.");
+                    Console.WriteLine("Type 'help' for a list of all commands.");
                 }
 
                 
@@ -83,13 +74,13 @@ namespace Konsolenanwendung
             var notensatzset = manager.GetAllPieces();
 
             Console.WriteLine();
-            Console.WriteLine("{0,-65}", "Tabelle Notensätze");
+            Console.WriteLine("{0,-65}", "Table Pieces");
             Console.WriteLine();
                 Console.WriteLine(
                     String.Format("{0,-5}", "ID") +
                     String.Format("{0,-30}", "Name") +
-                    String.Format("{0,-30}", "Arrangeur"));
-                Console.WriteLine("{0,-65}", "-----------------------------------------------------------------------------------------------");
+                    String.Format("{0,-30}", "Arranger"));
+            HLine();
 
                 foreach (Piece ns in notensatzset)
                 {
@@ -99,8 +90,8 @@ namespace Konsolenanwendung
                     String.Format("{0,-30}", ns.Arranger));
                 }
 
-                Console.WriteLine("{0,-65}", "-----------------------------------------------------------------------------------------------");
-                Console.WriteLine("Anzahl Notensätze: " + notensatzset.Count);
+            HLine();
+                Console.WriteLine("Number of Pieces: " + notensatzset.Count);
 
             
         }
@@ -110,13 +101,13 @@ namespace Konsolenanwendung
             var notenblattset = manager.GetAllSheets();
 
             Console.WriteLine();
-            Console.WriteLine("{0,-65}", "Tabelle Notenblätter");
+            Console.WriteLine("{0,-65}", "Table Sheets");
             Console.WriteLine();
             Console.WriteLine(
                 String.Format("{0,-5}", "ID") +
-                String.Format("{0,-30}", "Notensatz") +
-                String.Format("{0,-30}", "Stimme"));
-            Console.WriteLine("{0,-65}", "-----------------------------------------------------------------------------------------------");
+                String.Format("{0,-30}", "Piece") +
+                String.Format("{0,-30}", "Part"));
+            HLine();
 
             foreach (Sheet nb in notenblattset)
             {
@@ -126,8 +117,8 @@ namespace Konsolenanwendung
                 String.Format("{0,-30}", nb.Part.Name));
             }
 
-            Console.WriteLine("{0,-65}", "-----------------------------------------------------------------------------------------------");
-            Console.WriteLine("Anzahl Notenblätter: " + notenblattset.Count);
+            HLine();
+            Console.WriteLine("Number of Sheets: " + notenblattset.Count);
         }
 
         static void ListAllParts()
@@ -135,12 +126,12 @@ namespace Konsolenanwendung
             var stimmenset = manager.GetAllParts();
 
             Console.WriteLine();
-            Console.WriteLine("{0,-65}", "Tabelle Stimmen");
+            Console.WriteLine("{0,-65}", "Table Parts");
             Console.WriteLine();
             Console.WriteLine(
                 String.Format("{0,-5}", "ID") +
                 String.Format("{0,-30}", "Name"));
-            Console.WriteLine("{0,-65}", "-----------------------------------------------------------------------------------------------");
+            HLine();
 
             foreach (Part pc in stimmenset)
             {
@@ -149,10 +140,22 @@ namespace Konsolenanwendung
                 String.Format("{0,-30}", pc.Name));
             }
 
-            Console.WriteLine("{0,-65}", "-----------------------------------------------------------------------------------------------");
-            Console.WriteLine("Anzahl Stimmen: " + stimmenset.Count);
+            HLine();
+            Console.WriteLine("Number of Parts: " + stimmenset.Count);
 
 
+        }
+
+        static void ShowHelp()
+        {
+            Console.WriteLine();
+            HLine();
+            Console.WriteLine("Valid Commands:");
+            foreach (ZebraCommand cmd in cmdlist) Console.WriteLine($"{cmd.Command.PadRight(20, ' ')}{cmd.Helptext}");
+            Console.WriteLine();
+            Console.WriteLine("The arguments have to be seperated by a semicolon (;)");
+            HLine();
+            Console.WriteLine();
         }
     }
 }
