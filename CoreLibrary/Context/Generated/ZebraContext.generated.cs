@@ -77,7 +77,7 @@ namespace Zebra.Library
          base.OnModelCreating(modelBuilder);
          OnModelCreatingImpl(modelBuilder);
 
-         modelBuilder.HasDefaultSchema("dbo");
+         modelBuilder.HasDefaultSchema(null);
 
          modelBuilder.Entity<global::Zebra.Library.Part>()
                      .ToTable("Part")

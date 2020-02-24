@@ -34,7 +34,7 @@
         <elementListCompartment Id="02ef04bd-02e1-47d5-9142-65db08b1061e" absoluteBounds="10.515, 2.347985026041667, 1.4700000000000002, 0.2493896484375" name="SourcesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <bidirectionalConnector Id="0e1d9b48-1f81-4bd8-9a6a-14c09766a542" edgePoints="[(3 : 4.38233805338542); (4.875 : 4.38233805338542)]" fixedFrom="Algorithm" fixedTo="Algorithm" color="Red" dashStyle="Dash">
+    <bidirectionalConnector Id="0e1d9b48-1f81-4bd8-9a6a-14c09766a542" edgePoints="[(3 : 4.38233805338542); (4.875 : 4.38233805338542)]" fixedFrom="NotFixed" fixedTo="NotFixed" color="Red" dashStyle="Dash">
       <bidirectionalAssociationMoniker Id="b91083b5-a496-41fa-937b-e787f07adb05" />
       <relativeChildShapes />
       <nodes>
@@ -42,7 +42,7 @@
         <classShapeMoniker Id="0e48d7be-0536-405a-a15a-f6715a1ebd42" />
       </nodes>
     </bidirectionalConnector>
-    <bidirectionalConnector Id="ace1a21c-18ac-481c-b414-78312374cbe6" edgePoints="[(9 : 5.125); (9 : 3.94483805338542); (7.375 : 3.94483805338542)]" fixedFrom="Algorithm" fixedTo="Algorithm" color="Red" dashStyle="Dash">
+    <bidirectionalConnector Id="ace1a21c-18ac-481c-b414-78312374cbe6" edgePoints="[(9 : 5.125); (9 : 3.94483805338542); (7.375 : 3.94483805338542)]" fixedFrom="NotFixed" fixedTo="NotFixed" color="Red" dashStyle="Dash">
       <bidirectionalAssociationMoniker Id="d74bc098-9370-4bda-a210-48671d3f3372" />
       <relativeChildShapes />
       <nodes>
@@ -58,7 +58,7 @@
         <elementListCompartment Id="d41e75d4-1af0-4a4e-8261-f49da34a5361" absoluteBounds="10.89, 4.65568359375, 1.4700000000000002, 0.63399251302083348" name="SourcesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <bidirectionalConnector Id="dc2c6c87-3fb1-46d9-befc-98c56a2c87fe" edgePoints="[(10.125 : 6.5194780390625); (11.625 : 6.5194780390625); (11.625 : 5.38967610677083)]" fixedFrom="Algorithm" fixedTo="Algorithm" color="Red" dashStyle="Dash">
+    <bidirectionalConnector Id="dc2c6c87-3fb1-46d9-befc-98c56a2c87fe" edgePoints="[(10.125 : 6.5194780390625); (11.625 : 6.5194780390625); (11.625 : 5.38967610677083)]" fixedFrom="NotFixed" fixedTo="NotFixed" color="Red" dashStyle="Dash">
       <bidirectionalAssociationMoniker Id="b649259d-e639-4256-9840-9b92bfabc5ae" />
       <relativeChildShapes />
       <nodes>
@@ -66,7 +66,7 @@
         <classShapeMoniker Id="d18e4b06-6ce9-4656-9017-e5ed04c6e506" />
       </nodes>
     </bidirectionalConnector>
-    <bidirectionalConnector Id="597882d4-00e3-443b-84a9-4c99d220e937" edgePoints="[(11.4375 : 2.69737467447917); (11.4375 : 3.25)]" fixedFrom="Algorithm" fixedTo="Algorithm" color="Red" dashStyle="Dash">
+    <bidirectionalConnector Id="597882d4-00e3-443b-84a9-4c99d220e937" edgePoints="[(11.4375 : 2.69737467447917); (11.4375 : 3.25)]" fixedFrom="NotFixed" fixedTo="NotFixed" color="Red" dashStyle="Dash">
       <bidirectionalAssociationMoniker Id="05763c06-93fa-4469-8829-ae75925c162e" />
       <relativeChildShapes />
       <nodes>
