@@ -60,6 +60,25 @@ namespace Zebra.DatabaseAccess
             ctx.SaveChanges();
         }
 
+        #region LINQ Queries
+
+        /// <summary>
+        /// Find all Pieces that contain the searchstring in their Name
+        /// </summary>
+        /// <param name="searchstring">Name or substring for Name to look for</param>
+        /// <returns></returns>
+        public List<Piece> FindPiecesByName(string searchstring)
+        {
+            return (from piece in ctx.Piece
+                    where piece.Name.ToLower().Contains(searchstring.ToLower())
+                    orderby piece.PieceID
+                    select piece).ToList<Piece>();
+        }
+
+        public Piece GetPieceByID(int id) => ctx.Find<Piece>(id);
+
+        #endregion
+
         public void Dispose() => ctx.Dispose();
     }
 }

@@ -17,7 +17,9 @@ namespace Konsolenanwendung
             new ZebraCommand("listparts","Lists all Parts"),
             new ZebraCommand("listsheets", "Lists all Sheets"),
             new ZebraCommand("clear", "Clears the Console Window"),
-            new ZebraCommand("help", "Shows all Commands")};
+            new ZebraCommand("help", "Shows all Commands"),
+            new ZebraCommand("findpiecebyname","Lists all Pieces that contain the Searchstring. Args: Searchstring"),
+            new ZebraCommand("piecedetail","Shows Detail to specific piece. Args: PieceID")};
 
         private static ZebraDBManager manager = new ZebraDBManager();
 
@@ -52,12 +54,32 @@ namespace Konsolenanwendung
                     string[] cpargs = input.Substring(input.IndexOf(' ', StringComparison.OrdinalIgnoreCase) + 1, input.Length - 1 - input.IndexOf(' ', StringComparison.OrdinalIgnoreCase)).Split(';');
                     manager.NewSheet(Int16.Parse(cpargs[0]), Int16.Parse(cpargs[1]));
                 }
-                else if (input.StartsWith("exit")) return;                
+                else if (input.StartsWith("exit")) return;
                 else if (input.StartsWith("clear")) Console.Clear();
-                else if (input.StartsWith("listpieces")) ListAllPieces();               
+                else if (input.StartsWith("listpieces")) ListAlllPieces();
                 else if (input.StartsWith("listparts")) ListAllParts();
-                else if (input.StartsWith("listsheets")) ListAllSheets();                
+                else if (input.StartsWith("listsheets")) ListAllSheets();
                 else if (input.StartsWith("help")) ShowHelp();
+                else if (input.StartsWith("findpiecebyname"))
+                {
+                    string searchstring = input.Substring("findpiecebyname".Length);
+
+                    if (String.IsNullOrWhiteSpace(searchstring))
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("String to find:");
+                        searchstring = Console.ReadLine();
+                    }
+
+                    ListFoundPieces(manager.FindPiecesByName(searchstring), searchstring);
+                }
+                else if (input.StartsWith("piecedetail"))
+                { 
+                    
+                    string[] pdargs = input.Split();
+                    ShowPieceDetail(manager.GetPieceByID(Int32.Parse(pdargs[1])));
+                        
+                }
                 else
                 {
                     Console.WriteLine();
@@ -65,35 +87,36 @@ namespace Konsolenanwendung
                     Console.WriteLine("Type 'help' for a list of all commands.");
                 }
 
-                
+
             }
         }
 
-        static void ListAllPieces()
+        static void ListAlllPieces()
         {
-            var notensatzset = manager.GetAllPieces();
+            var pieces = manager.GetAllPieces();
 
             Console.WriteLine();
             Console.WriteLine("{0,-65}", "Table Pieces");
             Console.WriteLine();
+            HLine();
+            Console.WriteLine(
+                String.Format("{0,-5}", "ID") +
+                String.Format("{0,-30}", "Name") +
+                String.Format("{0,-30}", "Arranger"));
+            HLine();
+
+            foreach (Piece ns in pieces)
+            {
                 Console.WriteLine(
-                    String.Format("{0,-5}", "ID") +
-                    String.Format("{0,-30}", "Name") +
-                    String.Format("{0,-30}", "Arranger"));
-            HLine();
-
-                foreach (Piece ns in notensatzset)
-                {
-                    Console.WriteLine(
-                    String.Format("{0,-5}", ns.PieceID) +
-                    String.Format("{0,-30}", ns.Name) +
-                    String.Format("{0,-30}", ns.Arranger));
-                }
+                String.Format("{0,-5}", ns.PieceID) +
+                String.Format("{0,-30}", ns.Name) +
+                String.Format("{0,-30}", ns.Arranger));
+            }
 
             HLine();
-                Console.WriteLine("Number of Pieces: " + notensatzset.Count);
+            Console.WriteLine("Number of Pieces: " + pieces.Count);
 
-            
+
         }
 
         static void ListAllSheets()
@@ -103,6 +126,7 @@ namespace Konsolenanwendung
             Console.WriteLine();
             Console.WriteLine("{0,-65}", "Table Sheets");
             Console.WriteLine();
+            HLine();
             Console.WriteLine(
                 String.Format("{0,-5}", "ID") +
                 String.Format("{0,-30}", "Piece") +
@@ -128,6 +152,7 @@ namespace Konsolenanwendung
             Console.WriteLine();
             Console.WriteLine("{0,-65}", "Table Parts");
             Console.WriteLine();
+            HLine();
             Console.WriteLine(
                 String.Format("{0,-5}", "ID") +
                 String.Format("{0,-30}", "Name"));
@@ -144,6 +169,69 @@ namespace Konsolenanwendung
             Console.WriteLine("Number of Parts: " + stimmenset.Count);
 
 
+        }
+
+        static void ListFoundPieces(List<Piece> pieces, string searchstring)
+        {
+            Console.WriteLine();
+            Console.WriteLine($"Found Pieces for '{searchstring}':");
+            Console.WriteLine();
+            Console.WriteLine("{0,-65}", "Table Pieces");
+            Console.WriteLine();
+            HLine();
+            Console.WriteLine(
+                String.Format("{0,-5}", "ID") +
+                String.Format("{0,-30}", "Name") +
+                String.Format("{0,-30}", "Arranger"));
+            HLine();
+
+            foreach (Piece ns in pieces)
+            {
+                Console.WriteLine(
+                String.Format("{0,-5}", ns.PieceID) +
+                String.Format("{0,-30}", ns.Name) +
+                String.Format("{0,-30}", ns.Arranger));
+            }
+
+            HLine();
+            Console.WriteLine("Number of Pieces: " + pieces.Count);
+            Console.WriteLine();
+        }
+
+        static void ShowPieceDetail(Piece piece)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Show Details for Piece:");
+            Console.WriteLine();
+            HLine();
+            Console.WriteLine(
+                String.Format("{0,-5}", "ID") +
+                String.Format("{0,-30}", "Name") +
+                String.Format("{0,-30}", "Arranger"));
+            HLine();
+            Console.WriteLine(
+                String.Format("{0,-5}", piece.PieceID) +
+                String.Format("{0,-30}",piece.Name) +
+                String.Format("{0,-30}",piece.Arranger));
+            HLine();
+
+            Console.WriteLine();
+            Console.WriteLine("List of the Connected Sheets:");
+            Console.WriteLine();
+            HLine();
+            Console.WriteLine(
+                String.Format("{0,-5}", "ID") +
+                String.Format("{0,-30}", "Piece") +
+                String.Format("{0,-30}", "Part"));
+            HLine();
+            foreach (Sheet nb in piece.Sheet.ToList<Sheet>())
+            {
+                Console.WriteLine(
+                String.Format("{0,-5}", nb.SheetID) +
+                String.Format("{0,-30}", nb.Piece.Name) +
+                String.Format("{0,-30}", nb.Part.Name));
+            }
+            HLine();
         }
 
         static void ShowHelp()
