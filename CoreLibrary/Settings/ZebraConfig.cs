@@ -22,7 +22,7 @@ namespace Zebra.Library
             }
         }
 
-        public int Datenbankprovider { get; set; }
+        public Provider DatabaseProvider { get; set; }
         public string Server { get; set; }
         public string Port { get; set; }
         public string Username { get; set; }
@@ -31,28 +31,30 @@ namespace Zebra.Library
 
         public string ArchiveFolder { get; set; }
 
-        public int NotensatzIDLength { get; set; }
-        public int NotenblattIDLength { get; set; }
-        public int StimmeIDLength { get; set; }
+        public char BarcodeSeperatorChar { get; set; }
+        public string DummyIndicator { get; set; }
 
 
         public ZebraConfig()
         {
+            this.DatabaseProvider = Provider.MySQL;
+            this.ArchiveFolder = @"D:\Desktop\Archive";
+            this.BarcodeSeperatorChar = '#';
+            this.DummyIndicator = "dummy";
         }
-        public ZebraConfig(string _name, int _datenbankprovider, string _server, string _port, string _username, string _password, string _databasename, string _archivefolder = @"D:\Desktop\Archive", int _nsIDLen = 4, int _nbIDLen = 6, int _stimIDLen = 3)
+        public ZebraConfig(string _name, Provider _databaseprovider, string _server, string _port, string _username, string _password, string _databasename, string _archivefolder = @"D:\Desktop\Archive", char _seperator = '#', string _dummyind = "dummy")
         {
 
             ConfigName = _name;
-            Datenbankprovider = _datenbankprovider;
+            DatabaseProvider = _databaseprovider;
             Server = _server;
             Port = _port;
             Username = _username;
             Password = _password;
             DatabaseName = _databasename;
             ArchiveFolder = _archivefolder;
-            NotensatzIDLength = _nsIDLen;
-            NotenblattIDLength = _nbIDLen;
-            StimmeIDLength = _stimIDLen;
+            BarcodeSeperatorChar = _seperator;
+            DummyIndicator = _dummyind;
 
 
         }
@@ -112,7 +114,9 @@ namespace Zebra.Library
 
 
 
-
+    /// <summary>
+    /// Type of Database Provider
+    /// </summary>
     public enum Provider
     {
         MySQL = 1,

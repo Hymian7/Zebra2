@@ -26,7 +26,7 @@ namespace Konsolenanwendung
         static void Main(string[] args)
         {
             cmdlist.Sort();
-            
+
             Console.WriteLine("Zebra Console");
             Console.WriteLine("Type help for a list of all commands");
             Console.WriteLine("Parameters have to be seperated by a semicolon (;)");

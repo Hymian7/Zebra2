@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ZebraConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <ConfigName>EFDesignerTest</ConfigName>
-  <Datenbankprovider>0</Datenbankprovider>
+  <ConfigName>Zebra2</ConfigName>
+  <DatabaseProvider>MySQL</DatabaseProvider>
   <Server>192.168.1.80</Server>
   <Port>3306</Port>
+  <DatabaseName>zebra2</DatabaseName>
   <Username>zebra2</Username>
   <Password>G!ntonic7</Password>
-  <DatabaseName>zebra2</DatabaseName>
-  <NotensatzIDLength>0</NotensatzIDLength>
-  <NotenblattIDLength>0</NotenblattIDLength>
-  <StimmeIDLength>0</StimmeIDLength>
+  <ArchiveFolder>D:\Desktop\Archive</ArchiveFolder>
+  <BarcodeSeperatorChar>35</BarcodeSeperatorChar>
+  <DummyIndicator>dummy</DummyIndicator>
 </ZebraConfig>

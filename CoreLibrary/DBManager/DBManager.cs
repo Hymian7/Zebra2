@@ -8,7 +8,7 @@ namespace Zebra.DatabaseAccess
 {
     public class ZebraDBManager : IDisposable
     {
-        private ZebraConfig ZebraConfig = ZebraConfig.FromXML("G:\\GitHub\\Zebra2\\CoreLibrary\\EFDesignerTest.zebraconfig");
+        private ZebraConfig ZebraConfig = ZebraConfig.FromXML("G:\\GitHub\\Zebra2\\CoreLibrary\\Zebra2.zebraconfig");
         private ZebraContext ctx;
 
         public ZebraDBManager()
