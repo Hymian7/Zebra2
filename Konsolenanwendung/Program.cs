@@ -3,6 +3,7 @@ using Zebra.Library;
 using Zebra.DatabaseAccess;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Konsolenanwendung
 {
@@ -19,7 +20,8 @@ namespace Konsolenanwendung
             new ZebraCommand("clear", "Clears the Console Window"),
             new ZebraCommand("help", "Shows all Commands"),
             new ZebraCommand("findpiecebyname","Lists all Pieces that contain the Searchstring. Args: Searchstring"),
-            new ZebraCommand("piecedetail","Shows Detail to specific piece. Args: PieceID")};
+            new ZebraCommand("piecedetail","Shows Detail to specific piece. Args: PieceID"),
+            new ZebraCommand("printstickersheet", "Prints a Stickersheet for Piece. Args: PieceID")};
 
         private static ZebraDBManager manager = new ZebraDBManager();
 
@@ -74,11 +76,14 @@ namespace Konsolenanwendung
                     ListFoundPieces(manager.FindPiecesByName(searchstring), searchstring);
                 }
                 else if (input.StartsWith("piecedetail"))
-                { 
-                    
+                {
                     string[] pdargs = input.Split();
                     ShowPieceDetail(manager.GetPieceByID(Int32.Parse(pdargs[1])));
-                        
+                }
+                else if (input.StartsWith("printstickersheet"))
+                {
+                    string[] pargs = input.Split();
+                    PrintStickerSheet(manager.GetPieceByID(Int32.Parse(pargs[1])));
                 }
                 else
                 {
@@ -232,6 +237,18 @@ namespace Konsolenanwendung
                 String.Format("{0,-30}", nb.Part.Name));
             }
             HLine();
+        }
+
+        static void PrintStickerSheet(Piece piece)
+        {
+            Console.WriteLine();
+            Console.WriteLine($"Printing Stickersheet for '{piece.Name}'");
+            Zebra.Archiving.Stickersheet stickersheet = new Zebra.Archiving.Stickersheet(Zebra.Archiving.StickersheetTemplates.AVERYL4732REV);
+
+            stickersheet.PopulateWithZebraItems(piece, manager.GetAllParts());
+
+            stickersheet.GeneratePDF();
+            stickersheet.SavePDF(piece.PieceID + ".pdf");
         }
 
         static void ShowHelp()
