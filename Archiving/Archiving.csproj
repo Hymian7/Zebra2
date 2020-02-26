@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Bytescout.BarCode">
+      <HintPath>E:\Program Files\Bytescout BarCode Generator SDK\Redistributable\netcoreapp2.0\Bytescout.BarCode.dll</HintPath>
+      <Aliases>barcode</Aliases>
+    </Reference>
+    <Reference Include="Bytescout.PDF">
+      <HintPath>E:\Program Files\Bytescout PDF SDK\Redistributable\netcoreapp2.0\Bytescout.PDF.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
