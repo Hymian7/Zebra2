@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using Zebra.Library;
 
@@ -8,11 +9,18 @@ namespace Zebra.DatabaseAccess
 {
     public class ZebraDBManager : IDisposable
     {
-        private ZebraConfig ZebraConfig = ZebraConfig.FromXML("G:\\GitHub\\Zebra2\\CoreLibrary\\Zebra2.zebraconfig");
+
+        private ZebraConfig ZebraConfig;
         private ZebraContext ctx;
 
         public ZebraDBManager()
         {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                this.ZebraConfig = ZebraConfig.FromXML("Zebra2.zebraconfig");
+            }
+            else this.ZebraConfig = ZebraConfig.FromXML("G:\\GitHub\\Zebra2\\CoreLibrary\\Zebra2.zebraconfig");
+
             this.ctx = new ZebraContext(this.ZebraConfig);
             ctx.Database.EnsureCreated();
         }
