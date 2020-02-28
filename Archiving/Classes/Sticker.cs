@@ -99,34 +99,14 @@ namespace Zebra.Archiving
 
         private void GenerateBarcodeImage()
         {
-            Barcode bc = new Barcode
+            var barcode = Barcoder.DataMatrix.DataMatrixEncoder.Encode(BarcodeValue);
+            var renderer = new Barcoder.Renderer.Image.ImageRenderer();
+
+            using (var stream = new MemoryStream())
             {
-                Symbology = SymbologyType.Aztec,
-
-                DrawCaption = false,
-                BackColor = System.Drawing.Color.White,
-                ForeColor = System.Drawing.Color.Black,
-                Angle = barcode::Bytescout.BarCode.RotationAngle.Degrees0,
-                Margins = new Margins(0, 0, 0, 0),
-                BarHeight = 3,
-                NarrowBarWidth = 3,
-                WideToNarrowRatio = 3,
-                AddChecksum = false,
-                AddChecksumToCaption = false,
-                DrawQuietZones = true,
-                ResolutionX = 300,
-                ResolutionY = 300,
-
-                Value = BarcodeValue
-
-            };
-
-            MemoryStream str = new MemoryStream();
-            bc.SaveImage(str);
-
-            BarcodeImage = new Bytescout.PDF.Image(str);
-
-            bc.Dispose();
+                renderer.Render(barcode, stream);
+                BarcodeImage = new Bytescout.PDF.Image(stream);
+            }
         }
 
         /// <summary>
