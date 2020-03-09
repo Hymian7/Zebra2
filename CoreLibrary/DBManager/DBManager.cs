@@ -87,6 +87,14 @@ namespace Zebra.DatabaseAccess
 
         #endregion
 
-        public void Dispose() => ctx.Dispose();
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing) => ctx.Dispose();
+
+        ~ZebraDBManager() => Dispose(false);
     }
 }
