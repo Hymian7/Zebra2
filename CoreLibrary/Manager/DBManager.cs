@@ -85,6 +85,15 @@ namespace Zebra.DatabaseAccess
 
         public Piece GetPieceByID(int id) => ctx.Find<Piece>(id);
 
+        public Part GetPartByID(int id) => ctx.Find<Part>(id);
+
+        public Sheet GetSheet(Piece piece, Part part)
+        {
+            return (from sheet in ctx.Sheet
+                    where sheet.Piece.PieceID == piece.PieceID && sheet.Part.PartID == part.PartID
+                    select sheet).SingleOrDefault();
+        }
+
         #endregion
 
         public void Dispose()

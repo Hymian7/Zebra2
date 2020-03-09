@@ -4,6 +4,7 @@ using Zebra.DatabaseAccess;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
 namespace Konsolenanwendung
 {
@@ -12,7 +13,7 @@ namespace Konsolenanwendung
         private static List<ZebraCommand> cmdlist = new List<ZebraCommand> {
             new ZebraCommand("createpiece", "Creates new Piece. Args: Name and Arranger"),
             new ZebraCommand("createpart", "Creates new Part. Args: Name"),
-            new ZebraCommand("createsheet", "Creates new Sheet. Args: PieceID, SheetID"),
+            new ZebraCommand("createsheet", "Creates new Sheet. Args: PieceID, SheetID, Path to PDF"),
             new ZebraCommand("exit","Exits the console."),
             new ZebraCommand("listpieces","Lists all Pieces"),
             new ZebraCommand("listparts","Lists all Parts"),
@@ -24,6 +25,7 @@ namespace Konsolenanwendung
             new ZebraCommand("printstickersheet", "Prints a Stickersheet for Piece. Args: PieceID")};
 
         private static ZebraDBManager manager = new ZebraDBManager();
+        private static ArchiveManager archiveManager = new Zebra.Library.ArchiveManager();
 
         private static void HLine() => Console.WriteLine("-".PadRight(Console.BufferWidth, '-'));
 
@@ -54,7 +56,17 @@ namespace Konsolenanwendung
                 else if (input.StartsWith("createsheet"))
                 {
                     string[] cpargs = input.Substring(input.IndexOf(' ', StringComparison.OrdinalIgnoreCase) + 1, input.Length - 1 - input.IndexOf(' ', StringComparison.OrdinalIgnoreCase)).Split(';');
-                    manager.NewSheet(Int16.Parse(cpargs[0]), Int16.Parse(cpargs[1]));
+
+                    var pdf = new FileInfo(cpargs[2]);
+                    
+                    if (pdf.Exists && pdf.Extension == ".pdf")
+                    {
+                        manager.NewSheet(Int16.Parse(cpargs[0]), Int16.Parse(cpargs[1]));
+                        archiveManager.StoreSheet(pdf ,manager.GetSheet(manager.GetPieceByID(Int16.Parse(cpargs[0])), manager.GetPartByID(Int16.Parse(cpargs[1]))));
+                        Console.WriteLine("PDF erfolgreich abgelegt!");
+                        Console.WriteLine();
+                    }
+                    
                 }
                 else if (input.StartsWith("exit")) return;
                 else if (input.StartsWith("clear")) Console.Clear();
