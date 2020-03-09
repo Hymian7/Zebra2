@@ -27,7 +27,7 @@ namespace Zebra.Library
    /// <summary>
    /// Represents a Part Entity
    /// </summary>
-   public partial class Part: ITimestamps
+   public partial class Part: ITimestamps, INotifyPropertyChanged
    {
       partial void Init();
 
@@ -111,6 +111,7 @@ namespace Zebra.Library
             if (oldValue != value)
             {
                _Name = value;
+               OnPropertyChanged();
             }
          }
       }
@@ -146,6 +147,7 @@ namespace Zebra.Library
             if (oldValue != value)
             {
                _Position = value;
+               OnPropertyChanged();
             }
          }
       }
@@ -168,6 +170,13 @@ namespace Zebra.Library
       /// One Part can have many Sheets
       /// </summary>
       public virtual ICollection<global::Zebra.Library.Sheet> Sheet { get; protected set; }
+
+      public virtual event PropertyChangedEventHandler PropertyChanged;
+
+      protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+      {
+         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+      }
 
    }
 }

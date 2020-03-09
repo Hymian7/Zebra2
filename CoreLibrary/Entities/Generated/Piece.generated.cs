@@ -27,7 +27,7 @@ namespace Zebra.Library
    /// <summary>
    /// Represents a Piece Entity
    /// </summary>
-   public partial class Piece: ITimestamps
+   public partial class Piece: ITimestamps, INotifyPropertyChanged
    {
       partial void Init();
 
@@ -113,6 +113,7 @@ namespace Zebra.Library
             if (oldValue != value)
             {
                _Name = value;
+               OnPropertyChanged();
             }
          }
       }
@@ -151,6 +152,7 @@ namespace Zebra.Library
             if (oldValue != value)
             {
                _Arranger = value;
+               OnPropertyChanged();
             }
          }
       }
@@ -165,6 +167,78 @@ namespace Zebra.Library
       /// </summary>
       public DateTime? LastUpdate { get; set; }
 
+      /// <summary>
+      /// Backing field for Tags
+      /// </summary>
+      protected string _Tags;
+      /// <summary>
+      /// When provided in a partial class, allows value of Tags to be changed before setting.
+      /// </summary>
+      partial void SetTags(string oldValue, ref string newValue);
+      /// <summary>
+      /// When provided in a partial class, allows value of Tags to be changed before returning.
+      /// </summary>
+      partial void GetTags(ref string result);
+
+      /// <summary>
+      /// Tags for the Piece
+      /// </summary>
+      public string Tags
+      {
+         get
+         {
+            string value = _Tags;
+            GetTags(ref value);
+            return (_Tags = value);
+         }
+         set
+         {
+            string oldValue = _Tags;
+            SetTags(oldValue, ref value);
+            if (oldValue != value)
+            {
+               _Tags = value;
+               OnPropertyChanged();
+            }
+         }
+      }
+
+      /// <summary>
+      /// Backing field for Memo
+      /// </summary>
+      protected string _Memo;
+      /// <summary>
+      /// When provided in a partial class, allows value of Memo to be changed before setting.
+      /// </summary>
+      partial void SetMemo(string oldValue, ref string newValue);
+      /// <summary>
+      /// When provided in a partial class, allows value of Memo to be changed before returning.
+      /// </summary>
+      partial void GetMemo(ref string result);
+
+      /// <summary>
+      /// Space for a Memo
+      /// </summary>
+      public string Memo
+      {
+         get
+         {
+            string value = _Memo;
+            GetMemo(ref value);
+            return (_Memo = value);
+         }
+         set
+         {
+            string oldValue = _Memo;
+            SetMemo(oldValue, ref value);
+            if (oldValue != value)
+            {
+               _Memo = value;
+               OnPropertyChanged();
+            }
+         }
+      }
+
       /*************************************************************************
        * Navigation properties
        *************************************************************************/
@@ -178,6 +252,13 @@ namespace Zebra.Library
       /// One Piece has multiple SetlistItems
       /// </summary>
       public virtual ICollection<global::Zebra.Library.SetlistItem> SetlistItem { get; protected set; }
+
+      public virtual event PropertyChangedEventHandler PropertyChanged;
+
+      protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+      {
+         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+      }
 
    }
 }

@@ -27,7 +27,7 @@ namespace Zebra.Library
    /// <summary>
    /// Represents a Setlist Entity
    /// </summary>
-   public partial class Setlist: ITimestamps
+   public partial class Setlist: ITimestamps, INotifyPropertyChanged
    {
       partial void Init();
 
@@ -71,6 +71,13 @@ namespace Zebra.Library
       /// One SetlistItem belongs to one Setlist
       /// </summary>
       public virtual ICollection<global::Zebra.Library.SetlistItem> SetlistItem { get; protected set; }
+
+      public virtual event PropertyChangedEventHandler PropertyChanged;
+
+      protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+      {
+         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+      }
 
    }
 }

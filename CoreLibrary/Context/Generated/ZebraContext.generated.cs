@@ -115,6 +115,14 @@ namespace Zebra.Library
                      .HasMaxLength(35)
                      .HasField("_Arranger")
                      .UsePropertyAccessMode(PropertyAccessMode.Property);
+         modelBuilder.Entity<global::Zebra.Library.Piece>()
+                     .Property(t => t.Tags)
+                     .HasField("_Tags")
+                     .UsePropertyAccessMode(PropertyAccessMode.Property);
+         modelBuilder.Entity<global::Zebra.Library.Piece>()
+                     .Property(t => t.Memo)
+                     .HasField("_Memo")
+                     .UsePropertyAccessMode(PropertyAccessMode.Property);
 
          modelBuilder.Entity<global::Zebra.Library.Setlist>()
                      .ToTable("Setlist")

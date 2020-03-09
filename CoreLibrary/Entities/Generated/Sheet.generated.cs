@@ -27,7 +27,7 @@ namespace Zebra.Library
    /// <summary>
    /// Represents a Sheet Entity
    /// </summary>
-   public partial class Sheet: ITimestamps
+   public partial class Sheet: ITimestamps, INotifyPropertyChanged
    {
       partial void Init();
 
@@ -103,6 +103,13 @@ namespace Zebra.Library
       /// One Sheet belongs to one Piece
       /// </summary>
       public virtual global::Zebra.Library.Piece Piece { get; set; }
+
+      public virtual event PropertyChangedEventHandler PropertyChanged;
+
+      protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+      {
+         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+      }
 
    }
 }
