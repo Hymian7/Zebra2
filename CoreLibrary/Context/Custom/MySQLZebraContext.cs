@@ -67,5 +67,14 @@ namespace Zebra.Library
                 .HasDefaultValueSql("NOW() ON UPDATE NOW()")
                 .ValueGeneratedOnAddOrUpdate();
         }
+           
+        protected override void CustomInit(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLazyLoadingProxies(true).UseMySql((Settings.DatabaseCredentials as MySQLCredentials).ConnectionString);
+        }
+
+        
+
+
     }
 }

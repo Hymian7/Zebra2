@@ -60,7 +60,7 @@ namespace Zebra.Library
       {
       }
 
-      partial void CustomInit(DbContextOptionsBuilder optionsBuilder);
+      protected abstract void CustomInit(DbContextOptionsBuilder optionsBuilder);
 
       /// <inheritdoc />
       protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

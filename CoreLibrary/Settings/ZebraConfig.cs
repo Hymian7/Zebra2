@@ -4,55 +4,51 @@ using System.Xml.Serialization;
 
 namespace Zebra.Library
 {
+    
     public class ZebraConfig
     {
-        public string ConfigName { get; set; }
+        public string ConfigName { get; set; }        
 
+        public DatabaseProvider DatabaseProvider { get; set; }
+        public ArchiveType ArchiveType { get; set; }
 
-        public string ConnectionString
-        {
-            get
-            {
+        public DatabaseCredentials DatabaseCredentials { get; set; }
 
-                return $"server={this.Server};port={this.Port};user id={this.Username};password={this.Password};database={this.DatabaseName};persistsecurityinfo=True;";
-            }
-        }
-
-        public Provider DatabaseProvider { get; set; }
-        public string Server { get; set; }
-        public string Port { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string DatabaseName { get; set; }
-
-        public string ArchiveFolder { get; set; }
+        public ArchiveCredentials ArchiveCredentials { get; set; }
 
         public char BarcodeSeperatorChar { get; set; }
         public string DummyIndicator { get; set; }
 
+        /// <summary>
+        /// Parameterless Constructor for Serialization
+        /// </summary>
+        public ZebraConfig() { }
 
-        public ZebraConfig()
+        private void SetDefaults()
         {
-            this.DatabaseProvider = Provider.MySQL;
-            this.ArchiveFolder = @"D:\Desktop\Archive";
-            this.BarcodeSeperatorChar = '#';
-            this.DummyIndicator = "dummy";
+            ConfigName = "New Config";
+            DatabaseProvider = DatabaseProvider.MySQL;
+            ArchiveType = ArchiveType.Local;
+            DatabaseCredentials = null;
+            ArchiveCredentials = null;
+            BarcodeSeperatorChar = '#';
+            DummyIndicator = "dummy";
         }
-        public ZebraConfig(string _name, Provider _databaseprovider, string _server, string _port, string _username, string _password, string _databasename, string _archivefolder = @"D:\Desktop\Archive", char _seperator = '#', string _dummyind = "dummy")
+        
+        public ZebraConfig(string _name)
         {
-
+            SetDefaults();
+            ConfigName = _name;
+        }
+        public ZebraConfig(string _name, DatabaseProvider _databaseprovider, DatabaseCredentials _databaseCredentials, ArchiveType archiveType, ArchiveCredentials archiveCredentials)
+        {
+            SetDefaults();
             ConfigName = _name;
             DatabaseProvider = _databaseprovider;
-            Server = _server;
-            Port = _port;
-            Username = _username;
-            Password = _password;
-            DatabaseName = _databasename;
-            ArchiveFolder = _archivefolder;
-            BarcodeSeperatorChar = _seperator;
-            DummyIndicator = _dummyind;
-
-
+            DatabaseCredentials = _databaseCredentials;
+            ArchiveType = archiveType;
+            ArchiveCredentials = ArchiveCredentials;
+                       
         }
 
         /// <summary>
@@ -72,6 +68,8 @@ namespace Zebra.Library
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.InnerException);
+                Console.WriteLine(ex.Data);
                 return false;
                 throw;
             }
@@ -98,14 +96,6 @@ namespace Zebra.Library
             }
         }
 
-
-        public override string ToString()
-        {
-
-            return $"Konfiguration: {this.ConfigName} mit Connectionstring: {this.ConnectionString}";
-
-        }
-
     }
 
 
@@ -113,9 +103,20 @@ namespace Zebra.Library
     /// <summary>
     /// Type of Database Provider
     /// </summary>
-    public enum Provider
+    public enum DatabaseProvider
     {
-        MySQL = 1,
-        Acces = 2
+        MySQL,
+        Acces,
+        SQLite
+    }
+
+    /// <summary>
+    /// Type of Archive
+    /// </summary>
+    public enum ArchiveType
+    {
+        FTP,
+        SFTP,
+        Local
     }
 }

@@ -21,10 +21,5 @@ namespace Zebra.Library
 
         }
 
-        partial void CustomInit(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseLazyLoadingProxies(true).UseMySql(Settings.ConnectionString);            
-        }
-
     }
 }

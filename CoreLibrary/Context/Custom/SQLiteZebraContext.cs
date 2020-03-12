@@ -12,6 +12,11 @@ namespace Zebra.Library
 
         }
 
+        protected override void CustomInit(DbContextOptionsBuilder optionsBuilder)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override void OnModelCreatedImpl(ModelBuilder modelBuilder)
         {
             throw new NotImplementedException("SQLite Default Values for Timestamps are not implemented yet.");

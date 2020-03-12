@@ -2,12 +2,17 @@
 <ZebraConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <ConfigName>Zebra2</ConfigName>
   <DatabaseProvider>MySQL</DatabaseProvider>
-  <Server>192.168.1.80</Server>
-  <Port>3306</Port>
-  <DatabaseName>zebra2</DatabaseName>
-  <Username>zebra2</Username>
-  <Password>G!ntonic7</Password>
-  <ArchiveFolder>D:\Desktop\Archive</ArchiveFolder>
+  <ArchiveType>Local</ArchiveType>
+  <DatabaseCredentials xsi:type="MySQLCredentials">
+    <Server>192.168.1.80</Server>
+    <Port>3306</Port>
+    <Username>zebra2</Username>
+    <Password>G!ntonic7</Password>
+    <DatabaseName>zebra2</DatabaseName>
+  </DatabaseCredentials>
+  <ArchiveCredentials xsi:type="LocalArchiveCredentials">
+    <Path>D:\Desktop\Zebraarchive</Path>
+  </ArchiveCredentials>
   <BarcodeSeperatorChar>35</BarcodeSeperatorChar>
   <DummyIndicator>dummy</DummyIndicator>
 </ZebraConfig>

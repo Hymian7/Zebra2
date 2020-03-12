@@ -19,7 +19,7 @@ namespace Zebra.DatabaseAccess
             {
                 this.ZebraConfig = ZebraConfig.FromXML("Zebra2.zebraconfig");
             }
-            else this.ZebraConfig = ZebraConfig.FromXML("G:\\GitHub\\Zebra2\\CoreLibrary\\Zebra2.zebraconfig");
+            else this.ZebraConfig = ZebraConfig.FromXML("..\\..\\..\\..\\CoreLibrary\\Zebra2.zebraconfig");
 
             this.ctx = new MySQLZebraContext(this.ZebraConfig);
             ctx.Database.EnsureCreated();

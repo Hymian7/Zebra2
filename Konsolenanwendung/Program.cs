@@ -112,12 +112,13 @@ namespace Konsolenanwendung
         };
 
         private static ZebraDBManager manager = new ZebraDBManager();
+
         private static ArchiveManager archiveManager = new Zebra.Library.ArchiveManager();
 
         private static void HLine() => Console.WriteLine("-".PadRight(Console.BufferWidth, '-'));
 
         static void Main(string[] args)
-        {            
+        {
             var parser = new ZebraCommandParser(cmdlist2);
 
             Console.WriteLine("Zebra Console");
