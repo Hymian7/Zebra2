@@ -1,28 +1,115 @@
 ﻿using System;
-using Zebra.Library;
-using Zebra.DatabaseAccess;
-using System.Linq;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using Zebra.DatabaseAccess;
+using Zebra.Library;
 
 namespace Konsolenanwendung
 {
     class Program
-    {
-        private static List<ZebraCommand> cmdlist = new List<ZebraCommand> {
-            new ZebraCommand("createpiece", "Creates new Piece. Args: Name and Arranger"),
-            new ZebraCommand("createpart", "Creates new Part. Args: Name"),
-            new ZebraCommand("createsheet", "Creates new Sheet. Args: PieceID, SheetID, Path to PDF"),
-            new ZebraCommand("exit","Exits the console."),
-            new ZebraCommand("listpieces","Lists all Pieces"),
-            new ZebraCommand("listparts","Lists all Parts"),
-            new ZebraCommand("listsheets", "Lists all Sheets"),
-            new ZebraCommand("clear", "Clears the Console Window"),
-            new ZebraCommand("help", "Shows all Commands"),
-            new ZebraCommand("findpiecebyname","Lists all Pieces that contain the Searchstring. Args: Searchstring"),
-            new ZebraCommand("piecedetail","Shows Detail to specific piece. Args: PieceID"),
-            new ZebraCommand("printstickersheet", "Prints a Stickersheet for Piece. Args: PieceID")};
+    {        
+        private static Dictionary<string, ZebraCommand> cmdlist2 = new Dictionary<string, ZebraCommand>
+        {
+
+            ["createpiece"] = new ZebraCommand(
+                "createpiece",
+                    new ValueTuple<string, Type>[]
+                    {
+                        new ValueTuple<string, Type>("Name", typeof(String)),
+                        new ValueTuple<string, Type>("Arranger", typeof(String))
+                    },
+                "Creates new Piece.",
+                createpiece),
+
+            ["help"] = new ZebraCommand(
+                "help",
+                null,
+                "Shows all Commands",
+                help),
+
+            ["createpart"] = new ZebraCommand(
+                "createpart",
+                    new ValueTuple<string, Type>[]
+                    {
+                        new ValueTuple<string, Type>("Name", typeof(String))
+                    },
+                "Creates new Part.",
+                createpart),
+
+            ["createsheet"] = new ZebraCommand(
+                "createsheet",
+                    new ValueTuple<string, Type>[]
+                    {
+                        new ValueTuple<string, Type>("PieceID", typeof(int)),
+                        new ValueTuple<string, Type>("PartID", typeof(int)),
+                        new ValueTuple<string, Type>("PDF Path", typeof(FileInfo))
+                    },
+                "Creates new Sheet.",
+                createsheet),
+
+            ["exit"] = new ZebraCommand(
+                "exit",
+                 null,
+                "Exits the Console",
+                exit),
+
+            ["listpieces"] = new ZebraCommand(
+                "listpieces",
+                 null,
+                "Lists all Pieces",
+                listpieces),
+
+            ["listparts"] = new ZebraCommand(
+                "listparts",
+                 null,
+                "Lists all Parts",
+                listparts),
+
+            ["listsheets"] = new ZebraCommand(
+                "listsheets",
+                 null,
+                "Lists all Sheets",
+                listsheets),
+
+            ["clear"] = new ZebraCommand(
+                "clear",
+                 null,
+                "Clears the Console Window",
+                clear),
+
+            ["findpiecebyname"] = new ZebraCommand(
+                "findpiecebyname",
+                    new ValueTuple<string, Type>[]
+                    {
+                        new ValueTuple<string, Type>("Searchstring", typeof(String)),
+                    },
+                "Lists all Pieces that contain the Searchstring",
+                findpiecebyname),
+
+            ["piecedetail"] = new ZebraCommand(
+                "piecedetail",
+                    new ValueTuple<string, Type>[]
+                    {
+                        new ValueTuple<string, Type>("PieceID", typeof(int)),
+                    },
+                "Shows Detail to specific piece",
+                piecedetail),
+
+            ["printstickersheet"] = new ZebraCommand(
+                "printstickersheet",
+                    new ValueTuple<string, Type>[]
+                    {
+                        new ValueTuple<string, Type>("PieceID", typeof(int)),
+                    },
+                "Prints a Stickersheet for Piece",
+                printstickersheet),
+
+
+
+            //["createpart"] = new ZebraCommand2("createpart", ("Name", String), );
+            //["createpiece"] = new ZebraCommand2("createpiece", new Tuple<string, Type>[] { new Tuple<string, Type>("Name", typeof(String)), new Tuple<string, Type>("Arranger", typeof(String)) }, createpiece)
+        };
 
         private static ZebraDBManager manager = new ZebraDBManager();
         private static ArchiveManager archiveManager = new Zebra.Library.ArchiveManager();
@@ -30,85 +117,35 @@ namespace Konsolenanwendung
         private static void HLine() => Console.WriteLine("-".PadRight(Console.BufferWidth, '-'));
 
         static void Main(string[] args)
-        {
-            cmdlist.Sort();
+        {            
+            var parser = new ZebraCommandParser(cmdlist2);
 
             Console.WriteLine("Zebra Console");
             Console.WriteLine("Type help for a list of all commands");
             Console.WriteLine("Parameters have to be seperated by a semicolon (;)");
             Console.WriteLine();
 
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("Moin");
+
             while (true)
             {
                 Console.Write("zebra>");
                 var input = Console.ReadLine();
 
-                if (input.StartsWith("createpiece"))
+                if (parser.Parse(input, out ZebraCommand cmd, out string[] cmdargs))
                 {
-                    string[] cpargs = input.Substring(input.IndexOf(' ', StringComparison.OrdinalIgnoreCase) + 1, input.Length - 1 - input.IndexOf(' ', StringComparison.OrdinalIgnoreCase)).Split(';');
-                    manager.NewPiece(cpargs[0], cpargs[1]);
+                    if (cmdargs == null) cmd.Execute(); else cmd.Execute(cmdargs);
                 }
-                else if (input.StartsWith("createpart"))
-                {
-                    string[] cpargs = input.Substring(input.IndexOf(' ', StringComparison.OrdinalIgnoreCase) + 1, input.Length - 1 - input.IndexOf(' ', StringComparison.OrdinalIgnoreCase)).Split(';');
-                    manager.NewPart(cpargs[0]);
-                }
-                else if (input.StartsWith("createsheet"))
-                {
-                    string[] cpargs = input.Substring(input.IndexOf(' ', StringComparison.OrdinalIgnoreCase) + 1, input.Length - 1 - input.IndexOf(' ', StringComparison.OrdinalIgnoreCase)).Split(';');
-
-                    var pdf = new FileInfo(cpargs[2]);
-                    
-                    if (pdf.Exists && pdf.Extension == ".pdf")
-                    {
-                        manager.NewSheet(Int16.Parse(cpargs[0]), Int16.Parse(cpargs[1]));
-                        archiveManager.StoreSheet(pdf ,manager.GetSheet(manager.GetPieceByID(Int16.Parse(cpargs[0])), manager.GetPartByID(Int16.Parse(cpargs[1]))));
-                        Console.WriteLine("PDF erfolgreich abgelegt!");
-                        Console.WriteLine();
-                    }
-                    
-                }
-                else if (input.StartsWith("exit")) return;
-                else if (input.StartsWith("clear")) Console.Clear();
-                else if (input.StartsWith("listpieces")) ListAlllPieces();
-                else if (input.StartsWith("listparts")) ListAllParts();
-                else if (input.StartsWith("listsheets")) ListAllSheets();
-                else if (input.StartsWith("help")) ShowHelp();
-                else if (input.StartsWith("findpiecebyname"))
-                {
-                    string searchstring = input.Substring("findpiecebyname".Length);
-
-                    if (String.IsNullOrWhiteSpace(searchstring))
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine("String to find:");
-                        searchstring = Console.ReadLine();
-                    }
-
-                    ListFoundPieces(manager.FindPiecesByName(searchstring), searchstring);
-                }
-                else if (input.StartsWith("piecedetail"))
-                {
-                    string[] pdargs = input.Split();
-                    ShowPieceDetail(manager.GetPieceByID(Int32.Parse(pdargs[1])));
-                }
-                else if (input.StartsWith("printstickersheet"))
-                {
-                    string[] pargs = input.Split();
-                    PrintStickerSheet(manager.GetPieceByID(Int32.Parse(pargs[1])));
-                }
-                else
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Command not found.");
-                    Console.WriteLine("Type 'help' for a list of all commands.");
-                }
-
 
             }
+            
         }
 
-        static void ListAlllPieces()
+        #region Output Methods
+
+
+        static void ListAllPieces()
         {
             var pieces = manager.GetAllPieces();
 
@@ -216,7 +253,7 @@ namespace Konsolenanwendung
         }
 
         static void ShowPieceDetail(Piece piece)
-        {
+        {                      
             Console.WriteLine();
             Console.WriteLine("Show Details for Piece:");
             Console.WriteLine();
@@ -228,8 +265,8 @@ namespace Konsolenanwendung
             HLine();
             Console.WriteLine(
                 String.Format("{0,-5}", piece.PieceID) +
-                String.Format("{0,-30}",piece.Name) +
-                String.Format("{0,-30}",piece.Arranger));
+                String.Format("{0,-30}", piece.Name) +
+                String.Format("{0,-30}", piece.Arranger));
             HLine();
 
             Console.WriteLine();
@@ -263,16 +300,75 @@ namespace Konsolenanwendung
             stickersheet.SavePDF(piece.PieceID + ".pdf");
         }
 
-        static void ShowHelp()
+        #endregion
+
+        #region Console Command Methods
+
+
+        static void help()
         {
             Console.WriteLine();
             HLine();
-            Console.WriteLine("Valid Commands:");
-            foreach (ZebraCommand cmd in cmdlist) Console.WriteLine($"{cmd.Command.PadRight(20, ' ')}{cmd.Helptext}");
+            Console.WriteLine("Valid Commands:\n");
+
+            List<ZebraCommand> commandlist = cmdlist2.Values.ToList<ZebraCommand>();
+            commandlist.Sort();
+
+            foreach (ZebraCommand item in commandlist)
+            {
+                string arguments = "";
+
+                if (item.Arguments == null) arguments = "";
+                else
+                {
+                    foreach (var arg in item.Arguments)
+                    {
+                        arguments += arg.Item1;
+                        arguments += ", ";
+                    }
+                }
+                Console.WriteLine($"{item.Command.PadRight(20, ' ')}{arguments.PadRight(30, ' ')}{item.Helptext}");
+            }
+
             Console.WriteLine();
             Console.WriteLine("The arguments have to be seperated by a semicolon (;)");
             HLine();
             Console.WriteLine();
         }
+
+        static void createpiece(object[] args) => manager.NewPiece(args[0].ToString(), args[1].ToString());
+
+        static void createpart(object[] args) => manager.NewPart(args[0].ToString());
+
+        static void createsheet(object[] args)
+        {
+            var pdf = new FileInfo(args[2].ToString());
+
+            if (pdf.Exists && pdf.Extension == ".pdf")
+            {
+                manager.NewSheet(Int16.Parse(args[0].ToString()), Int16.Parse(args[1].ToString()));
+                archiveManager.StoreSheet(pdf, manager.GetSheet(manager.GetPieceByID(Int16.Parse(args[0].ToString())), manager.GetPartByID(Int16.Parse(args[1].ToString()))));
+                Console.WriteLine("PDF erfolgreich abgelegt!");
+                Console.WriteLine();
+            }
+        }
+
+        static void exit() => Environment.Exit(0);
+
+        static void clear() => Console.Clear();
+
+        static void findpiecebyname(object[] args) => ListFoundPieces(manager.FindPiecesByName(args[0].ToString()), args[0].ToString());
+
+        static void piecedetail(object[] args) => ShowPieceDetail(manager.GetPieceByID(Int32.Parse(args[0].ToString())));
+
+        static void printstickersheet(object[] args) => PrintStickerSheet(manager.GetPieceByID(Int32.Parse(args[0].ToString())));
+
+        static void listpieces() => ListAllPieces();
+
+        static void listparts() => ListAllParts();
+
+        static void listsheets() => ListAllSheets();
+
+        #endregion
     }
 }
