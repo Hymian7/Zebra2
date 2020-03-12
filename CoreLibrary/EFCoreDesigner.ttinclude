@@ -236,8 +236,8 @@ private void WriteOnConfiguringEFCore(ModelRoot modelRoot, List<string> segments
 
 private void WriteOnModelCreateEFCore(ModelRoot modelRoot, List<string> segments, ModelClass[] classesWithTables)
 {
-   Output("partial void OnModelCreatingImpl(ModelBuilder modelBuilder);");
-   Output("partial void OnModelCreatedImpl(ModelBuilder modelBuilder);");
+   Output("protected abstract void OnModelCreatingImpl(ModelBuilder modelBuilder);");
+   Output("protected abstract void OnModelCreatedImpl(ModelBuilder modelBuilder);");
    NL();
 
    Output("/// <inheritdoc />");

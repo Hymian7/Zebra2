@@ -125,9 +125,6 @@ namespace Konsolenanwendung
             Console.WriteLine("Parameters have to be seperated by a semicolon (;)");
             Console.WriteLine();
 
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("Moin");
-
             while (true)
             {
                 Console.Write("zebra>");

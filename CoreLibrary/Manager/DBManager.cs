@@ -21,14 +21,14 @@ namespace Zebra.DatabaseAccess
             }
             else this.ZebraConfig = ZebraConfig.FromXML("G:\\GitHub\\Zebra2\\CoreLibrary\\Zebra2.zebraconfig");
 
-            this.ctx = new ZebraContext(this.ZebraConfig);
+            this.ctx = new MySQLZebraContext(this.ZebraConfig);
             ctx.Database.EnsureCreated();
         }
         
         public ZebraDBManager(ZebraConfig altZebraConf)
         {
             ZebraConfig = altZebraConf;
-            this.ctx = new ZebraContext(this.ZebraConfig);
+            this.ctx = new MySQLZebraContext(this.ZebraConfig);
             ctx.Database.EnsureCreated();
         }
 

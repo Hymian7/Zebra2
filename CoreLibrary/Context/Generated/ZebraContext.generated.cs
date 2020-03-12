@@ -68,8 +68,8 @@ namespace Zebra.Library
          CustomInit(optionsBuilder);
       }
 
-      partial void OnModelCreatingImpl(ModelBuilder modelBuilder);
-      partial void OnModelCreatedImpl(ModelBuilder modelBuilder);
+      protected abstract void OnModelCreatingImpl(ModelBuilder modelBuilder);
+      protected abstract void OnModelCreatedImpl(ModelBuilder modelBuilder);
 
       /// <inheritdoc />
       protected override void OnModelCreating(ModelBuilder modelBuilder)
