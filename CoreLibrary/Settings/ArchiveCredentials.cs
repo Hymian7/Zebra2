@@ -8,27 +8,48 @@ namespace Zebra.Library
     [XmlInclude(typeof(LocalArchiveCredentials))]
     public abstract class ArchiveCredentials
     {
-        public ArchiveCredentials()
-        {
-
-        }
+        // Private Constructor for XML Serialization
+        public ArchiveCredentials() { }
     }
 
     public class FTPCredentials : ArchiveCredentials
     {
-        public FTPCredentials()
+        public string Server { get; private set; }
+        public string Username { get; private set; }
+        public string Password { get; private set; }
+        public string Port { get; private set; }
+        public string Path { get; private set; }
+
+        public FTPCredentials(string server, string username, string password, string path, string port = "21")
         {
-            throw new NotImplementedException();
+            Server = server;
+            Username = username;
+            Password = password;
+            Path = path;
+            Port = port;
         }
     }
 
 
     public class SFTPCredentials : ArchiveCredentials
     {
-        public SFTPCredentials()
+        public string Server { get; private set; }
+        public string Username { get; private set; }
+        public string Password { get; private set; }
+        public string Port { get; private set; }
+        public string Path { get; private set; }
+
+        public SFTPCredentials(string server, string username, string password, string path, string port = "22")
         {
-            throw new NotImplementedException();
+            Server = server;
+            Username = username;
+            Password = password;
+            Path = path;
+            Port = port;
         }
+
+        // Private Constructor for XML Serialization
+        private SFTPCredentials() { }
     }
 
     public class LocalArchiveCredentials : ArchiveCredentials
@@ -40,9 +61,7 @@ namespace Zebra.Library
             this.Path = path;
         }
 
-        private LocalArchiveCredentials()
-        {
-
-        }
+        // Private Constructor for XML Serialization
+        private LocalArchiveCredentials() { }
     }
 }

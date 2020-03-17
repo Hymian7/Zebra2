@@ -13,7 +13,6 @@ namespace Zebra.Library
         public DatabaseCredentials() { }
     }
 
-    [Serializable]
     public class AccessCredentials : DatabaseCredentials
     {
         public AccessCredentials()
@@ -23,7 +22,6 @@ namespace Zebra.Library
         
     }
 
-    [Serializable]
     public class MySQLCredentials : DatabaseCredentials
     {
         public string Server { get; set; }
