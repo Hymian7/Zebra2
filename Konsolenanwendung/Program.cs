@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Zebra.DatabaseAccess;
 using Zebra.Library;
 
 namespace Konsolenanwendung
@@ -105,13 +104,23 @@ namespace Konsolenanwendung
                 "Prints a Stickersheet for Piece",
                 printstickersheet),
 
+            ["storepdf"] = new ZebraCommand(
+                "storepdf",
+                    new ValueTuple<string, Type>[]
+                    {
+                        new ValueTuple<string, Type>("Filepath", typeof(string)),
+                        new ValueTuple<string,Type>("SheetID", typeof(int))
+                    },
+                "Stores the PDF File to the Archive",
+                storepdf),
+
 
 
             //["createpart"] = new ZebraCommand2("createpart", ("Name", String), );
             //["createpiece"] = new ZebraCommand2("createpiece", new Tuple<string, Type>[] { new Tuple<string, Type>("Name", typeof(String)), new Tuple<string, Type>("Arranger", typeof(String)) }, createpiece)
         };
 
-        private static ZebraDBManager manager = new ZebraDBManager();
+        private static ZebraDBManager manager;
 
         private static ArchiveManager archiveManager = new Zebra.Library.ArchiveManager();
 
@@ -119,6 +128,7 @@ namespace Konsolenanwendung
 
         static void Main(string[] args)
         {
+            manager =  new ZebraDBManager();
             var parser = new ZebraCommandParser(cmdlist2);
 
             Console.WriteLine("Zebra Console");
@@ -334,11 +344,11 @@ namespace Konsolenanwendung
             Console.WriteLine();
         }
 
-        static void createpiece(object[] args) => manager.NewPiece(args[0].ToString(), args[1].ToString());
+        static void createpiece(params object[] args) => manager.NewPiece(args[0].ToString(), args[1].ToString());
 
-        static void createpart(object[] args) => manager.NewPart(args[0].ToString());
+        static void createpart(params object[] args) => manager.NewPart(args[0].ToString());
 
-        static void createsheet(object[] args)
+        static void createsheet(params object[] args)
         {
             var pdf = new FileInfo(args[2].ToString());
 
@@ -355,17 +365,25 @@ namespace Konsolenanwendung
 
         static void clear() => Console.Clear();
 
-        static void findpiecebyname(object[] args) => ListFoundPieces(manager.FindPiecesByName(args[0].ToString()), args[0].ToString());
+        static void findpiecebyname(params object[] args) => ListFoundPieces(manager.FindPiecesByName(args[0].ToString()), args[0].ToString());
 
-        static void piecedetail(object[] args) => ShowPieceDetail(manager.GetPieceByID(Int32.Parse(args[0].ToString())));
+        static void piecedetail(params object[] args) => ShowPieceDetail(manager.GetPieceByID(Int32.Parse(args[0].ToString())));
 
-        static void printstickersheet(object[] args) => PrintStickerSheet(manager.GetPieceByID(Int32.Parse(args[0].ToString())));
+        static void printstickersheet(params object[] args) => PrintStickerSheet(manager.GetPieceByID(Int32.Parse(args[0].ToString())));
 
         static void listpieces() => ListAllPieces();
 
         static void listparts() => ListAllParts();
 
         static void listsheets() => ListAllSheets();
+
+        static void storepdf(params object[] args)
+        {
+            FileInfo pdf = new FileInfo(args[0].ToString());
+            Sheet sheet = manager.GetSheet(Int32.Parse(args[1].ToString()));
+
+            manager.StorePDF(pdf, sheet);
+        }
 
         #endregion
     }
