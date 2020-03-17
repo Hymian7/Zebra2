@@ -14,11 +14,11 @@ namespace Zebra.Library
 
     public class FTPCredentials : ArchiveCredentials
     {
-        public string Server { get; private set; }
-        public string Username { get; private set; }
-        public string Password { get; private set; }
-        public string Port { get; private set; }
-        public string Path { get; private set; }
+        public string Server { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string Port { get; set; }
+        public string Path { get; set; }
 
         public FTPCredentials(string server, string username, string password, string path, string port = "21")
         {
@@ -28,16 +28,19 @@ namespace Zebra.Library
             Path = path;
             Port = port;
         }
+
+        // Private Constructor for XML Serialization
+        private FTPCredentials() { }
     }
 
 
     public class SFTPCredentials : ArchiveCredentials
     {
-        public string Server { get; private set; }
-        public string Username { get; private set; }
-        public string Password { get; private set; }
-        public string Port { get; private set; }
-        public string Path { get; private set; }
+        public string Server { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string Port { get; set; }
+        public string Path { get; set; }
 
         public SFTPCredentials(string server, string username, string password, string path, string port = "22")
         {

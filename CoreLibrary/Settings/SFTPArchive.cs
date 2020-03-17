@@ -7,12 +7,12 @@ namespace Zebra.Library
 {
     public class SFTPArchive : ZebraArchive
     {
-        public string Server { get; private set; }
-        public string Username { get; private set; }
-        public string Password { get; private set; }
-        public string Port { get; private set; }
+        public string Server { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string Port { get; set; }
 
-        public string Path { get; private set; }
+        public string Path { get; set; }
 
         public override bool IsConnected => throw new NotImplementedException();
 

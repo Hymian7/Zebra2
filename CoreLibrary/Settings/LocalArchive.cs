@@ -30,6 +30,7 @@ namespace Zebra.Library
             switch (mode)
             {
                 case FileImportMode.Copy:
+                    if (!Directory.Exists(Path.FullName + "\\" + sheet.Piece.PieceID)) Directory.CreateDirectory(Path.FullName + "\\" + sheet.Piece.PieceID);
                     file.CopyTo(Path.FullName + "\\" + sheet.Piece.PieceID + "\\" + sheet.SheetID + ".pdf", false);
                     break;
                 case FileImportMode.Move:
