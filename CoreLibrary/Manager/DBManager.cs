@@ -24,6 +24,7 @@ namespace Zebra.Library
             else this.ZebraConfig = ZebraConfig.FromXML("..\\..\\..\\..\\CoreLibrary\\Zebra2.zebraconfig");
 
             this.Context = new MySQLZebraContext(this.ZebraConfig);
+            this.Archive = new LocalArchive(ZebraConfig.ArchiveCredentials as LocalArchiveCredentials);
             Context.Database.EnsureCreated();
         }
         
@@ -131,6 +132,9 @@ namespace Zebra.Library
                     where sheet.Piece.PieceID == piece.PieceID && sheet.Part.PartID == part.PartID
                     select sheet).SingleOrDefault();
         }
+
+        public Sheet GetSheet(int id) => Context.Sheet.Find(id);
+        
 
         #endregion
 
