@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Zebra.Library;
 
-namespace Zebra.DatabaseAccess
+namespace Zebra.Library
 {
     public class ZebraDBManager : IDisposable
     {
 
-        private ZebraConfig ZebraConfig;
-        private ZebraContext ctx;
+        public ZebraConfig ZebraConfig { get; private set; }
+        public ZebraContext Context { get; private set; }
+        public ZebraArchive Archive { get; private set; }
 
         public ZebraDBManager()
         {
@@ -21,52 +23,88 @@ namespace Zebra.DatabaseAccess
             }
             else this.ZebraConfig = ZebraConfig.FromXML("..\\..\\..\\..\\CoreLibrary\\Zebra2.zebraconfig");
 
-            this.ctx = new MySQLZebraContext(this.ZebraConfig);
-            ctx.Database.EnsureCreated();
+            this.Context = new MySQLZebraContext(this.ZebraConfig);
+            Context.Database.EnsureCreated();
         }
         
-        public ZebraDBManager(ZebraConfig altZebraConf)
+        public ZebraDBManager(ZebraConfig ZebraConf)
         {
-            ZebraConfig = altZebraConf;
-            this.ctx = new MySQLZebraContext(this.ZebraConfig);
-            ctx.Database.EnsureCreated();
+            ZebraConfig = ZebraConf;
+            this.Context = new MySQLZebraContext(this.ZebraConfig);
+            Context.Database.EnsureCreated();
+
+            // Setup Context
+            switch (ZebraConf.DatabaseProvider)
+            {
+                case DatabaseProvider.MySQL:
+                    this.Context = new MySQLZebraContext(ZebraConf);
+                    break;
+                case DatabaseProvider.Acces:
+                    this.Context = new AccessZebraContext(ZebraConf);
+                    break;
+                case DatabaseProvider.SQLite:
+                    this.Context = new SQLiteZebraContext(ZebraConf);
+                    break;
+                default:
+                    throw new Exception("Invalid Database Type in Config File");
+            }
+
+            // Setup Archive
+            switch (ZebraConf.ArchiveType)
+            {
+                case ArchiveType.FTP:
+                    this.Archive = new FTPArchive(ZebraConf.ArchiveCredentials as FTPCredentials); 
+                    break;
+                case ArchiveType.SFTP:
+                    this.Archive = new SFTPArchive(ZebraConf.ArchiveCredentials as SFTPCredentials);
+                    break;
+                case ArchiveType.Local:
+                    this.Archive = new LocalArchive(ZebraConf.ArchiveCredentials as LocalArchiveCredentials);
+                    break;
+                default:
+                    throw new Exception("Invalid Archive Type in Config File");
+            }
         }
 
         public List<Piece> GetAllPieces()
         {
-            return ctx.Piece.ToList<Piece>();
+            return Context.Piece.ToList<Piece>();
         }
         public List<Sheet> GetAllSheets()
         {
-            return ctx.Sheet.ToList<Sheet>();
+            return Context.Sheet.ToList<Sheet>();
         }
         public List<Part> GetAllParts()
         {
-            return ctx.Part.ToList<Part>();
+            return Context.Part.ToList<Part>();
         }
 
         public void NewPiece(string newname, string newarranger)
         {
-            ctx.Add<Piece>(Piece.Create(newname, newarranger));
-            ctx.SaveChanges();
+            Context.Add<Piece>(Piece.Create(newname, newarranger));
+            Context.SaveChanges();
         }
         public void NewPiece(string newname)
         {
-            ctx.Add<Piece>(Piece.Create(newname));
-            ctx.SaveChanges();
+            Context.Add<Piece>(Piece.Create(newname));
+            Context.SaveChanges();
         }
 
         public void NewPart(string partname)
         {
-            ctx.Add<Part>(Part.Create(partname));
-            ctx.SaveChanges();
+            Context.Add<Part>(Part.Create(partname));
+            Context.SaveChanges();
         }
 
         public void NewSheet(int pieceid, int partid)
         {
-            ctx.Add<Sheet>(Sheet.Create(ctx.Part.Find(partid), ctx.Piece.Find(pieceid)));
-            ctx.SaveChanges();
+            Context.Add<Sheet>(Sheet.Create(Context.Part.Find(partid), Context.Piece.Find(pieceid)));
+            Context.SaveChanges();
         }
+
+        public void StorePDF(FileInfo file, Sheet sheet) => Archive.PushFile(file, sheet);
+
+        public FileInfo GetPDF(Sheet sheet) => Archive.GetFile(sheet);
 
         #region LINQ Queries
 
@@ -77,33 +115,35 @@ namespace Zebra.DatabaseAccess
         /// <returns></returns>
         public List<Piece> FindPiecesByName(string searchstring)
         {
-            return (from piece in ctx.Piece
+            return (from piece in Context.Piece
                     where piece.Name.ToLower().Contains(searchstring.ToLower())
                     orderby piece.PieceID
                     select piece).ToList<Piece>();
         }
 
-        public Piece GetPieceByID(int id) => ctx.Find<Piece>(id);
+        public Piece GetPieceByID(int id) => Context.Find<Piece>(id);
 
-        public Part GetPartByID(int id) => ctx.Find<Part>(id);
+        public Part GetPartByID(int id) => Context.Find<Part>(id);
 
         public Sheet GetSheet(Piece piece, Part part)
         {
-            return (from sheet in ctx.Sheet
+            return (from sheet in Context.Sheet
                     where sheet.Piece.PieceID == piece.PieceID && sheet.Part.PartID == part.PartID
                     select sheet).SingleOrDefault();
         }
 
         #endregion
 
+        #region Finalization
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing) => ctx.Dispose();
+        protected virtual void Dispose(bool disposing) => Context.Dispose();
 
-        ~ZebraDBManager() => Dispose(false);
+        ~ZebraDBManager() => Dispose(false); 
+        #endregion
     }
 }
