@@ -5,13 +5,13 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Konsolenanwendung", "Konsolenanwendung\Konsolenanwendung.csproj", "{A161CCA6-3D8E-4E91-AE1C-B9CBB0240581}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library", "Library\Library.csproj", "{548CBAF1-D288-41A0-A810-C3B1E632C0CD}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreLibrary", "CoreLibrary\CoreLibrary.csproj", "{5B481211-81BA-4F46-8B95-87232E8E6CFA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestProject1", "UnitTestProject1\UnitTestProject1.csproj", "{AEDEAF6E-FBDF-4085-A18E-7C2E6CF7B52A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archiving", "Archiving\Archiving.csproj", "{573A8553-4C91-44A9-BDB3-9379FE49D88D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Archiving", "Archiving\Archiving.csproj", "{573A8553-4C91-44A9-BDB3-9379FE49D88D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZebraDesktop", "ZebraDesktop\ZebraDesktop.csproj", "{E1E7F1E8-F361-410C-9D76-1A1823DECD62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		{A161CCA6-3D8E-4E91-AE1C-B9CBB0240581}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A161CCA6-3D8E-4E91-AE1C-B9CBB0240581}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A161CCA6-3D8E-4E91-AE1C-B9CBB0240581}.Release|Any CPU.Build.0 = Release|Any CPU
-		{548CBAF1-D288-41A0-A810-C3B1E632C0CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{548CBAF1-D288-41A0-A810-C3B1E632C0CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{548CBAF1-D288-41A0-A810-C3B1E632C0CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{548CBAF1-D288-41A0-A810-C3B1E632C0CD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5B481211-81BA-4F46-8B95-87232E8E6CFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5B481211-81BA-4F46-8B95-87232E8E6CFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B481211-81BA-4F46-8B95-87232E8E6CFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{573A8553-4C91-44A9-BDB3-9379FE49D88D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{573A8553-4C91-44A9-BDB3-9379FE49D88D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{573A8553-4C91-44A9-BDB3-9379FE49D88D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1E7F1E8-F361-410C-9D76-1A1823DECD62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1E7F1E8-F361-410C-9D76-1A1823DECD62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1E7F1E8-F361-410C-9D76-1A1823DECD62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1E7F1E8-F361-410C-9D76-1A1823DECD62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
