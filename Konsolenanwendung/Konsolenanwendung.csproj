@@ -17,7 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Archiving\Archiving.csproj" />
     <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj" />
-    <ProjectReference Include="..\Library\Library.csproj" />
   </ItemGroup>
 
 </Project>
