@@ -10,6 +10,7 @@
     <DockPanel LastChildFill="True">
         <Menu IsMainMenu="True" DockPanel.Dock="Top">
             <MenuItem Header="Datei">
+                <MenuItem x:Name="mitm_NewConfig" Header="Neue Konfiguration" Click="mitm_NewConfig_Click"></MenuItem>
                 <MenuItem x:Name="mitm_LoadConfig" Header="Konfiguration laden" Click="mitm_LoadConfig_Click"></MenuItem>
                 <MenuItem x:Name="mitm_UnloadConfig" Header="Konfiguration schließen" Click="mitm_UnloadConfig_Click"></MenuItem>
                 <Separator></Separator>

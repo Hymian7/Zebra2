@@ -82,5 +82,13 @@ namespace ZebraDesktop
                 MessageBox.Show(ex.Message, "Fehler beim Laden der Konfiguration");
             }
         }
+
+        private void btnNewConfig_Click(object sender, RoutedEventArgs e)
+        {
+            frmNewConfig dlg = new frmNewConfig();
+
+            dlg.Show();
+
+        }
     }
 }

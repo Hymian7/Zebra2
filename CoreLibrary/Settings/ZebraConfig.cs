@@ -52,8 +52,9 @@ namespace Zebra.Library
         }
 
         /// <summary>
-        /// Speichert die ZebraConfig-Instanz als .xml im angegebenen Pfad ab
+        /// Speichert die ZebraConfig-Instanz als .xml im angegebenen Pfad ab.
         /// </summary>
+        /// <param name="_path">Pfad zum Speichern der Config. Der Name der Config und die Dateiendung werden automatisch angefügt.</param>
         /// <returns>Gibt bei Erfolg true und im Falle eine Exception false zurück.</returns>
         public bool Serialize(string _path)
         {

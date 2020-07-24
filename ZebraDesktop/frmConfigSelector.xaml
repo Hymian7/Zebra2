@@ -22,7 +22,7 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" HorizontalAlignment="Left">
-                <Button x:Name="btnNewConfig" Margin="0,0" MinWidth="80" IsEnabled="False">Neu</Button>
+                <Button x:Name="btnNewConfig" Margin="0,0" MinWidth="80" IsEnabled="True" Click="btnNewConfig_Click">Neu</Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
                 <Button x:Name="btnCancel" Margin="10,0" MinWidth="80" Click="btnCancel_Click" IsCancel="True">Abbrechen</Button>

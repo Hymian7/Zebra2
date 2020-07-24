@@ -55,9 +55,13 @@ namespace Zebra.Library
 
     public class SQLiteCredentials : DatabaseCredentials
     {
-        public SQLiteCredentials()
-        {
+        public string Path { get; set; }
 
+        public SQLiteCredentials() { }
+
+        public SQLiteCredentials(string _path)
+        {
+            Path = _path;
         }
     }
 }

@@ -72,5 +72,10 @@ namespace ZebraDesktop
 
             MessageBox.Show("Konfiguration erfolgreich geschlossen", "Konfiguration geschlossen");
         }
+
+        private void mitm_NewConfig_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
