@@ -40,14 +40,14 @@ namespace Zebra.Library
             SetDefaults();
             ConfigName = _name;
         }
-        public ZebraConfig(string _name, DatabaseProvider _databaseprovider, DatabaseCredentials _databaseCredentials, ArchiveType archiveType, ArchiveCredentials archiveCredentials)
+        public ZebraConfig(string _name, DatabaseProvider _databaseprovider, DatabaseCredentials _databaseCredentials, ArchiveType _archiveType, ArchiveCredentials _archiveCredentials)
         {
             SetDefaults();
             ConfigName = _name;
             DatabaseProvider = _databaseprovider;
             DatabaseCredentials = _databaseCredentials;
-            ArchiveType = archiveType;
-            ArchiveCredentials = ArchiveCredentials;
+            ArchiveType = _archiveType;
+            ArchiveCredentials = _archiveCredentials;
                        
         }
 

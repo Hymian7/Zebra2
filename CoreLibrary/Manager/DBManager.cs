@@ -23,7 +23,23 @@ namespace Zebra.Library
             }
             else this.ZebraConfig = ZebraConfig.FromXML("..\\..\\..\\..\\CoreLibrary\\Zebra2.zebraconfig");
 
-            this.Context = new MySQLZebraContext(this.ZebraConfig);
+
+
+            switch (this.ZebraConfig.DatabaseProvider)
+            {
+                case DatabaseProvider.MySQL:
+                    this.Context = new MySQLZebraContext(this.ZebraConfig);
+                    break;
+                case DatabaseProvider.Acces:
+                    throw new NotImplementedException();
+                    break;
+                case DatabaseProvider.SQLite:
+                    this.Context = new SQLiteZebraContext(this.ZebraConfig);
+                    break;
+                default:
+                    break;
+            }
+            
             this.Archive = new LocalArchive(ZebraConfig.ArchiveCredentials as LocalArchiveCredentials);
             Context.Database.EnsureCreated();
         }
@@ -31,8 +47,7 @@ namespace Zebra.Library
         public ZebraDBManager(ZebraConfig ZebraConf)
         {
             ZebraConfig = ZebraConf;
-            this.Context = new MySQLZebraContext(this.ZebraConfig);
-            Context.Database.EnsureCreated();
+            
 
             // Setup Context
             switch (ZebraConf.DatabaseProvider)
@@ -49,6 +64,8 @@ namespace Zebra.Library
                 default:
                     throw new Exception("Invalid Database Type in Config File");
             }
+
+            Context.Database.EnsureCreated();
 
             // Setup Archive
             switch (ZebraConf.ArchiveType)
