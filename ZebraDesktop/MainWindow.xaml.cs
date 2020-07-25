@@ -25,7 +25,7 @@ namespace ZebraDesktop
         {
             if (currentApp.ZebraConfig == null)
             {
-                //SelectConfig();
+                SelectConfig();
             }
         }
 
@@ -39,34 +39,53 @@ namespace ZebraDesktop
         private void SelectConfig()
         {
             ConfigSelector frmConfigSelector = new ConfigSelector();
+            frmConfigSelector.Owner = this;
+
             frmConfigSelector.ShowDialog();
+
+            if (!(currentApp.ZebraConfig == null))
+            {
+                UnloadConfig();
+            }
 
             if (frmConfigSelector.DialogResult == true)
             {
-                currentApp.ZebraConfig = frmConfigSelector.SelectedConfiguration;
-
-                Binding b = new Binding
-                {
-                    Source = currentApp.ZebraConfig.ConfigName,
-                    Mode = BindingMode.OneWay,
-                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-                };
-
-                lbl_ConfigName.SetBinding(Label.ContentProperty, b);
-
-
-                //Load Pieces Page
-                PiecesPage pagePieces = new PiecesPage(currentApp.Manager.GetAllPieces());
-                tiPiecesFrame.Content = pagePieces;
-                tcViews.IsEnabled = true;
-
-                MessageBox.Show($"Konfigruation '{currentApp.ZebraConfig.ConfigName}' erfolgreich geladen");
+                LoadConfig(frmConfigSelector.SelectedConfiguration);
             }
+        }
+
+        private void LoadConfig(ZebraConfig conf)
+        {
+            currentApp.ZebraConfig = conf;
+
+            Binding b = new Binding
+            {
+                Source = currentApp.ZebraConfig.ConfigName,
+                Mode = BindingMode.OneWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            };
+
+            lbl_ConfigName.SetBinding(Label.ContentProperty, b);
+
+
+            //Load Pieces Page
+            PiecesPage pagePieces = new PiecesPage(currentApp.Manager.GetAllPieces());
+            tiPiecesFrame.Content = pagePieces;
+            tcViews.IsEnabled = true;
+
+            MessageBox.Show($"Konfigruation '{currentApp.ZebraConfig.ConfigName}' erfolgreich geladen");
         }
 
         private void mitm_UnloadConfig_Click(object sender, RoutedEventArgs e)
         {
+            UnloadConfig();
+        }
+
+        private void UnloadConfig()
+        {
             currentApp.ZebraConfig = null;
+
+            tiPiecesFrame.Content = null;
 
             lbl_ConfigName.Content = "Keine Konfiguration geladen.";
 
@@ -75,7 +94,8 @@ namespace ZebraDesktop
 
         private void mitm_NewConfig_Click(object sender, RoutedEventArgs e)
         {
-
+            frmNewConfig dlg = new frmNewConfig();
+            dlg.Show();
         }
     }
 }

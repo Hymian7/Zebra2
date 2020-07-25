@@ -27,6 +27,30 @@ namespace ZebraDesktop
             SelectedConfiguration = null;
         }
 
+        private void frmConfigSelector_Loaded(object sender, RoutedEventArgs e)
+        {
+            GetConfigs();
+
+        }
+
+        private void GetConfigs()
+        {
+            lvConfigs.Items.Clear();
+            
+            var configs = Directory.GetFiles("configs", "*.zebraconfig");
+            List<FileInfo> files = new List<FileInfo>();
+
+            foreach (var direntry in configs)
+            {
+                files.Add(new FileInfo(direntry));
+            }
+
+            foreach (var file in files)
+            {
+                lvConfigs.Items.Add(file);
+            }
+        }
+
         private void btnLoad_Click(object sender, RoutedEventArgs e)
         {
             if (lvConfigs.SelectedIndex != -1)
@@ -42,22 +66,6 @@ namespace ZebraDesktop
             Close();
         }
 
-        private void frmConfigSelector_Loaded(object sender, RoutedEventArgs e)
-        {
-            var configs = Directory.GetFiles("configs", "*.zebraconfig");
-            List<FileInfo> files = new List<FileInfo>();
-
-            foreach (var direntry in configs)
-            {
-                files.Add(new FileInfo(direntry));                
-            }
-
-            foreach (var file in files)
-            {
-                lvConfigs.Items.Add(file);
-            }
-
-        }
 
         private void lvConfigs_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -86,8 +94,10 @@ namespace ZebraDesktop
         private void btnNewConfig_Click(object sender, RoutedEventArgs e)
         {
             frmNewConfig dlg = new frmNewConfig();
+            dlg.Owner = this;
+            dlg.ShowDialog();
+            GetConfigs();
 
-            dlg.Show();
 
         }
     }

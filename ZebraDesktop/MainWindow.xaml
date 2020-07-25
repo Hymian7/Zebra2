@@ -33,7 +33,7 @@
         
         <TabControl DockPanel.Dock="Top" Height="Auto" IsEnabled="False" Name="tcViews">
             <TabItem Name="tiPieces" Header="Notensätze">
-                <Frame Name="tiPiecesFrame"></Frame>
+                <Frame Name="tiPiecesFrame" NavigationUIVisibility="Hidden"></Frame>
             </TabItem>
             <TabItem Header="Stimmen"></TabItem>
             <TabItem Header="Verzeichnisse"></TabItem>
