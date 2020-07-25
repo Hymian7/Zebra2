@@ -10,10 +10,11 @@
 
     <StackPanel x:Name="page_Pieces" Loaded="page_Pieces_Loaded">
         <Label  Margin="10,10,10,0" Content="Suchen:"></Label>
-        <TextBox Height="20" Margin="10,0,10,10"></TextBox>
+        <TextBox x:Name="tbFilter" Height="20" Margin="10,0,10,10" TextChanged="tbFilter_TextChanged"></TextBox>
         <ListView Name="lvPieces" Margin="10,0,10,10">
             <ListView.View>
                 <GridView>
+                    <GridViewColumn Width="Auto" Header="ID" DisplayMemberBinding="{Binding Path=PieceID}"></GridViewColumn>
                     <GridViewColumn Width="150" Header="Titel" DisplayMemberBinding="{Binding Path=Name}"></GridViewColumn>
                     <GridViewColumn Width="150" Header="Arrangeur" DisplayMemberBinding="{Binding Path=Arranger}"></GridViewColumn>
                 </GridView>
