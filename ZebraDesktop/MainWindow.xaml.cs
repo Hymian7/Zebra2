@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Data;
 using Zebra.Library;
+using ZebraDesktop.Forms;
 
 namespace ZebraDesktop
 {
@@ -36,6 +37,19 @@ namespace ZebraDesktop
             SelectConfig();
         }
 
+        private void mitm_UnloadConfig_Click(object sender, RoutedEventArgs e)
+        {
+            UnloadConfig();
+        }
+        private void mitm_NewConfig_Click(object sender, RoutedEventArgs e)
+        {
+            frmNewConfig dlg = new frmNewConfig();
+            dlg.Show();
+        }
+       
+        /// <summary>
+        /// Opens Config Selector Dialog and Loads new config
+        /// </summary>
         private void SelectConfig()
         {
             ConfigSelector frmConfigSelector = new ConfigSelector();
@@ -54,10 +68,15 @@ namespace ZebraDesktop
             }
         }
 
+        /// <summary>
+        /// Loads data from the database in the selected configuration
+        /// </summary>
+        /// <param name="conf"></param>
         private void LoadConfig(ZebraConfig conf)
         {
             currentApp.ZebraConfig = conf;
 
+            //Set Bindung for Status strip label
             Binding b = new Binding
             {
                 Source = currentApp.ZebraConfig.ConfigName,
@@ -71,14 +90,15 @@ namespace ZebraDesktop
             //Load Pieces Page
             PiecesPage pagePieces = new PiecesPage(currentApp.Manager.GetAllPieces());
             tiPiecesFrame.Content = pagePieces;
+
+
+            //Load Parts Page
+            PartsPage pageParts = new PartsPage(currentApp.Manager.GetAllParts());
+            tiPartsFrame.Content = pageParts;
+
+
             tcViews.IsEnabled = true;
-
-            MessageBox.Show($"Konfigruation '{currentApp.ZebraConfig.ConfigName}' erfolgreich geladen");
-        }
-
-        private void mitm_UnloadConfig_Click(object sender, RoutedEventArgs e)
-        {
-            UnloadConfig();
+            //MessageBox.Show($"Konfigruation '{currentApp.ZebraConfig.ConfigName}' erfolgreich geladen");
         }
 
         private void UnloadConfig()
@@ -92,10 +112,5 @@ namespace ZebraDesktop
             MessageBox.Show("Konfiguration erfolgreich geschlossen", "Konfiguration geschlossen");
         }
 
-        private void mitm_NewConfig_Click(object sender, RoutedEventArgs e)
-        {
-            frmNewConfig dlg = new frmNewConfig();
-            dlg.Show();
-        }
     }
 }

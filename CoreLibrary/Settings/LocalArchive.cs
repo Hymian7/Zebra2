@@ -13,7 +13,7 @@ namespace Zebra.Library
 
         public override FileInfo GetFile(Sheet sheet)
         {
-            FileInfo _file = new FileInfo(Path.FullName + "\\" + sheet.Piece.PieceID + "\\" + sheet.SheetID + ".pdf");
+            FileInfo _file = new FileInfo(Path.FullName + "\\" + sheet.SheetID.ToString("00000000") + ".pdf");
 
             if (_file.Exists)
             {

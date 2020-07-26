@@ -31,11 +31,13 @@
             </StatusBarItem>
         </StatusBar>
         
-        <TabControl DockPanel.Dock="Top" Height="Auto" IsEnabled="False" Name="tcViews">
+        <TabControl DockPanel.Dock="Top" Height="Auto" IsEnabled="True" Name="tcViews">
             <TabItem Name="tiPieces" Header="Notensätze">
                 <Frame Name="tiPiecesFrame" NavigationUIVisibility="Hidden"></Frame>
             </TabItem>
-            <TabItem Header="Stimmen"></TabItem>
+            <TabItem Name="tiParts" Header="Stimmen">
+                <Frame Name="tiPartsFrame" NavigationUIVisibility="Hidden"></Frame>
+            </TabItem>                
             <TabItem Header="Verzeichnisse"></TabItem>
         </TabControl>
 

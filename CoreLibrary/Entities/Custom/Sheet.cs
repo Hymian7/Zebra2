@@ -1,5 +1,6 @@
 ﻿using System;
 
+
 namespace Zebra.Library
 {
     partial class Sheet
@@ -18,6 +19,11 @@ namespace Zebra.Library
             {
                 return false;
             }
+        }
+
+       public String DocumentPath(ZebraDBManager manager)
+        {
+            return manager.Archive.GetFile(this).FullName;
         }
 
     }
