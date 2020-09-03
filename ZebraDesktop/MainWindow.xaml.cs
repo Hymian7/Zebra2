@@ -19,6 +19,8 @@ namespace ZebraDesktop
             InitializeComponent();
 
             currentApp = (App)Application.Current;
+            
+            //TODO: find out why manager is always null
             manager = currentApp.Manager;
         }
 

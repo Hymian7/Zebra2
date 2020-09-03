@@ -20,12 +20,18 @@ namespace ZebraDesktop
     {
         public Piece CurrentPiece { get; private set; }
 
+        private App currentApp;
+        private ZebraDBManager manager;
+
 
         public frmPieceDetail(Piece _piece)
         {
             InitializeComponent();
 
-            CurrentPiece = _piece;
+            currentApp = (App)Application.Current;
+            manager = currentApp.Manager;
+
+            CurrentPiece = manager.GetPieceByID(_piece.PieceID);
 
             this.DataContext = CurrentPiece;
 
@@ -35,7 +41,7 @@ namespace ZebraDesktop
             Binding bdgSheets = new Binding { 
             Source = CurrentPiece.Sheet,
             Mode = BindingMode.OneWay,
-            UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            UpdateSourceTrigger = UpdateSourceTrigger.Default
             };
 
             lvSheets.SetBinding(ListView.ItemsSourceProperty, bdgSheets);
