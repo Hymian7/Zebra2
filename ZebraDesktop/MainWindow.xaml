@@ -19,9 +19,17 @@
             <MenuItem Header="Bearbeiten"></MenuItem>
         </Menu>
         <ToolBarTray DockPanel.Dock="Top">
-            <ToolBar>
-                <Button Width="Auto" Margin="15,0,15,0">Hallo</Button>
-                <TextBox Width="100" Margin="10,0,15,0"></TextBox>
+            <ToolBar Height="35">
+                <Label VerticalAlignment="Center" Width="Auto">Notensätze</Label>
+                <Button x:Name="tbButtonAddPiece" VerticalAlignment="Center" Click="tbButtonAddPiece_Click">
+                    <Image Source="/Icons/add.png" Height="Auto"></Image>
+                </Button>
+                <Button x:Name="tbButtonEditPiece" VerticalAlignment="Center" IsEnabled="False" Click="tbButtonEditPiece_Click">
+                    <Image Source="/Icons/edit.png" Height="Auto"></Image>
+                </Button>
+                <Button x:Name="tbButtonDeletePiece" VerticalAlignment="Center" IsEnabled="False" Click="tbButtonDeletePiece_Click">
+                    <Image Source="/Icons/delete.png" Height="Auto" Stretch="Fill"></Image>
+                </Button>
             </ToolBar>
         </ToolBarTray>
 

@@ -15,34 +15,34 @@ namespace Zebra.Library
         public ZebraContext Context { get; private set; }
         public ZebraArchive Archive { get; private set; }
 
-        public ZebraDBManager()
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                this.ZebraConfig = ZebraConfig.FromXML("Zebra2.zebraconfig");
-            }
-            else this.ZebraConfig = ZebraConfig.FromXML("..\\..\\..\\..\\CoreLibrary\\Zebra2.zebraconfig");
+        //public ZebraDBManager()
+        //{
+        //    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        //    {
+        //        this.ZebraConfig = ZebraConfig.FromXML("Zebra2.zebraconfig");
+        //    }
+        //    else this.ZebraConfig = ZebraConfig.FromXML("..\\..\\..\\..\\CoreLibrary\\Zebra2.zebraconfig");
 
 
 
-            switch (this.ZebraConfig.DatabaseProvider)
-            {
-                case DatabaseProvider.MySQL:
-                    this.Context = new MySQLZebraContext(this.ZebraConfig);
-                    break;
-                case DatabaseProvider.Acces:
-                    throw new NotImplementedException();
-                    break;
-                case DatabaseProvider.SQLite:
-                    this.Context = new SQLiteZebraContext(this.ZebraConfig);
-                    break;
-                default:
-                    break;
-            }
+        //    switch (this.ZebraConfig.DatabaseProvider)
+        //    {
+        //        case DatabaseProvider.MySQL:
+        //            this.Context = new MySQLZebraContext(this.ZebraConfig);
+        //            break;
+        //        case DatabaseProvider.Acces:
+        //            throw new NotImplementedException();
+        //            break;
+        //        case DatabaseProvider.SQLite:
+        //            this.Context = new SQLiteZebraContext(this.ZebraConfig);
+        //            break;
+        //        default:
+        //            break;
+        //    }
             
-            this.Archive = new LocalArchive(ZebraConfig.ArchiveCredentials as LocalArchiveCredentials);
-            Context.Database.EnsureCreated();
-        }
+        //    this.Archive = new LocalArchive(ZebraConfig.ArchiveCredentials as LocalArchiveCredentials);
+        //    Context.Database.EnsureCreated();
+        //}
         
         public ZebraDBManager(ZebraConfig ZebraConf)
         {

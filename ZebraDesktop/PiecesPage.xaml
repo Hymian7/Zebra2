@@ -11,7 +11,7 @@
     <StackPanel x:Name="page_Pieces" Loaded="page_Pieces_Loaded">
         <Label  Margin="10,10,10,0" Content="Suchen:"></Label>
         <TextBox x:Name="tbFilter" Height="20" Margin="10,0,10,10" TextChanged="tbFilter_TextChanged"></TextBox>
-        <ListView Name="lvPieces" Margin="10,0,10,10" MouseDoubleClick="lvPieces_MouseDoubleClick">
+        <ListView Name="lvPieces" Margin="10,0,10,10" MouseDoubleClick="lvPieces_MouseDoubleClick" VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True" MaxHeight="500px">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="Auto" Header="ID" DisplayMemberBinding="{Binding Path=PieceID}"></GridViewColumn>

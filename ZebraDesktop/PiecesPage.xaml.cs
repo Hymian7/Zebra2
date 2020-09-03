@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -19,23 +20,23 @@ namespace ZebraDesktop.Forms
     /// </summary>
     public partial class PiecesPage : Page
     {
-        public List<Piece> AllPieces { get; set; }
-
-        public PiecesPage(List<Piece> _pieces)
-        {            
+        public PiecesPage(ZebraContext context)
+        {
             InitializeComponent();
-            this.AllPieces = _pieces;
+
+            context.Piece.Load();
 
             //Set Binding for Listview
             Binding b = new Binding
             {
-                Source = AllPieces,
+                Source = context.Piece.Local.ToObservableCollection(),
                 Mode = BindingMode.OneWay,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                UpdateSourceTrigger = UpdateSourceTrigger.Default
             };
 
+
             lvPieces.SetBinding(ListView.ItemsSourceProperty, b);
-            
+
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lvPieces.ItemsSource);
             view.Filter = UserFilter;
         }

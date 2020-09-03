@@ -76,7 +76,7 @@ namespace ZebraDesktop
         {
             currentApp.ZebraConfig = conf;
 
-            //Set Bindung for Status strip label
+            //Set Binding for Status strip label
             Binding b = new Binding
             {
                 Source = currentApp.ZebraConfig.ConfigName,
@@ -88,13 +88,17 @@ namespace ZebraDesktop
 
 
             //Load Pieces Page
-            PiecesPage pagePieces = new PiecesPage(currentApp.Manager.GetAllPieces());
+            PiecesPage pagePieces = new PiecesPage(currentApp.Manager.Context);
             tiPiecesFrame.Content = pagePieces;
 
 
             //Load Parts Page
-            PartsPage pageParts = new PartsPage(currentApp.Manager.GetAllParts());
+            PartsPage pageParts = new PartsPage(currentApp.Manager.Context);
             tiPartsFrame.Content = pageParts;
+
+
+            //Add Handlers for Toolbar
+            pagePieces.lvPieces.SelectionChanged += AdjustPieceToolbarStatus;
 
 
             tcViews.IsEnabled = true;
@@ -112,5 +116,53 @@ namespace ZebraDesktop
             MessageBox.Show("Konfiguration erfolgreich geschlossen", "Konfiguration geschlossen");
         }
 
+        private void tbButtonAddPiece_Click(object sender, RoutedEventArgs e)
+        {
+            frmNewPiece frm = new frmNewPiece();
+            frm.Show();
+        }
+
+        /// <summary>
+        /// Adjusts state of Piece Toolbar Tray depending on the selection in the lvPieces
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AdjustPieceToolbarStatus(object sender, RoutedEventArgs e)
+        {            
+            if ((sender as ListView).SelectedIndex >= 0)
+            {
+                tbButtonEditPiece.IsEnabled = true;
+                tbButtonDeletePiece.IsEnabled = true;
+            }
+            else
+            {
+                tbButtonEditPiece.IsEnabled = false;
+                tbButtonDeletePiece.IsEnabled = false;
+            }
+        }
+
+        private void tbButtonEditPiece_Click(object sender, RoutedEventArgs e)
+        {
+            frmPieceDetail frm = new frmPieceDetail((tiPiecesFrame.Content as PiecesPage).lvPieces.SelectedItem as Piece);
+            frm.Show();
+        }
+
+        private void tbButtonDeletePiece_Click(object sender, RoutedEventArgs e)
+        {
+            var pc = (tiPiecesFrame.Content as PiecesPage).lvPieces.SelectedItem as Piece;
+            switch (MessageBox.Show($"Möchten Sie den Notensatz #{pc.PieceID} - {pc.Name} - {pc.Arranger} und alle zugehörigen Notenblätter wirklich löschen? Die Änderung kann nicht rückgängig gemacht werden!", "Löschen bestätigen", MessageBoxButton.YesNo, MessageBoxImage.Warning))
+            {
+                case MessageBoxResult.Yes:
+
+                    foreach (Sheet sht in pc.Sheet)
+                    {
+                        currentApp.Manager.Context.Remove<Sheet>(sht);
+                    }
+
+                    currentApp.Manager.Context.Remove<Piece>(pc);
+
+                    break;
+            }
+        }
     }
 }

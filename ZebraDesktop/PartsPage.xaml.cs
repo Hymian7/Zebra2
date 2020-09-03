@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -19,17 +20,16 @@ namespace ZebraDesktop
     /// </summary>
     public partial class PartsPage : Page
     {
-        public List<Part> AllParts { get; set; }
-
-        public PartsPage(List<Part> _allparts)
+        public PartsPage(ZebraContext context)
         {
             InitializeComponent();
-            this.AllParts = _allparts;
+
+            context.Part.Load();
 
             //Set Binding for Listview
             Binding b = new Binding
             {
-                Source = AllParts,
+                Source = context.Part.Local.ToObservableCollection(),
                 Mode = BindingMode.OneWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
