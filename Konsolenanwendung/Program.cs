@@ -128,7 +128,7 @@ namespace Konsolenanwendung
 
         static void Main(string[] args)
         {
-            manager =  new ZebraDBManager();
+            manager =  new ZebraDBManager(ZebraConfig.FromXML(@".\"));
             var parser = new ZebraCommandParser(cmdlist2);
 
             Console.WriteLine("Zebra Console");

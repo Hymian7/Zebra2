@@ -17,6 +17,10 @@
                 <MenuItem x:Name="mitm_Exit" Header="Programm beenden" Click="mitm_Exit_Click"></MenuItem>
             </MenuItem>
             <MenuItem Header="Bearbeiten"></MenuItem>
+            <MenuItem Header="Importieren">
+                <MenuItem x:Name="mitm_ImportPdfBatch" Header="PDF-Stapel importieren" Click="mitm_ImportPdfBatch_Click">                   
+                </MenuItem>
+            </MenuItem>
         </Menu>
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar Height="35">

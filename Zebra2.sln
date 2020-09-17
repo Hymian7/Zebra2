@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestProject1", "UnitTes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Archiving", "Archiving\Archiving.csproj", "{573A8553-4C91-44A9-BDB3-9379FE49D88D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZebraDesktop", "ZebraDesktop\ZebraDesktop.csproj", "{E1E7F1E8-F361-410C-9D76-1A1823DECD62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZebraDesktop", "ZebraDesktop\ZebraDesktop.csproj", "{E1E7F1E8-F361-410C-9D76-1A1823DECD62}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfiumLight", "D:\Dokumente\Visual Studio 2019\Projects\PDFium Light\PdfiumLight.csproj", "{7114A63D-CD30-4B65-9BB5-2251363ABB42}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{E1E7F1E8-F361-410C-9D76-1A1823DECD62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1E7F1E8-F361-410C-9D76-1A1823DECD62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1E7F1E8-F361-410C-9D76-1A1823DECD62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7114A63D-CD30-4B65-9BB5-2251363ABB42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7114A63D-CD30-4B65-9BB5-2251363ABB42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7114A63D-CD30-4B65-9BB5-2251363ABB42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7114A63D-CD30-4B65-9BB5-2251363ABB42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

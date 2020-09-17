@@ -166,5 +166,11 @@ namespace ZebraDesktop
                     break;
             }
         }
+
+        private void mitm_ImportPdfBatch_Click(object sender, RoutedEventArgs e)
+        {
+            frmPdfBatchImporter frm = new frmPdfBatchImporter(currentApp.Manager.Context);
+            frm.Show();
+        }
     }
 }
