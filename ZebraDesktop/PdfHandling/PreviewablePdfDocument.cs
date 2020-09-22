@@ -32,16 +32,17 @@ namespace ZebraDesktop
             }
         }
 
-        private async Task InitializeAsync()
+        private Task InitializeAsync()
         {
-            Pages = new List<PreviewablePdfPage>();
+            return Task.Run(() => {
+                Pages = new List<PreviewablePdfPage>();
 
-            //Add pages to Document
-            for (int i = 0; i < PageCount; i++)
-            {
-                Pages.Add(await GetPreviewablePageAsync(i));
-            }
-        
+                //Add pages to Document
+                for (int i = 0; i < PageCount; i++)
+                {
+                    Pages.Add(GetPreviewablePage(i));
+                }
+            });
         }
 
         /// <summary>
@@ -51,17 +52,8 @@ namespace ZebraDesktop
         /// <returns>A new PdfPage</returns>
         private PreviewablePdfPage GetPreviewablePage(int page) => new PreviewablePdfPage(_document, _form, page);
 
-        private async Task<PreviewablePdfPage> GetPreviewablePageAsync(int page)
-        {                        
-            return await PreviewablePdfPage.CreateAsync(_document, _form, page);
-        }
 
-        public static async Task<PreviewablePdfDocument> LoadAsync(string filename)
-        {
-            var doc = new PreviewablePdfDocument(filename);
-            await doc.InitializeAsync();
-            return doc;
 
-        }
+       
     }
 }
