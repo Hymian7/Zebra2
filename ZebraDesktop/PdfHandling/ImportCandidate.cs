@@ -24,14 +24,17 @@ namespace ZebraDesktop
         }
 
         private bool isAssigned;
-        public bool IsAssigned {
-            get { return isAssigned; }
-            set { isAssigned = value; NotifyPropertyChanged(); } }
+        public bool IsAssigned 
+        {
+            get { return (assignedPiece != null && assignedPart != null); }
+        }
+            //set { isAssigned = value; NotifyPropertyChanged(); } }
         
         private Piece assignedPiece;
         public Piece AssignedPiece {
             get { return assignedPiece; }
-            set { assignedPiece = value; NotifyPropertyChanged(); } }
+            set { assignedPiece = value; NotifyPropertyChanged(); }
+        }
 
 
         private Part assignedPart;
@@ -46,7 +49,7 @@ namespace ZebraDesktop
         {
             PageNumber = _num;
             Thumbnail = _thumb;
-            IsAssigned = false;
+            //IsAssigned = false;
             assignedPiece = null;
             assignedPart = null;
 
@@ -59,10 +62,7 @@ namespace ZebraDesktop
         // parameter causes the property name of the caller to be substituted as an argument.
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
