@@ -79,7 +79,7 @@ namespace ZebraDesktop
 
         private void child_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (child != null)
+            if (child != null && Keyboard.IsKeyDown(Key.LeftCtrl))
             {
                 var st = GetScaleTransform(child);
                 var tt = GetTranslateTransform(child);
@@ -101,6 +101,12 @@ namespace ZebraDesktop
                 tt.X = absoluteX - relative.X * st.ScaleX;
                 tt.Y = absoluteY - relative.Y * st.ScaleY;
             }
+            else if (child != null)
+            {
+                var tt = GetTranslateTransform(child);
+
+                tt.Y += e.Delta;
+            }
         }
 
         private void child_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -110,7 +116,7 @@ namespace ZebraDesktop
                 var tt = GetTranslateTransform(child);
                 start = e.GetPosition(this);
                 origin = new Point(tt.X, tt.Y);
-                this.Cursor = Cursors.Hand;
+                this.Cursor = Cursors.SizeAll;
                 child.CaptureMouse();
             }
         }
