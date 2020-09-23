@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -47,7 +48,7 @@ namespace ZebraDesktop
 
 
 
-        private void btnOpen_Click(object sender, RoutedEventArgs e)
+        private async void btnOpen_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
 
@@ -61,9 +62,12 @@ namespace ZebraDesktop
             {
                 lbThumbnails.ItemsSource = null;
 
-                batch = new ImportBatch(ofd.FileName);
+                this.Cursor = Cursors.Wait;
+                await Task.Run(()=> batch = new ImportBatch(ofd.FileName));
 
                 lbThumbnails.ItemsSource = batch.importCandidates;
+
+                this.Cursor = Cursors.Arrow;
 
 
             }
