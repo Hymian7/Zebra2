@@ -16,6 +16,8 @@ namespace Zebra.Library
 
         public ArchiveCredentials ArchiveCredentials { get; set; }
 
+        public string TempDir { get; set; }
+
         public char BarcodeSeperatorChar { get; set; }
         public string DummyIndicator { get; set; }
 
@@ -31,6 +33,7 @@ namespace Zebra.Library
             ArchiveType = ArchiveType.Local;
             DatabaseCredentials = null;
             ArchiveCredentials = null;
+            TempDir = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
             BarcodeSeperatorChar = '#';
             DummyIndicator = "dummy";
         }
@@ -40,7 +43,7 @@ namespace Zebra.Library
             SetDefaults();
             ConfigName = _name;
         }
-        public ZebraConfig(string _name, DatabaseProvider _databaseprovider, DatabaseCredentials _databaseCredentials, ArchiveType _archiveType, ArchiveCredentials _archiveCredentials)
+        public ZebraConfig(string _name, DatabaseProvider _databaseprovider, DatabaseCredentials _databaseCredentials, ArchiveType _archiveType, ArchiveCredentials _archiveCredentials, string _tempDir)
         {
             SetDefaults();
             ConfigName = _name;
@@ -48,6 +51,7 @@ namespace Zebra.Library
             DatabaseCredentials = _databaseCredentials;
             ArchiveType = _archiveType;
             ArchiveCredentials = _archiveCredentials;
+            TempDir = _tempDir;
                        
         }
 

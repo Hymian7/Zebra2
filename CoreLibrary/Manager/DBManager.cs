@@ -97,32 +97,36 @@ namespace Zebra.Library
             return Context.Part.ToList<Part>();
         }
 
-        public void NewPiece(string newname, string newarranger)
+        public Piece NewPiece(string newname, string newarranger)
         {
-            Context.Add<Piece>(Piece.Create(newname, newarranger));
+            var _newpiece = Context.Add<Piece>(Piece.Create(newname, newarranger));
             Context.SaveChanges();
+            return _newpiece.Entity;
         }
-        public void NewPiece(string newname)
+        public Piece NewPiece(string newname)
         {
-            Context.Add<Piece>(Piece.Create(newname));
+            var _newpiece = Context.Add<Piece>(Piece.Create(newname));
             Context.SaveChanges();
-        }
-
-        public void NewPart(string partname)
-        {
-            Context.Add<Part>(Part.Create(partname));
-            Context.SaveChanges();
+            return _newpiece.Entity;
         }
 
-        public void NewSheet(int pieceid, int partid)
+        public Part NewPart(string partname)
         {
-            Context.Add<Sheet>(Sheet.Create(Context.Part.Find(partid), Context.Piece.Find(pieceid)));
+            var newpart = Context.Add<Part>(Part.Create(partname));
             Context.SaveChanges();
+            return newpart.Entity;
         }
 
-        public void StorePDF(FileInfo file, Sheet sheet) => Archive.PushFile(file, sheet);
+        public Sheet NewSheet(int pieceid, int partid)
+        {
+            var newsheet = Context.Add<Sheet>(Sheet.Create(Context.Part.Find(partid), Context.Piece.Find(pieceid)));
+            Context.SaveChanges();
+            return newsheet.Entity;
+        }
 
-        public FileInfo GetPDF(Sheet sheet) => Archive.GetFile(sheet);
+        //public void StorePDF(FileInfo file, Sheet sheet) => Archive.PushFile(file, sheet);
+
+        //public FileInfo GetPDF(Sheet sheet) => Archive.GetFile(sheet);
 
         #region LINQ Queries
 
