@@ -40,12 +40,16 @@ namespace ZebraDesktop
         {
             MessageBox.Show("Einfach Pfad in die Textbox kopieren");
         }
+        private void btnBrowseTempDirPath_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Einfach Pfad in die Textbox kopieren");
+        }
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
             if (!(tbConfigName.Text =="" || tbDBPath.Text == "" || tbArchivePath.Text == ""))
             {
-                Zebra.Library.ZebraConfig newconf = new Zebra.Library.ZebraConfig(tbConfigName.Text, Zebra.Library.DatabaseProvider.SQLite, new Zebra.Library.SQLiteCredentials(tbDBPath.Text), Zebra.Library.ArchiveType.Local, new Zebra.Library.LocalArchiveCredentials(tbArchivePath.Text));
+                Zebra.Library.ZebraConfig newconf = new Zebra.Library.ZebraConfig(tbConfigName.Text, Zebra.Library.DatabaseProvider.SQLite, new Zebra.Library.SQLiteCredentials(tbDBPath.Text), Zebra.Library.ArchiveType.Local, new Zebra.Library.LocalArchiveCredentials(tbArchivePath.Text), tbTempDirPath.Text);
 
                 if (newconf.Serialize(@"F:\GitHub\Zebra2\ZebraDesktop\bin\Debug\netcoreapp3.1\configs"))
                 {
@@ -53,5 +57,6 @@ namespace ZebraDesktop
                 }
             }
         }
+
     }
 }

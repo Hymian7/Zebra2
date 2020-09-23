@@ -53,6 +53,12 @@
             <Button x:Name="btnBrowseArchivePath" Width="80px" HorizontalAlignment="Right" Click="btnBrowseArchivePath_Click">Durchsuchen</Button>
         </StackPanel>
 
+        <Label Margin="20,20,20,0">Pfad zum temporären Arbeitsordner</Label>
+        <StackPanel Margin="20,5,20,0" Orientation="Horizontal" HorizontalAlignment="Stretch">
+            <TextBox Name="tbTempDirPath" Margin="0,0,10,0" Width="484"/>
+            <Button x:Name="btnBrowseTempDirPath" Width="80px" HorizontalAlignment="Right" Click="btnBrowseTempDirPath_Click">Durchsuchen</Button>
+        </StackPanel>
+
 
         <Button x:Name="btnOK" Width="100" Margin="20,20,20,0" Click="btnOK_Click">OK</Button>
     </StackPanel>

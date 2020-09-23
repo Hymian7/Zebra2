@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using PdfiumLight;
 using Zebra.Library;
+using Zebra.PdfHandling;
 
 namespace ZebraDesktop
 {
@@ -64,6 +65,7 @@ namespace ZebraDesktop
 
                 lbThumbnails.ItemsSource = batch.importCandidates;
 
+
             }
         }
 
@@ -71,7 +73,7 @@ namespace ZebraDesktop
         {
             if (lbThumbnails.SelectedIndex != -1)
             {
-                imgPreview.Source = batch.Document.Pages[(lbThumbnails.SelectedItem as ImportCandidate).PageNumber].RenderedPage;
+                imgPreview.Source = batch.Document.Pages[(lbThumbnails.SelectedItem as ImportCandidate).PageNumber].RenderedPage.ConvertToImageSource();
 
                 if ((lbThumbnails.SelectedItem as ImportCandidate).AssignedPart != null)
                 {

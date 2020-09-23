@@ -6,6 +6,10 @@
         xmlns:local="clr-namespace:ZebraDesktop"
         mc:Ignorable="d"
         Title="frmPdfBatchImporter" Height="Auto" Width="Auto" MinWidth="1000" MinHeight="600" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+    <Window.Resources>
+        <local:ImageToBitmapSourceConverter x:Key="ImageConverter"/>
+    </Window.Resources>
+    
     <DockPanel>
         <ToolBar Height="30" Width="Auto" DockPanel.Dock="Top">
             <Border>
@@ -41,7 +45,7 @@
                             <TextBlock x:Name="lblPiece" DockPanel.Dock="Bottom" Width="Auto" HorizontalAlignment="Center" Text="{Binding AssignedPart.Name,FallbackValue=Part not assigned}"></TextBlock>
                             <TextBlock Name="lblPart" DockPanel.Dock="Bottom" Width="Auto" HorizontalAlignment="Center" Margin="0,5,0,0" Text="{Binding AssignedPiece.Name, FallbackValue=Piece not assigned}"></TextBlock>
                             <TextBlock DockPanel.Dock="Left" HorizontalAlignment="Center" Text="{Binding PageNumber}" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,10,0" />
-                            <Image Height="Auto" Width="Auto" Source="{Binding Thumbnail}"/>
+                            <Image Height="Auto" Width="Auto" Source="{Binding Thumbnail, Converter={StaticResource ImageConverter}}"/>
                         </DockPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

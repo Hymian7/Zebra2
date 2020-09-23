@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj" />
+    <ProjectReference Include="..\PdfHandling\PdfHandling.csproj" />
     <ProjectReference Include="D:\Dokumente\Visual Studio 2019\Projects\PDFium Light\PdfiumLight.csproj" />
   </ItemGroup>
 
