@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>Zebra.PdfHandling</RootNamespace>
+    <AssemblyName>Zebra.PdfHandling</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj" />
+    <ProjectReference Include="D:\Dokumente\Visual Studio 2019\Projects\PDFium Light\PdfiumLight.csproj" />
+    <ProjectReference Include="D:\Dokumente\Visual Studio 2019\Projects\PDFtkSharp\PDFtkSharp\PDFtkSharp.csproj" />
+  </ItemGroup>
+
+</Project>

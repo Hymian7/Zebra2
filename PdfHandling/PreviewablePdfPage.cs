@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
-using System.Windows.Media;
 using PdfiumLight;
 
-namespace ZebraDesktop
+namespace Zebra.PdfHandling
 {
     public class PreviewablePdfPage : PdfPage
     {
@@ -19,27 +17,27 @@ namespace ZebraDesktop
             
         }
 
-        private ImageSource _thumbnail;
-        public ImageSource Thumbnail
+        private System.Drawing.Image _thumbnail;
+        public System.Drawing.Image Thumbnail
         {
             get
             {
                 if (_thumbnail == null)
                 {
-                    _thumbnail = Render(300, 0).ConvertToImageSource();
+                    _thumbnail = Render(300, 0);
                     return _thumbnail;
                 }
                 else return _thumbnail;            
             }
 
                 } 
-        private ImageSource _renderedPage;
-        public ImageSource RenderedPage {
+        private System.Drawing.Image _renderedPage;
+        public System.Drawing.Image RenderedPage {
             get
             {
                 if (_renderedPage == null)
                 {
-                    _renderedPage = Render(1500, 0).ConvertToImageSource();
+                    _renderedPage = Render(1500, 0);
                     return _renderedPage;
                 }
                 else return _renderedPage;
