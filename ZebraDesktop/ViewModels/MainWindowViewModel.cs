@@ -116,28 +116,19 @@ namespace ZebraDesktop.ViewModels
         {
             CurrentApp = (App)Application.Current;
 
+            //Setup commands
             LoadConfigCommand = new DelegateCommand(ExecuteLoadConfigCommand, canExecuteLoadConfigCommand);
             UnloadConfigCommand = new DelegateCommand(ExecuteUnloadConfigCommand, canExecuteUnloadConfigCommand);
             NewConfigCommand = new DelegateCommand(ExecuteNewConfigCommand);
             ExitCommand = new DelegateCommand((object obj) => { Application.Current.Shutdown(); });
             AddPieceCommand = new DelegateCommand(ExecuteNewPieceCommand, CanExecuteNewPieceCommand);
-            
-            EditPieceCommand = new DelegateCommand(
-                (object obj) =>
-                {
-                    frmPieceDetail frm = new frmPieceDetail(SelectedPiece);
-                    frm.Show();
-                },
-                (object obj) =>
-                {
-                    return (SelectedPiece != null);
-                });
-
+            EditPieceCommand = new DelegateCommand(ExecuteEditPieceCommand, CanExecuteEditPieceCommand);
             DeletePieceCommand = new DelegateCommand(ExecuteDeletePieceCommand, canExecuteDeletePieceCommand);
             ImportPDFBatchCommand = new DelegateCommand(ExecuteImportPDFBatchCommand, canExecuteImportPDFBatchCommand);
             
         }
 
+        
         #endregion
 
         #region Interfaces
@@ -213,8 +204,21 @@ namespace ZebraDesktop.ViewModels
             frm.Show();
         }
 
+        private bool CanExecuteEditPieceCommand(object obj)
+        {
+            return (SelectedPiece != null);
+        }
+
+        private void ExecuteEditPieceCommand(object obj)
+        {
+            frmPieceDetail frm = new frmPieceDetail(SelectedPiece);
+            frm.Show();
+        }
 
 
+        /// <summary>
+        /// Manually trigger the RaiseCanExecuteChanged method for all DelegateCommands
+        /// </summary>
         private void UpdateButtonStatus()
         {
             foreach (System.Reflection.PropertyInfo prop in this.GetType().GetProperties())

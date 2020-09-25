@@ -21,7 +21,16 @@
                 <Separator></Separator>
                 <MenuItem x:Name="mitm_Exit" Header="Programm beenden" Command="{Binding ExitCommand}"></MenuItem>
             </MenuItem>
-            <MenuItem Header="Bearbeiten"></MenuItem>
+            <MenuItem Header="Bearbeiten">
+                <MenuItem Header="Neuer Notensatz" Command="{Binding AddPieceCommand}"></MenuItem>
+                <MenuItem Header="Notensatz bearbeiten" Command="{Binding EditPieceCommand}"></MenuItem>
+                <MenuItem Header="Notensatz löschen" Command="{Binding DeletePieceCommand}"></MenuItem>
+                <Separator></Separator>
+                <MenuItem Header="Neue Stimme"></MenuItem>
+                <MenuItem Header="Stimme bearbeiten"></MenuItem>
+                <MenuItem Header="Stimme löschen"></MenuItem>
+            </MenuItem>
+            
             <MenuItem Header="Importieren">
                 <MenuItem x:Name="mitm_ImportPdfBatch" Header="PDF-Stapel importieren" Command="{Binding ImportPDFBatchCommand}">                   
                 </MenuItem>
