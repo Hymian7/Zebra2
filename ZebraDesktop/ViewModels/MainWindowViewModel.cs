@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Windows;
 using Zebra.Library;
@@ -35,14 +36,13 @@ namespace ZebraDesktop.ViewModels
             set { _piecesPage = value; NotifyPropertyChanged(); }
         }
 
-        private Piece _selectedPiece;
+        private PiecesPageViewModel _piecesPageViewModel;
 
-        public Piece SelectedPiece
+        public PiecesPageViewModel PiecesPageViewModel
         {
-            get { return _selectedPiece; }
-            set { _selectedPiece = value; NotifyPropertyChanged(); UpdateButtonStatus(); }
+            get { return _piecesPageViewModel; }
+            set { _piecesPageViewModel = value; NotifyPropertyChanged(); }
         }
-
 
         private DelegateCommand _loadConfigCommand;
 
@@ -161,12 +161,12 @@ namespace ZebraDesktop.ViewModels
         }
         private bool canExecuteDeletePieceCommand(object obj)
         {
-            return SelectedPiece != null;
+            return PiecesPageViewModel?.SelectedPiece != null;
         }
 
         private void ExecuteDeletePieceCommand(object obj)
         {
-            var pc = SelectedPiece;
+            var pc = PiecesPageViewModel?.SelectedPiece;
 
             switch (MessageBox.Show($"Möchten Sie den Notensatz #{pc.PieceID} - {pc.Name} - {pc.Arranger} und alle zugehörigen Notenblätter wirklich löschen? Die Änderung kann nicht rückgängig gemacht werden!", "Löschen bestätigen", MessageBoxButton.YesNo, MessageBoxImage.Warning))
             {
@@ -206,12 +206,12 @@ namespace ZebraDesktop.ViewModels
 
         private bool CanExecuteEditPieceCommand(object obj)
         {
-            return (SelectedPiece != null);
+            return (PiecesPageViewModel?.SelectedPiece != null);
         }
 
         private void ExecuteEditPieceCommand(object obj)
         {
-            frmPieceDetail frm = new frmPieceDetail(SelectedPiece);
+            frmPieceDetail frm = new frmPieceDetail(PiecesPageViewModel?.SelectedPiece);
             frm.Show();
         }
 
@@ -250,10 +250,13 @@ namespace ZebraDesktop.ViewModels
                 var conf = frmConfigSelector.SelectedConfiguration;
                 CurrentApp.ZebraConfig = conf;
 
-                PiecesPage = new PiecesPage(CurrentApp.Manager.Context);
-                PiecesPage.DataContext = this;
+                PiecesPageViewModel = new PiecesPageViewModel();
+                //PartsPageViewModel = new PartsPageViewModel();
+
+                PiecesPage = new PiecesPage();
+                PiecesPage.DataContext = PiecesPageViewModel;
                 PartsPage = new PartsPage(CurrentApp.Manager.Context);
-                PartsPage.DataContext = this;
+                PartsPage.DataContext = PiecesPage;
             }
 
             UpdateButtonStatus();

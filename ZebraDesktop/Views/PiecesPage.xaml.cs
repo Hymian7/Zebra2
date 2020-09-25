@@ -20,67 +20,9 @@ namespace ZebraDesktop.Views
     /// </summary>
     public partial class PiecesPage : Page
     {
-        public PiecesPage(ZebraContext context)
+        public PiecesPage()
         {
             InitializeComponent();
-
-            context.Piece.Load();
-
-            //Set Binding for Listview
-            Binding b = new Binding
-            {
-                Source = context.Piece.Local.ToObservableCollection(),
-                Mode = BindingMode.OneWay,
-                UpdateSourceTrigger = UpdateSourceTrigger.Default
-            };
-
-
-            lvPieces.SetBinding(ListView.ItemsSourceProperty, b);
-
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lvPieces.ItemsSource);
-            view.Filter = UserFilter;
-        }
-
-        private bool UserFilter(object item)
-        {
-            if (String.IsNullOrEmpty(tbFilter.Text))
-            { return true; }
-            else
-            {
-                Piece itm = item as Piece;
-
-                if (itm.Arranger == null)
-                {
-                    return itm.Name.Contains(tbFilter.Text, StringComparison.OrdinalIgnoreCase) || itm.PieceID.ToString().Contains(tbFilter.Text, StringComparison.OrdinalIgnoreCase);
-                }
-                else
-                    return itm.Name.Contains(tbFilter.Text, StringComparison.OrdinalIgnoreCase) || itm.Arranger.Contains(tbFilter.Text, StringComparison.OrdinalIgnoreCase) || itm.PieceID.ToString().Contains(tbFilter.Text, StringComparison.OrdinalIgnoreCase);
-
-
-            }
-
-        }
-
-        private void tbFilter_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            CollectionViewSource.GetDefaultView(lvPieces.ItemsSource).Refresh();
-        }
-
-        private void page_Pieces_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void lvPieces_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (lvPieces.SelectedIndex != -1)
-            {
-
-                frmPieceDetail pieceDetail = new frmPieceDetail(lvPieces.SelectedItem as Piece);
-                pieceDetail.Show();
-
-
-            }
-        }
+        }    
     }
 }
