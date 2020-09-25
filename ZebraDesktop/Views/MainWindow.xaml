@@ -5,33 +5,38 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ZebraDesktop"
         xmlns:zebra="clr-namespace:Zebra.Library;assembly=CoreLibrary"
+        xmlns:vm="clr-namespace:ZebraDesktop.ViewModels"
         mc:Ignorable="d"
-        Title="Zebra" Height="800" Width="1400" Loaded="frmMainWindow_Loaded">
+        Title="Zebra" Height="800" Width="1400">
+    <Window.DataContext>
+        <vm:MainWindowViewModel></vm:MainWindowViewModel>
+    </Window.DataContext>
+    
     <DockPanel LastChildFill="True">
         <Menu IsMainMenu="True" DockPanel.Dock="Top">
             <MenuItem Header="Datei">
-                <MenuItem x:Name="mitm_NewConfig" Header="Neue Konfiguration" Click="mitm_NewConfig_Click"></MenuItem>
-                <MenuItem x:Name="mitm_LoadConfig" Header="Konfiguration laden" Click="mitm_LoadConfig_Click"></MenuItem>
-                <MenuItem x:Name="mitm_UnloadConfig" Header="Konfiguration schließen" Click="mitm_UnloadConfig_Click"></MenuItem>
+                <MenuItem x:Name="mitm_NewConfig" Header="Neue Konfiguration" Command="{Binding NewConfigCommand}"></MenuItem>
+                <MenuItem x:Name="mitm_LoadConfig" Header="Konfiguration laden" Command="{Binding LoadConfigCommand}"></MenuItem>
+                <MenuItem x:Name="mitm_UnloadConfig" Header="Konfiguration schließen" Command="{Binding UnloadConfigCommand}"></MenuItem>
                 <Separator></Separator>
-                <MenuItem x:Name="mitm_Exit" Header="Programm beenden" Click="mitm_Exit_Click"></MenuItem>
+                <MenuItem x:Name="mitm_Exit" Header="Programm beenden" Command="{Binding ExitCommand}"></MenuItem>
             </MenuItem>
             <MenuItem Header="Bearbeiten"></MenuItem>
             <MenuItem Header="Importieren">
-                <MenuItem x:Name="mitm_ImportPdfBatch" Header="PDF-Stapel importieren" Click="mitm_ImportPdfBatch_Click">                   
+                <MenuItem x:Name="mitm_ImportPdfBatch" Header="PDF-Stapel importieren" Command="{Binding ImportPDFBatchCommand}">                   
                 </MenuItem>
             </MenuItem>
         </Menu>
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar Height="35">
                 <Label VerticalAlignment="Center" Width="Auto">Notensätze</Label>
-                <Button x:Name="tbButtonAddPiece" VerticalAlignment="Center" Click="tbButtonAddPiece_Click">
+                <Button x:Name="tbButtonAddPiece" VerticalAlignment="Center" Command="{Binding AddPieceCommand}">
                     <Image Source="/Icons/add.png" Height="Auto"></Image>
                 </Button>
-                <Button x:Name="tbButtonEditPiece" VerticalAlignment="Center" IsEnabled="False" Click="tbButtonEditPiece_Click">
+                <Button x:Name="tbButtonEditPiece" VerticalAlignment="Center" Command="{Binding EditPieceCommand}">
                     <Image Source="/Icons/edit.png" Height="Auto"></Image>
                 </Button>
-                <Button x:Name="tbButtonDeletePiece" VerticalAlignment="Center" IsEnabled="False" Click="tbButtonDeletePiece_Click">
+                <Button x:Name="tbButtonDeletePiece" VerticalAlignment="Center" Command="{Binding DeletePieceCommand}">
                     <Image Source="/Icons/delete.png" Height="Auto" Stretch="Fill"></Image>
                 </Button>
             </ToolBar>
@@ -39,16 +44,16 @@
 
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>
-                <Label Name="lbl_ConfigName" Content="Keine Konfiguration geladen."></Label>
+                <Label Name="lbl_ConfigName" Content="{Binding CurrentApp.Manager.ZebraConfig.ConfigName, FallbackValue=Keine Konfiguration geladen.}"></Label>
             </StatusBarItem>
         </StatusBar>
         
         <TabControl DockPanel.Dock="Top" Height="Auto" IsEnabled="True" Name="tcViews">
             <TabItem Name="tiPieces" Header="Notensätze">
-                <Frame Name="tiPiecesFrame" NavigationUIVisibility="Hidden"></Frame>
+                <Frame Name="tiPiecesFrame" NavigationUIVisibility="Hidden" Content="{Binding PiecesPage}"></Frame>
             </TabItem>
             <TabItem Name="tiParts" Header="Stimmen">
-                <Frame Name="tiPartsFrame" NavigationUIVisibility="Hidden"></Frame>
+                <Frame Name="tiPartsFrame" NavigationUIVisibility="Hidden" Content="{Binding PartsPage}"></Frame>
             </TabItem>                
             <TabItem Header="Verzeichnisse"></TabItem>
         </TabControl>

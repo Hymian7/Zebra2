@@ -13,7 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Zebra.Library;
 
-namespace ZebraDesktop.Forms
+namespace ZebraDesktop.Views
 {
     /// <summary>
     /// Interaktionslogik für Pieces.xaml
