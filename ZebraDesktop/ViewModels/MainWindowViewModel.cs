@@ -10,7 +10,7 @@ using ZebraDesktop.Views;
 
 namespace ZebraDesktop.ViewModels
 {
-    public class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : ViewModelBase
     {
         #region Properties
         private App _currentApp;
@@ -129,16 +129,6 @@ namespace ZebraDesktop.ViewModels
         }
 
         
-        #endregion
-
-        #region Interfaces
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         #endregion
 
         #region Commands

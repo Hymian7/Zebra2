@@ -12,7 +12,7 @@ using Zebra.Library;
 
 namespace ZebraDesktop.ViewModels
 {
-    public class PiecesPageViewModel : INotifyPropertyChanged
+    public class PiecesPageViewModel : ViewModelBase
     {
         #region Properties
 
@@ -85,15 +85,6 @@ namespace ZebraDesktop.ViewModels
 
         }
 
-        #endregion
-
-        #region Interfaces
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
         #endregion
 
         #region Commands
