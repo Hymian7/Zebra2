@@ -204,22 +204,6 @@ namespace ZebraDesktop.ViewModels
             frmPieceDetail frm = new frmPieceDetail(PiecesPageViewModel?.SelectedPiece);
             frm.Show();
         }
-
-
-        /// <summary>
-        /// Manually trigger the RaiseCanExecuteChanged method for all DelegateCommands
-        /// </summary>
-        private void UpdateButtonStatus()
-        {
-            foreach (System.Reflection.PropertyInfo prop in this.GetType().GetProperties())
-            {
-                if (prop.PropertyType == typeof(DelegateCommand))
-                {
-                    var func = prop.GetValue(this);                       
-                    (func as DelegateCommand).RaiseCanExecuteChanged();
-                }
-            }
-        }
         #endregion
 
         #region Methods
@@ -227,6 +211,7 @@ namespace ZebraDesktop.ViewModels
         private void LoadConfig()
         {
             ConfigSelector frmConfigSelector = new ConfigSelector();
+            frmConfigSelector.DataContext = new ConfigSelectorViewModel();
             frmConfigSelector.ShowDialog();
 
 
@@ -235,13 +220,17 @@ namespace ZebraDesktop.ViewModels
                 UnloadConfig();
             }
 
-            if (frmConfigSelector.DialogResult == true)
+            if ((frmConfigSelector.DataContext as ConfigSelectorViewModel).LoadedConfiguration != null)
             {
-                var conf = frmConfigSelector.SelectedConfiguration;
+                var conf = (frmConfigSelector.DataContext as ConfigSelectorViewModel).LoadedConfiguration;
                 CurrentApp.ZebraConfig = conf;
 
                 PiecesPageViewModel = new PiecesPageViewModel();
                 //PartsPageViewModel = new PartsPageViewModel();
+                
+                //Register Eventhandler for Button States to be updated
+                PiecesPageViewModel.PropertyChanged += ChildSelectionChanged;
+                //PartsPageViewModel.SelectedPart.PropertyChanged += ChildSelectionChanged;
 
                 PiecesPage = new PiecesPage();
                 PiecesPage.DataContext = PiecesPageViewModel;
@@ -252,11 +241,16 @@ namespace ZebraDesktop.ViewModels
             UpdateButtonStatus();
         }
 
+
         private void UnloadConfig()
         {
             CurrentApp.ZebraConfig = null;
             MessageBox.Show("Konfiguration erfolgreich geschlossen", "Konfiguration geschlossen");
 
+            UpdateButtonStatus();
+        }
+        private void ChildSelectionChanged(object sender, PropertyChangedEventArgs e)
+        {
             UpdateButtonStatus();
         }
 

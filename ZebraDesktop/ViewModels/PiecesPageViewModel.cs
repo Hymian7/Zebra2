@@ -16,7 +16,7 @@ namespace ZebraDesktop.ViewModels
     {
         #region Properties
 
-        private Piece _selectedPiece;
+        private Piece _selectedPiece = null;
         public Piece SelectedPiece
         {
             get { return _selectedPiece; }

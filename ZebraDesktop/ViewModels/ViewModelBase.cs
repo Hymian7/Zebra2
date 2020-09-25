@@ -17,5 +17,20 @@ namespace ZebraDesktop.ViewModels
         }
         #endregion
 
+        /// <summary>
+        /// Manually trigger the RaiseCanExecuteChanged method for all DelegateCommands
+        /// </summary>
+        protected void UpdateButtonStatus()
+        {
+            foreach (System.Reflection.PropertyInfo prop in this.GetType().GetProperties())
+            {
+                if (prop.PropertyType == typeof(DelegateCommand))
+                {
+                    var func = prop.GetValue(this);
+                    (func as DelegateCommand).RaiseCanExecuteChanged();
+                }
+            }
+        }
+
     }
 }
