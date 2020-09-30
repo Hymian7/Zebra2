@@ -3,19 +3,23 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:vm="clr-namespace:ZebraDesktop.ViewModels"
       xmlns:local="clr-namespace:ZebraDesktop"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="PartsPage">
+    <Page.DataContext>
+        <vm:PartsPageViewModel/>
+    </Page.DataContext>
 
     <StackPanel Name="page_Parts">
         <Label Margin="10,10,10,0">Suchen:</Label>
-        <TextBox x:Name="tbFilter" Height="20" Margin="10,0,10,10" TextChanged="tbFilter_TextChanged"></TextBox>
+        <TextBox x:Name="tbFilter" Height="20" Margin="10,0,10,10" Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 
 
         <Grid VerticalAlignment="Stretch">
             
-        <ListView x:Name="lvParts" Margin="10,0,10,10" VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True" MaxHeight="500px">
+        <ListView x:Name="lvParts" Margin="10,0,10,10" VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True" MaxHeight="500px" ItemsSource="{Binding FilteredParts.View}" SelectedItem="{Binding SelectedPart}">
             
             <ListView.View>
                 <GridView>

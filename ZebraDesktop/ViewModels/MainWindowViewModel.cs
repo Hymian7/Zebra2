@@ -44,6 +44,14 @@ namespace ZebraDesktop.ViewModels
             set { _piecesPageViewModel = value; NotifyPropertyChanged(); }
         }
 
+        private PartsPageViewModel _partsPageViewModel;
+
+        public PartsPageViewModel PartsPageViewModel
+        {
+            get { return _partsPageViewModel; }
+            set { _partsPageViewModel = value; NotifyPropertyChanged(); }
+        }
+
         private DelegateCommand _loadConfigCommand;
 
         public DelegateCommand LoadConfigCommand
@@ -226,16 +234,16 @@ namespace ZebraDesktop.ViewModels
                 CurrentApp.ZebraConfig = conf;
 
                 PiecesPageViewModel = new PiecesPageViewModel();
-                //PartsPageViewModel = new PartsPageViewModel();
+                PartsPageViewModel = new PartsPageViewModel();
                 
                 //Register Eventhandler for Button States to be updated
                 PiecesPageViewModel.PropertyChanged += ChildSelectionChanged;
-                //PartsPageViewModel.SelectedPart.PropertyChanged += ChildSelectionChanged;
+                PartsPageViewModel.PropertyChanged += ChildSelectionChanged;
 
                 PiecesPage = new PiecesPage();
                 PiecesPage.DataContext = PiecesPageViewModel;
-                PartsPage = new PartsPage(CurrentApp.Manager.Context);
-                PartsPage.DataContext = PiecesPage;
+                PartsPage = new PartsPage();
+                PartsPage.DataContext = PartsPageViewModel;
             }
 
             UpdateButtonStatus();
