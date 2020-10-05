@@ -2,6 +2,8 @@
 
 Zebra Sheet Music Management is an Application for Archiving printed Collections of Sheet Music for Orchestras and Bands. It is designed for automatically porting the printed Sheet Music to a Database via Barcode Recognition. All printed Sheets will be stored as PDF Files and can later be displayed and/or printed again from the Application.
 
+Visit the [Homepage](https://hymian7.github.io/Zebra2/)
+
 ## Idea
 Most bands and orchestras still distribute their sheet music in printed form, wich causes a lot of effort for keeping the original sheets in a safe place, making enough copies for the whole orchestra etc. Also, over time many orchestras and bands collect a huge amount of printed sheet music, which all has to be stored in physical archives that have to be kept up to date. The idea of Zebra is to create a digital Sheet Music Archive where all sheets can be found and printed quickly and easily without having to search all these old big archive cabinets.
 
