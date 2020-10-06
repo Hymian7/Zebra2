@@ -110,7 +110,7 @@
             <Label Margin="0,10,0,0" Content="Pfad zur Datenbank"/>
             <StackPanel Margin="0,5,20,0" Orientation="Horizontal" HorizontalAlignment="Stretch">
                 <TextBox x:Name="tbDBPath" Margin="0,0,10,0" Width="484" Text="{Binding SQLiteCredentials.Path}"/>
-                <Button x:Name="btnBrowseDBPath" Width="80px" HorizontalAlignment="Right" Click="btnBrowseDBPath_Click" Content="Durchsuchen"/>
+                <Button x:Name="btnBrowseDBPath" Width="80px" HorizontalAlignment="Right" Content="Durchsuchen"/>
             </StackPanel>
         </StackPanel>
         <StackPanel Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=rbLocalArchive}">
