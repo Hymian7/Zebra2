@@ -23,30 +23,7 @@ namespace ZebraDesktop
 
         public frmNewPiece()
         {
-            currentApp = (App)Application.Current;
-            manager = currentApp.Manager;
-
             InitializeComponent();            
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (!String.IsNullOrEmpty(tbName.Text))
-            {
-                if (String.IsNullOrEmpty(tbArranger.Text))
-                {
-                    manager.NewPiece(tbName.Text);
-                }
-
-                else
-                {
-                    manager.NewPiece(tbName.Text, tbArranger.Text);
-                }
-
-                this.Close();
-
-            }
-            else MessageBox.Show("Der Name darf nicht leer sein!", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }
