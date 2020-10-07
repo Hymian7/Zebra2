@@ -34,5 +34,9 @@ namespace Zebra.Library
             return new Piece(name, arranger);
         }
 
+        public override string ToString()
+        {
+            return String.Join(' ', this.PieceID, Name, Arranger);
+        }
     }
 }
