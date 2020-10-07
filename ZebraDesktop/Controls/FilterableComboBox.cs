@@ -55,6 +55,11 @@ namespace ZebraDesktop.Controls
             StaysOpenOnEdit = true;
             IsReadOnly = false;
 
+            // Virtualization
+            ItemsPanel = new ItemsPanelTemplate();
+            var stackPanelTemplate = new FrameworkElementFactory(typeof(VirtualizingStackPanel));
+            ItemsPanel.VisualTree = stackPanelTemplate;
+
             Loaded += (s, e) =>
             {
                 if (EditableTextBox != null)
