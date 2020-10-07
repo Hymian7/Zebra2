@@ -6,10 +6,11 @@ using Zebra.Library;
 using PDFtkSharp;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.ComponentModel;
 
 namespace Zebra.PdfHandling
 {
-    public class ImportBatch
+    public class ImportBatch : INotifyPropertyChanged
     {
         public FileInfo File { get; set; }
         public PreviewablePdfDocument Document { get; set; }
@@ -30,6 +31,13 @@ namespace Zebra.PdfHandling
                 importCandidates.Add(new ImportCandidate(i, Document.Pages[i].Thumbnail));
             }
 
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public async Task ImportAllAssignments(ZebraDBManager manager)
