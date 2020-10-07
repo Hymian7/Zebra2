@@ -7,6 +7,7 @@ using PDFtkSharp;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Zebra.PdfHandling
 {
