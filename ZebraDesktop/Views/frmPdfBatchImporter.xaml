@@ -25,6 +25,13 @@
             </Border>
         </ToolBar>
 
+        <StatusBar DockPanel.Dock="Bottom" Height="25">
+            <StackPanel Orientation="Horizontal">
+                <ProgressBar Height="20" Width="100" Value="{Binding ImportReport.Percentage}"></ProgressBar>
+                <Label Height="20" FontSize="8" Width="Auto" Content="{Binding ImportReport.Message}"></Label>
+            </StackPanel>
+        </StatusBar>
+
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="15*" MinWidth="200px"></ColumnDefinition>

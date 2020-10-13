@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="Forms\" />
+    <Folder Include="Misc\" />
   </ItemGroup>
 
   <ItemGroup>

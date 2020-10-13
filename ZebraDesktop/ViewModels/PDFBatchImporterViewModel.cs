@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using Zebra.Library;
 using Zebra.PdfHandling;
@@ -45,6 +46,14 @@ namespace ZebraDesktop.ViewModels
         {
             get { return _selectedItem; }
             set { _selectedItem = value; NotifyPropertyChanged(); UpdateButtonStatus(); }
+        }
+
+        private ImportBatchProgressReport _report;
+
+        public ImportBatchProgressReport ImportReport
+        {
+            get { return _report; }
+            set { _report = value; NotifyPropertyChanged(); }
         }
 
         private DelegateCommand _openFileCommand;
@@ -96,7 +105,7 @@ namespace ZebraDesktop.ViewModels
         #endregion
 
         #region Commands
-        private void executeOpenFileCommand(object obj)
+        private async void executeOpenFileCommand(object obj)
         {
 
             OpenFileDialog ofd = new OpenFileDialog();
@@ -111,9 +120,20 @@ namespace ZebraDesktop.ViewModels
             {
 
                 Batch = new ImportBatch(ofd.FileName);
-                Batch.PropertyChanged += base.UpdateButtonStatus;
+
+                System.Progress<ImportBatchProgressReport> progress = new Progress<ImportBatchProgressReport>();
+                progress.ProgressChanged += ImportCandidates_ProgressChanged;
+
+                await Batch.LoadImportCandidatesAsync(progress);
+                
 
             }
+        }
+
+        private void ImportCandidates_ProgressChanged(object sender, ImportBatchProgressReport e)
+        {
+            ImportReport = e;
+            Batch.importCandidates.Add(e.LastImported);
         }
 
         private bool canExecuteOpenFileCommand(object obj)
@@ -123,18 +143,37 @@ namespace ZebraDesktop.ViewModels
 
         private void executeImportCommand(object obj)
         {
+            foreach (var item in Batch.importCandidates)
+            {
+                if (item.IsAssigned)
+                {
+                    Batch.importAssignments.Add(new ImportAssignment(item.AssignedPiece, item.AssignedPart, new List<int>() { item.PageNumber }));
+                }
+            }
+
             var frm = new frmPdfBatchImportPreview(Batch);
             frm.ShowDialog();
         }
 
         private bool canExecuteImportCommand(object obj)
         {
-            return Batch != null ? (Batch.importAssignments.Count > 0) : false ;
+            //return Batch != null ? (Batch.importAssignments.Count > 0) : false ;
+
+            if (Batch == null) return false;
+
+            foreach (var item in Batch.importCandidates)
+            {
+                if (item.IsAssigned)
+                {
+                    return true;
+                }
+            }
+                return false;
         }
 
         private void executeAssignCommand(object obj)
         {
- 
+            UpdateButtonStatus();
         }
 
         private bool canExecuteAssignCommand(object obj)
