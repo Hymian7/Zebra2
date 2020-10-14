@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -216,7 +217,7 @@ namespace ZebraDesktop.ViewModels
 
         #region Methods
 
-        private void LoadConfig()
+        private async void LoadConfig()
         {
             ConfigSelector frmConfigSelector = new ConfigSelector();
             frmConfigSelector.DataContext = new ConfigSelectorViewModel();
@@ -232,6 +233,11 @@ namespace ZebraDesktop.ViewModels
             {
                 var conf = (frmConfigSelector.DataContext as ConfigSelectorViewModel).LoadedConfiguration;
                 CurrentApp.ZebraConfig = conf;
+
+                await CurrentApp.Manager.EnsureDatabaseCreatedAsync();
+                // TODO: Check for pending migrations
+                
+                //await CurrentApp.Manager.Context.Database.GetPendingMigrationsAsync();
 
                 PiecesPageViewModel = new PiecesPageViewModel();
                 PartsPageViewModel = new PartsPageViewModel();
@@ -252,11 +258,20 @@ namespace ZebraDesktop.ViewModels
 
         private void UnloadConfig()
         {
+            // Cleanup
             CurrentApp.ZebraConfig = null;
+
+            PiecesPage = null;
+            PartsPage = null;
+
+            PiecesPageViewModel = null;
+            PartsPageViewModel =  null;
+
             MessageBox.Show("Konfiguration erfolgreich geschlossen", "Konfiguration geschlossen");
 
             UpdateButtonStatus();
         }
+
         private void ChildSelectionChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateButtonStatus();
