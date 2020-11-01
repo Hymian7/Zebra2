@@ -3,12 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:ZebraDesktop.ViewModels"
         xmlns:local="clr-namespace:ZebraDesktop"
         mc:Ignorable="d"
         Title="frmPdfBatchImportPreview" Height="800" Width="600">
+
+    <Window.DataContext>
+        <vm:PDFBatchImporterPreviewViewModel/>
+    </Window.DataContext>
     <StackPanel>
         <Label Margin="20,20,20,20" FontSize="24">Zu Importierende Dateien:</Label>
-        <ListView Margin="20,0,20,20" Height="400" x:Name="lvPreview" ItemsSource="{Binding Assignments}">
+        <ListView Margin="20,0,20,20" Height="400" x:Name="lvPreview" ItemsSource="{Binding Batch.importAssignments}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Seiten" Width="40"  DisplayMemberBinding="{Binding Pages[0]}" />
@@ -26,7 +31,7 @@
 
         </ListView>
 
-        <Button Width="150" HorizontalAlignment="Right" Margin="0,0,20,0" Click="Button_Click">Import</Button>
+        <Button Width="150" HorizontalAlignment="Right" Margin="0,0,20,0" Command="{Binding ImportBatchCommand}">Import</Button>
         
     </StackPanel>
 </Window>
