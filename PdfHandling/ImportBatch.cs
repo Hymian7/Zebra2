@@ -72,7 +72,7 @@ namespace Zebra.PdfHandling
             }
         }
 
-        public async Task ImportAllAssignments(ZebraDBManager manager)
+        public async Task ImportAllAssignmentsAsync(ZebraDBManager manager)
         {
             var tasks = new List<Task>();
 
@@ -81,17 +81,7 @@ namespace Zebra.PdfHandling
                 tasks.Add(item.ImportAsync(manager, File));
             }
 
-            try
-            {
-                await Task.WhenAll(tasks);
-            }
-            catch (SheetAlreadyExistsException ex)
-            {
-                Debug.Print($"{ex.ExistingSheet.Part.Name} - {ex.ExistingSheet.Piece.Name} wurde nicht importiert, da das Sheet schon existiert hat.");
-            }
-
-            catch (Exception ex)
-            { Debug.Print(ex.Message); }
+            await Task.WhenAll(tasks);
 
         }
 

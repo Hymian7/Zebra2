@@ -49,7 +49,7 @@ namespace Zebra.Library
             }
         }
 
-        public override void PushFile(FileInfo file, Sheet sheet, FileImportMode mode = FileImportMode.Copy)
+        public override void PushFile(FileInfo file, Sheet sheet, FileImportMode mode = FileImportMode.Copy, bool _override = false)
         {
             switch (mode)
             {

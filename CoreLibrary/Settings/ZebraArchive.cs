@@ -23,7 +23,7 @@ namespace Zebra.Library
         /// Pushes a File for a given Sheet into the Archive
         /// </summary>
         /// <param name="file"></param>
-        public abstract void PushFile(FileInfo file, Sheet sheet, FileImportMode mode = FileImportMode.Copy);
+        public abstract void PushFile(FileInfo file, Sheet sheet, FileImportMode mode = FileImportMode.Copy, bool _override = false);
     }
 
     public enum FileImportMode 
