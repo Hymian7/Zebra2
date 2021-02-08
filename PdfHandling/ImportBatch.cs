@@ -15,22 +15,15 @@ namespace Zebra.PdfHandling
     public class ImportBatch : INotifyPropertyChanged
     {
         public FileInfo File { get; set; }
-        public PreviewablePdfDocument Document { get; set; }
-        public ObservableCollection<ImportAssignment> importAssignments { get; set; }
 
-        public ObservableCollection<ImportCandidate> importCandidates { get; set; }
+        public ObservableCollection<ImportCandidate> ImportCandidates { get; set; }
 
-        public ImportBatch(string filename)
+        public ImportBatch()
         {
-            File = new FileInfo(filename);
-            Document = new PreviewablePdfDocument(File.FullName);
-
-            importAssignments = new ObservableCollection<ImportAssignment>();
-            importCandidates = new ObservableCollection<ImportCandidate>();
-
-            //LoadImportCandidates();
-
+            ImportCandidates = new ObservableCollection<ImportCandidate>();
         }
+
+        #region PropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -39,49 +32,51 @@ namespace Zebra.PdfHandling
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+
+        #endregion
+
         /// <summary>
         /// Sends generated ImportCandidates back to UI Thread in the ImportBatchProgressReport
         /// Items have to be added to Collection manually in UI Thread
         /// </summary>
         /// <param name="progress"></param>
         /// <returns></returns>
-        public async Task LoadImportCandidatesAsync(IProgress<ImportBatchProgressReport> progress)
+        //public async Task LoadImportCandidatesAsync(IProgress<ImportBatchProgressReport> progress)
+        //{
+        //    ImportBatchProgressReport report = new ImportBatchProgressReport();
+
+        //    for (int i = 0; i < Document.PageCount; i++)
+        //    {
+        //        await Task.Run(() => report.LastImported = (new ImportCandidate(i, Document.Pages[i].Thumbnail)));
+        //        report.ImportedCandidates.Add(report.LastImported);
+        //        report.Percentage=((int)(i + 1) * 100 / Document.PageCount);
+        //        report.GenerateMessage(i + 1, Document.PageCount);
+
+        //        progress.Report(report);
+
+        //    }
+        //    report.Percentage = 0;
+        //    report.Message = "Import erfolgreich!";
+        //    progress.Report(report);
+        //}
+
+
+
+        public void AddDocument(string pdfDocument)
         {
-            ImportBatchProgressReport report = new ImportBatchProgressReport();
+            PreviewablePdfDocument doc = new PreviewablePdfDocument(pdfDocument);
 
-            for (int i = 0; i < Document.PageCount; i++)
+            SortedList<int, ImportPage> pages = new SortedList<int, ImportPage>();
+
+            for (int i = 0; i < doc.PageCount; i++)
             {
-                await Task.Run(() => report.LastImported = (new ImportCandidate(i, Document.Pages[i].Thumbnail)));
-                report.ImportedCandidates.Add(report.LastImported);
-                report.Percentage=((int)(i + 1) * 100 / Document.PageCount);
-                report.GenerateMessage(i + 1, Document.PageCount);
-
-                progress.Report(report);
-
-            }
-            report.Percentage = 0;
-            report.Message = "Import erfolgreich!";
-            progress.Report(report);
-        }
-
-        public void LoadImportCandidates()
-        {
-            for (int i = 0; i < Document.PageCount; i++)
-            {
-                importCandidates.Add(new ImportCandidate(i, Document.Pages[i].Thumbnail));
-            }
-        }
-
-        public async Task ImportAllAssignmentsAsync(ZebraDBManager manager)
-        {
-            var tasks = new List<Task>();
-
-            foreach (var item in importAssignments)
-            {
-                tasks.Add(item.ImportAsync(manager, File));
+                ImportPage page = new ImportPage(pdfDocument, i+1, doc.Pages[i].Thumbnail);
+                pages.Add(i, page);
             }
 
-            await Task.WhenAll(tasks);
+            ImportCandidate newCandidate = new ImportCandidate(pages);
+
+            ImportCandidates.Add(newCandidate);
 
         }
 

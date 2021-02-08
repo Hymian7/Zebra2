@@ -40,13 +40,22 @@ namespace ZebraDesktop.ViewModels
             set { _batch = value; NotifyPropertyChanged();}
         }
 
-        private ImportCandidate _selectedItem;
+        private KeyValuePair<int, ImportPage> _selectedImportPage;
 
-        public ImportCandidate SelectedItem
+        public KeyValuePair<int, ImportPage> SelectedImportPage
         {
-            get { return _selectedItem; }
-            set { _selectedItem = value; NotifyPropertyChanged(); UpdateButtonStatus(); }
+            get { return _selectedImportPage; }
+            set { _selectedImportPage = value; NotifyPropertyChanged(); UpdateButtonStatus(); }
         }
+
+        private ImportCandidate _selectedImportCandidate;
+
+        public ImportCandidate SelectedImportCandidate
+        {
+            get { return _selectedImportCandidate; }
+            set { _selectedImportCandidate = value; NotifyPropertyChanged(); UpdateButtonStatus(); }
+        }
+
 
         private ImportBatchProgressReport _report;
 
@@ -99,6 +108,7 @@ namespace ZebraDesktop.ViewModels
             ImportCommand = new DelegateCommand(executeImportCommand, canExecuteImportCommand);
             AssignCommand = new DelegateCommand(executeAssignCommand, canExecuteAssignCommand);
 
+
         }
 
 
@@ -111,7 +121,7 @@ namespace ZebraDesktop.ViewModels
             OpenFileDialog ofd = new OpenFileDialog();
 
             ofd.Filter = "PDF Files | *.pdf";
-            ofd.Multiselect = false;
+            ofd.Multiselect = true;
 
 
             ofd.ShowDialog();
@@ -119,21 +129,17 @@ namespace ZebraDesktop.ViewModels
             if (System.IO.File.Exists(ofd.FileName))
             {
 
-                Batch = new ImportBatch(ofd.FileName);
+                if(Batch == null) Batch = new ImportBatch();
 
-                System.Progress<ImportBatchProgressReport> progress = new Progress<ImportBatchProgressReport>();
-                progress.ProgressChanged += ImportCandidates_ProgressChanged;
+                foreach (var file in ofd.FileNames)
+                {
 
-                await Batch.LoadImportCandidatesAsync(progress);
+                    Batch.AddDocument(file);
+
+                }
                 
 
             }
-        }
-
-        private void ImportCandidates_ProgressChanged(object sender, ImportBatchProgressReport e)
-        {
-            ImportReport = e;
-            Batch.importCandidates.Add(e.LastImported);
         }
 
         private bool canExecuteOpenFileCommand(object obj)
@@ -143,11 +149,12 @@ namespace ZebraDesktop.ViewModels
 
         private void executeImportCommand(object obj)
         {
-            foreach (var item in Batch.importCandidates)
+            foreach (var item in Batch.ImportCandidates)
             {
                 if (item.IsAssigned)
                 {
-                    Batch.importAssignments.Add(new ImportAssignment(item.AssignedPiece, item.AssignedPart, new List<int>() { item.PageNumber }));
+                    //Batch.ImportAssignments.Add(new ImportAssignment(item.AssignedPiece, item.AssignedPart, new List<int>() { item.PageNumber }));
+                    throw new NotImplementedException("Needs reimplementation");
                 }
             }
 
@@ -161,7 +168,7 @@ namespace ZebraDesktop.ViewModels
 
             if (Batch == null) return false;
 
-            foreach (var item in Batch.importCandidates)
+            foreach (var item in Batch.ImportCandidates)
             {
                 if (item.IsAssigned)
                 {

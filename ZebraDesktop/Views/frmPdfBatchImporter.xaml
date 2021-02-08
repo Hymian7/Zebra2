@@ -41,8 +41,7 @@
                 <ColumnDefinition Width="31*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <ListView x:Name="lbThumbnails" Grid.Column="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Batch.importCandidates}" SelectedItem="{Binding SelectedItem}" SelectedIndex="{Binding SelectedIndex}">
-
+            <ListView x:Name="lbThumbnails" Grid.Column="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding Batch.ImportCandidates}" SelectedItem="{Binding SelectedImportCandidate}" Margin="0,10,0,-10" SelectionMode="Extended">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Width="Auto" Orientation="Vertical">
@@ -53,11 +52,36 @@
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <DockPanel Margin="5,0,0,5" >
-                            <TextBlock x:Name="lblPiece" DockPanel.Dock="Bottom" Width="Auto" HorizontalAlignment="Center" Text="{Binding AssignedPart.Name,FallbackValue=Part not assigned}"></TextBlock>
-                            <TextBlock Name="lblPart" DockPanel.Dock="Bottom" Width="Auto" HorizontalAlignment="Center" Margin="0,5,0,0" Text="{Binding AssignedPiece.Name, FallbackValue=Piece not assigned}"></TextBlock>
-                            <TextBlock DockPanel.Dock="Left" HorizontalAlignment="Center" Text="{Binding PageNumber}" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,10,0" />
-                            <Image Height="Auto" Width="Auto" Source="{Binding Thumbnail, Converter={StaticResource ImageConverter}}"/>
+                        <DockPanel Margin="10,20,10,15" HorizontalAlignment="Stretch">
+                            <TextBlock x:Name="lblSeperator" DockPanel.Dock="Top" Width="Auto" HorizontalAlignment="Left" Text="----------------------------------------------"></TextBlock>
+                            <TextBlock x:Name="lblPiece" DockPanel.Dock="Top" Width="Auto" HorizontalAlignment="Left" Text="{Binding AssignedPart.Name,FallbackValue=Part not assigned}"></TextBlock>
+                            <TextBlock Name="lblPart" DockPanel.Dock="Top" Width="Auto" HorizontalAlignment="Left" Margin="0,5,0,0" Text="{Binding AssignedPiece.Name, FallbackValue=Piece not assigned}"></TextBlock>
+
+
+
+                            <ListView Background="Transparent" BorderBrush="Transparent" DockPanel.Dock="Top" ItemsSource="{Binding Pages}" SelectedItem="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.SelectedImportPage}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="False">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="0,20,0,20">
+                                            <Border BorderBrush="Black" BorderThickness="0.5">
+                                                <Image MaxHeight="130" Source="{Binding Value.Thumbnail, Converter={StaticResource ImageConverter}}" Margin="1,1,1,1"/>
+                                            </Border>
+                                        </StackPanel>
+
+                                    </DataTemplate>
+
+                                </ListView.ItemTemplate>
+
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal">
+
+                                        </StackPanel>
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+
+                            </ListView>
+
                         </DockPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -67,7 +91,7 @@
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Margin="2,0,2,0"></GridSplitter>
             <DockPanel Grid.Column="2" Width="Auto">
                 <local:ZoomBorder x:Name="border" ClipToBounds="True" Background="Gray">
-                    <Image x:Name="imgPreview" Source="{Binding SelectedItem.Thumbnail, Converter={StaticResource ImageConverter}}"/>
+                    <Image x:Name="imgPreview" Source="{Binding SelectedImportPage.Value.Thumbnail, Converter={StaticResource ImageConverter}}"/>
                 </local:ZoomBorder>
 
 
@@ -81,7 +105,7 @@
 
                     <TextBlock FontSize="30" Margin="10,30,10,30">Überschrift</TextBlock>
                     <Label>Stück</Label>
-                    <controls:FilterableComboBox x:Name="cbAssPiece" Height="30" Margin="5,5,10,5" VerticalContentAlignment="Center" IsEditable="True" DisplayMemberPath="Name" ItemsSource="{Binding AllPieces}" SelectedItem="{Binding SelectedItem.AssignedPiece, Mode=TwoWay}">
+                    <controls:FilterableComboBox x:Name="cbAssPiece" Height="30" Margin="5,5,10,5" VerticalContentAlignment="Center" IsEditable="True" DisplayMemberPath="Name" ItemsSource="{Binding AllPieces}" SelectedItem="{Binding SelectedImportCandidate.AssignedPiece, Mode=TwoWay}">
 
                         <controls:FilterableComboBox.ItemContainerStyle>
                             <Style TargetType="{x:Type ComboBoxItem}">
@@ -118,7 +142,7 @@
 
                     </controls:FilterableComboBox>
                     <Label>Stimme</Label>
-                    <controls:FilterableComboBox x:Name="cbAssPart" Height="30" Margin="5,5,10,5" VerticalContentAlignment="Center" IsEditable="True" DisplayMemberPath="Name" ItemsSource="{Binding AllParts}" SelectedItem="{Binding SelectedItem.AssignedPart, Mode=TwoWay}"></controls:FilterableComboBox>
+                    <controls:FilterableComboBox x:Name="cbAssPart" Height="30" Margin="5,5,10,5" VerticalContentAlignment="Center" IsEditable="True" DisplayMemberPath="Name" ItemsSource="{Binding AllParts}" SelectedItem="{Binding SelectedImportCandidate.AssignedPart, Mode=TwoWay}"></controls:FilterableComboBox>
                 </StackPanel>
 
                 <Button DockPanel.Dock="Bottom" Margin="20,20,20,20" Height="30" Width="100" HorizontalAlignment="Right" Command="{Binding AssignCommand}" Click="Button_Click">Weiter</Button>

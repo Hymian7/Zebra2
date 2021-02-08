@@ -41,29 +41,30 @@ namespace ZebraDesktop.ViewModels
 
         private void ListImportAssignments()
         {
-            if (Batch == null) return;
+            //if (Batch == null) return;
 
-            if (!(Batch.importAssignments == null)) Batch.importAssignments.Clear();
+            //if (!(Batch.importAssignments == null)) Batch.importAssignments.Clear();
 
-            foreach (var candidate in Batch.importCandidates)
-            {
-                if (candidate.IsAssigned)
-                {
-                    Batch.importAssignments.Add(new ImportAssignment(candidate.AssignedPiece, candidate.AssignedPart, new List<int>() { candidate.PageNumber }));
-                }
-            }
+            //foreach (var candidate in Batch.importCandidates)
+            //{
+            //    if (candidate.IsAssigned)
+            //    {
+            //        Batch.importAssignments.Add(new ImportAssignment(candidate.AssignedPiece, candidate.AssignedPart, new List<int>() { candidate.PageNumber }));
+            //    }
+            //}
         }
 
         private bool canExecuteImportBatchCommand(object obj)
         {
-            return (Batch?.importAssignments.Count > 0);
+            //return (Batch?.importAssignments.Count > 0);
+            return false;
         }
 
         private async void executeImportBatchCommand(object obj)
         {
             try
             {
-                await Batch.ImportAllAssignmentsAsync((Application.Current as App).Manager);
+                //await Batch.ImportAllAssignmentsAsync((Application.Current as App).Manager);
             }
             catch (SheetAlreadyExistsException ex)
             {
