@@ -68,13 +68,13 @@ namespace Zebra.PdfHandling
 
             SortedList<int, ImportPage> pages = new SortedList<int, ImportPage>();
 
+            ImportCandidate newCandidate = new ImportCandidate(pdfDocument);
+
             for (int i = 0; i < doc.PageCount; i++)
             {
-                ImportPage page = new ImportPage(pdfDocument, i+1, doc.Pages[i].Thumbnail);
-                pages.Add(i, page);
+                ImportPage page = new ImportPage(newCandidate, i+1, doc.Pages[i].Thumbnail);
+                newCandidate.Pages.Add(i, page);
             }
-
-            ImportCandidate newCandidate = new ImportCandidate(pages);
 
             ImportCandidates.Add(newCandidate);
 

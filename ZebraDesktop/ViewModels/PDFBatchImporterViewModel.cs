@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Zebra.Library;
 using Zebra.PdfHandling;
+using System.Linq;
 
 namespace ZebraDesktop.ViewModels
 {
@@ -42,10 +43,15 @@ namespace ZebraDesktop.ViewModels
 
         private KeyValuePair<int, ImportPage> _selectedImportPage;
 
-        public KeyValuePair<int, ImportPage> SelectedImportPage
+        public KeyValuePair<int,ImportPage> SelectedImportPage
         {
             get { return _selectedImportPage; }
-            set { _selectedImportPage = value; NotifyPropertyChanged(); UpdateButtonStatus(); }
+            set
+            {
+                _selectedImportPage = value;
+                SelectedImportCandidate = value.Value.ImportCandidate;
+                NotifyPropertyChanged(); UpdateButtonStatus();
+            }
         }
 
         private ImportCandidate _selectedImportCandidate;
@@ -53,7 +59,16 @@ namespace ZebraDesktop.ViewModels
         public ImportCandidate SelectedImportCandidate
         {
             get { return _selectedImportCandidate; }
-            set { _selectedImportCandidate = value; NotifyPropertyChanged(); UpdateButtonStatus(); }
+            set
+            {
+                _selectedImportCandidate = value;
+                if (SelectedImportPage.Value != null && SelectedImportPage.Value.ImportCandidate != value)
+                {
+                    SelectedImportPage = value.Pages.FirstOrDefault();
+                }
+                
+                NotifyPropertyChanged(); UpdateButtonStatus();
+            }
         }
 
 
@@ -89,6 +104,23 @@ namespace ZebraDesktop.ViewModels
             set { _assignCommand = value; NotifyPropertyChanged(); }
         }
 
+        private DelegateCommand _deleteSelectedImportCandidateCommand;
+
+        public DelegateCommand DeleteSelectedImportCandidateCommand
+        {
+            get { return _deleteSelectedImportCandidateCommand; }
+            set { _deleteSelectedImportCandidateCommand = value; NotifyPropertyChanged(); }
+        }
+
+        private DelegateCommand _deleteSelectedImportPageCommand;
+
+        public DelegateCommand DeleteSelectedImportPageCommand
+        {
+            get { return _deleteSelectedImportPageCommand; }
+            set { _deleteSelectedImportPageCommand = value; }
+        }
+
+
 
 
 
@@ -108,9 +140,11 @@ namespace ZebraDesktop.ViewModels
             ImportCommand = new DelegateCommand(executeImportCommand, canExecuteImportCommand);
             AssignCommand = new DelegateCommand(executeAssignCommand, canExecuteAssignCommand);
 
+            DeleteSelectedImportCandidateCommand = new DelegateCommand(executeDelteSelectedImportCandidateCommand, canExecuteDeleteSelectedImportCandidateCommand);
+            DeleteSelectedImportPageCommand = new DelegateCommand(executeDeleteSelectedImportPageCommand, canExecuteDeleteSelectedImportPageCommand);
+
 
         }
-
 
         #endregion
 
@@ -187,6 +221,26 @@ namespace ZebraDesktop.ViewModels
         {
             //return (SelectedItem?.AssignedPart != null && SelectedItem?.AssignedPiece != null);
             return true;
+        }
+
+        private bool canExecuteDeleteSelectedImportPageCommand(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool canExecuteDeleteSelectedImportCandidateCommand(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void executeDelteSelectedImportCandidateCommand(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void executeDeleteSelectedImportPageCommand(object obj)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

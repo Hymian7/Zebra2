@@ -6,16 +6,17 @@ namespace Zebra.PdfHandling
 {
     public class ImportPage
     {
-        public string DocumentPath { get; private set; }
         public int PageNumber { get; private set; }
 
         public System.Drawing.Image Thumbnail { get; private set; }
 
-        public ImportPage(string documentPath, int pageNumber, System.Drawing.Image thumbnail)
+        public ImportCandidate ImportCandidate { get; set; }
+
+        public ImportPage(ImportCandidate parent, int pageNumber, System.Drawing.Image thumbnail)
         {
-            DocumentPath = documentPath;
             PageNumber = pageNumber;
             Thumbnail = thumbnail;
+            ImportCandidate = parent;
         }
 
     }

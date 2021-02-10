@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using Zebra.Library;
+using Zebra.PdfHandling;
 
 namespace ZebraDesktop
 {
@@ -18,9 +20,9 @@ namespace ZebraDesktop
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             // Todo: Make this optional/selectable in Preferences
-            if (lbThumbnails.SelectedIndex < lbThumbnails.Items.Count - 1)
+            if (lbDocuments.SelectedIndex < lbDocuments.Items.Count - 1)
             {
-                lbThumbnails.SelectedItem = lbThumbnails.Items[lbThumbnails.SelectedIndex+1];
+                lbDocuments.SelectedItem = lbDocuments.Items[lbDocuments.SelectedIndex+1];
             }
             else
             {
@@ -32,5 +34,12 @@ namespace ZebraDesktop
             cbAssPiece.Focus();
         }
 
+        private void lbDocumentThumbnails_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if ((sender as System.Windows.Controls.ListView).SelectedItem != null)
+            { 
+                (this.DataContext as ZebraDesktop.ViewModels.PDFBatchImporterViewModel).SelectedImportPage = (KeyValuePair<int, ImportPage>)(sender as System.Windows.Controls.ListView).SelectedItem; 
+            }
+        }
     }
 }

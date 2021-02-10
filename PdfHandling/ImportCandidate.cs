@@ -8,12 +8,21 @@ namespace Zebra.PdfHandling
 {
     public class ImportCandidate : INotifyPropertyChanged
     {
+        private String _documentPath;
+
+        public String DocumentPath
+        {
+            get { return _documentPath; }
+            set { _documentPath = value; NotifyPropertyChanged(); }
+        }
+
+
         private SortedList<int, ImportPage> pages;
 
         public SortedList<int, ImportPage> Pages
         {
             get { return pages; }
-            private set { pages = value; NotifyPropertyChanged(); }
+            set { pages = value; NotifyPropertyChanged(); }
         }
 
 
@@ -39,10 +48,12 @@ namespace Zebra.PdfHandling
         }
 
 
-        public ImportCandidate(SortedList<int,ImportPage> pages)
+        public ImportCandidate(String documentPath)
         {
-            Pages = pages;
+            Pages = new SortedList<int, ImportPage>();
+            DocumentPath = documentPath;
         }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
