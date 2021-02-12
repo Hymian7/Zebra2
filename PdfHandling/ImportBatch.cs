@@ -73,7 +73,7 @@ namespace Zebra.PdfHandling
             for (int i = 0; i < doc.PageCount; i++)
             {
                 ImportPage page = new ImportPage(newCandidate, i+1, doc.Pages[i].Thumbnail);
-                newCandidate.Pages.Add(i, page);
+                newCandidate.Pages.Add(page);
             }
 
             ImportCandidates.Add(newCandidate);

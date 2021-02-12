@@ -21,7 +21,22 @@
                 <Button x:Name="btnOpen" Command="{Binding OpenFileCommand}" Margin="2,0,2,0">Öffnen</Button>
             </Border>
             <Border>
-                <Button x:Name="btnImport" Command="{Binding ImportCommand}">Importieren</Button>
+                <Button x:Name="btnImport" Command="{Binding ImportCommand}" Margin="2,0,2,0">Importieren</Button>
+            </Border>
+            <Separator/>
+
+            <Border>
+                <Button x:Name="btnDelImportCandidate" Command="{Binding DeleteSelectedImportCandidateCommand}" Margin="2,0,2,0">Dokument entfernen</Button>
+            </Border>
+            <Border>
+                <Button x:Name="btnDelImportPage" Command="{Binding DeleteSelectedImportPageCommand}" Margin="2,0,2,0">Seite entfernen</Button>
+            </Border>
+            <Border>
+                <Button x:Name="btnOpenDocumentInExplorer" Command="{Binding OpenDocumentInExplorerCommand}" Margin="2,0,2,0">In Explorer öffnen</Button>
+            </Border>
+
+            <Border>
+                <Button x:Name="btnSplitImportCandidate" Command="{Binding SplitImportCandidateOnPage}" Margin="2,0,2,0">Dokument hier teilen</Button>
             </Border>
         </ToolBar>
 
@@ -58,6 +73,7 @@
                             <TextBlock Name="lblDocumentName" DockPanel.Dock="Top" Width="Auto" HorizontalAlignment="Left" Margin="0,5,0,10" Text="{Binding DocumentPath, FallbackValue=Error with Document Name}" FontWeight="Bold"></TextBlock>
                             <TextBlock x:Name="lblPiece" DockPanel.Dock="Top" Width="Auto" HorizontalAlignment="Left" Text="{Binding AssignedPart.Name,FallbackValue=Part not assigned}"></TextBlock>
                             <TextBlock Name="lblPart" DockPanel.Dock="Top" Width="Auto" HorizontalAlignment="Left" Margin="0,5,0,0" Text="{Binding AssignedPiece.Name, FallbackValue=Piece not assigned}"></TextBlock>
+                            <TextBlock Name="lblIsAssigned" DockPanel.Dock="Top" Width="Auto" HorizontalAlignment="Left" Margin="0,5,0,0" Text="{Binding IsAssigned, FallbackValue=Null}"></TextBlock>
 
 
 
@@ -66,10 +82,10 @@
                                     <DataTemplate>
                                         <StackPanel Margin="0,20,0,20">
                                             <Border BorderBrush="Black" BorderThickness="0.5">
-                                                <Image MaxHeight="130" Source="{Binding Value.Thumbnail, Converter={StaticResource ImageConverter}}" Margin="1,1,1,1"/>
+                                                <Image MaxHeight="130" Source="{Binding Thumbnail, Converter={StaticResource ImageConverter}}" Margin="1,1,1,1"/>
                                                 
                                             </Border>
-                                            <TextBlock HorizontalAlignment="Center" Text="{Binding Value.PageNumber}"/>
+                                            <TextBlock HorizontalAlignment="Center" Text="{Binding PageNumber}"/>
                                         </StackPanel>
 
                                     </DataTemplate>
@@ -95,7 +111,7 @@
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Margin="2,0,2,0"></GridSplitter>
             <DockPanel Grid.Column="2" Width="Auto">
                 <local:ZoomBorder x:Name="border" ClipToBounds="True" Background="Gray">
-                    <Image x:Name="imgPreview" Source="{Binding SelectedImportPage.Value.Thumbnail, Converter={StaticResource ImageConverter}}"/>
+                    <Image x:Name="imgPreview" Source="{Binding SelectedImportPage.Thumbnail, Converter={StaticResource ImageConverter}}"/>
                 </local:ZoomBorder>
 
 

@@ -10,6 +10,8 @@ using System.Windows;
 using Zebra.Library;
 using Zebra.PdfHandling;
 using System.Linq;
+using System.IO;
+using System.Diagnostics;
 
 namespace ZebraDesktop.ViewModels
 {
@@ -41,15 +43,19 @@ namespace ZebraDesktop.ViewModels
             set { _batch = value; NotifyPropertyChanged();}
         }
 
-        private KeyValuePair<int, ImportPage> _selectedImportPage;
+        private ImportPage _selectedImportPage;
 
-        public KeyValuePair<int,ImportPage> SelectedImportPage
+        public ImportPage SelectedImportPage
         {
             get { return _selectedImportPage; }
             set
             {
                 _selectedImportPage = value;
-                SelectedImportCandidate = value.Value.ImportCandidate;
+
+                // Only change the ImportCandidate when a value is given for the ImportPage
+                // Otherwise this would throw an exception, e.g. when page is deleted.
+                if(value != null) SelectedImportCandidate = value.ImportCandidate;
+                
                 NotifyPropertyChanged(); UpdateButtonStatus();
             }
         }
@@ -62,7 +68,7 @@ namespace ZebraDesktop.ViewModels
             set
             {
                 _selectedImportCandidate = value;
-                if (SelectedImportPage.Value != null && SelectedImportPage.Value.ImportCandidate != value)
+                if (value != null && SelectedImportPage != null && SelectedImportPage.ImportCandidate != value)
                 {
                     SelectedImportPage = value.Pages.FirstOrDefault();
                 }
@@ -117,8 +123,25 @@ namespace ZebraDesktop.ViewModels
         public DelegateCommand DeleteSelectedImportPageCommand
         {
             get { return _deleteSelectedImportPageCommand; }
-            set { _deleteSelectedImportPageCommand = value; }
+            set { _deleteSelectedImportPageCommand = value; NotifyPropertyChanged(); }
         }
+
+        private DelegateCommand _openDocumentInExplorerCommand;
+
+        public DelegateCommand OpenDocumentInExplorerCommand
+        {
+            get { return _openDocumentInExplorerCommand; }
+            set { _openDocumentInExplorerCommand = value; NotifyPropertyChanged(); }
+        }
+
+        private DelegateCommand _splitImportCandidateOnPage;
+
+        public DelegateCommand SplitImportCandidateOnPage
+        {
+            get { return _splitImportCandidateOnPage; }
+            set { _splitImportCandidateOnPage = value; NotifyPropertyChanged(); }
+        }
+
 
 
 
@@ -142,9 +165,12 @@ namespace ZebraDesktop.ViewModels
 
             DeleteSelectedImportCandidateCommand = new DelegateCommand(executeDelteSelectedImportCandidateCommand, canExecuteDeleteSelectedImportCandidateCommand);
             DeleteSelectedImportPageCommand = new DelegateCommand(executeDeleteSelectedImportPageCommand, canExecuteDeleteSelectedImportPageCommand);
-
+            OpenDocumentInExplorerCommand = new DelegateCommand(executeOpenDocumentInExplorerCommand, canExecuteOpenDocumentInExplorerCommand);
+            SplitImportCandidateOnPage = new DelegateCommand(executeSplitImportCandidateOnPage, canExecuteSplitImportCandidateOnPage);
 
         }
+
+        
 
         #endregion
 
@@ -225,22 +251,79 @@ namespace ZebraDesktop.ViewModels
 
         private bool canExecuteDeleteSelectedImportPageCommand(object obj)
         {
-            throw new NotImplementedException();
+            // Page can only be deleted if the selected ImportCandidate has 2 or more pages.
+            // In case of 1 page only, the document has to be deleted instead.
+            return SelectedImportPage != null && SelectedImportPage.ImportCandidate.Pages.Count >1;
         }
 
         private bool canExecuteDeleteSelectedImportCandidateCommand(object obj)
         {
-            throw new NotImplementedException();
+            return SelectedImportCandidate != null;
         }
 
         private void executeDelteSelectedImportCandidateCommand(object obj)
         {
-            throw new NotImplementedException();
+            Batch.ImportCandidates.Remove(SelectedImportCandidate);
         }
 
         private void executeDeleteSelectedImportPageCommand(object obj)
         {
-            throw new NotImplementedException();
+            // Check if something went wrong with the selection
+            if (SelectedImportPage.ImportCandidate != SelectedImportCandidate) throw new Exception("ImportCandidate does not match ImportPage");
+            
+            SelectedImportPage.ImportCandidate.Pages.Remove(SelectedImportPage);
+
+        }
+
+        private bool canExecuteOpenDocumentInExplorerCommand(object obj)
+        {
+            return SelectedImportCandidate != null;
+        }
+
+        private void executeOpenDocumentInExplorerCommand(object obj)
+        {
+            Process.Start("explorer.exe", $"/select, { SelectedImportCandidate.DocumentPath }");
+        }
+
+        private bool canExecuteSplitImportCandidateOnPage(object obj)
+        {
+            if (SelectedImportCandidate == null) return false;
+            if (SelectedImportPage == null) return false;
+
+            // Document cannot be split if ImportCandidate only has 1 page
+            if (SelectedImportPage.ImportCandidate.Pages.Count < 2) return false;
+
+            // Document cannot be split on first page
+            if (SelectedImportPage.ImportCandidate.Pages.IndexOf(SelectedImportPage) == 0) return false;
+
+            return true;
+        }
+
+        private void executeSplitImportCandidateOnPage(object obj)
+        {
+            var pageIndex = SelectedImportPage.ImportCandidate.Pages.IndexOf(SelectedImportPage);
+            var importCandidateIndex = Batch.ImportCandidates.IndexOf(SelectedImportCandidate);
+
+            var newImportCandidate = new ImportCandidate(SelectedImportCandidate.DocumentPath);
+
+            for (int i = pageIndex; i < SelectedImportCandidate.Pages.Count; i++)
+            {
+                var oldImportCandidate = SelectedImportPage.ImportCandidate;
+                var page = SelectedImportCandidate.Pages[i];
+
+                // Set new parent for the page and add to new Import Candidate
+                page.ImportCandidate = newImportCandidate;
+                newImportCandidate.Pages.Add(page);
+
+                // Remove page from old ImportCandidate
+                oldImportCandidate.Pages.Remove(page);
+                
+            }
+
+            Batch.ImportCandidates.Add(newImportCandidate);
+            Batch.ImportCandidates.Move(Batch.ImportCandidates.IndexOf(newImportCandidate), importCandidateIndex + 1);
+
+
         }
 
         #endregion

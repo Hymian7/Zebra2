@@ -38,7 +38,7 @@ namespace ZebraDesktop
         {
             if ((sender as System.Windows.Controls.ListView).SelectedItem != null)
             { 
-                (this.DataContext as ZebraDesktop.ViewModels.PDFBatchImporterViewModel).SelectedImportPage = (KeyValuePair<int, ImportPage>)(sender as System.Windows.Controls.ListView).SelectedItem; 
+                (this.DataContext as ZebraDesktop.ViewModels.PDFBatchImporterViewModel).SelectedImportPage = (ImportPage)(sender as System.Windows.Controls.ListView).SelectedItem; 
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Zebra.Library;
@@ -17,9 +18,9 @@ namespace Zebra.PdfHandling
         }
 
 
-        private SortedList<int, ImportPage> pages;
+        private ObservableCollection<ImportPage> pages;
 
-        public SortedList<int, ImportPage> Pages
+        public ObservableCollection<ImportPage> Pages
         {
             get { return pages; }
             set { pages = value; NotifyPropertyChanged(); }
@@ -31,12 +32,12 @@ namespace Zebra.PdfHandling
         {
             get { return (assignedPiece != null && assignedPart != null); }
         }
-            //set { isAssigned = value; NotifyPropertyChanged(); } }
+
         
         private Piece assignedPiece;
         public Piece AssignedPiece {
             get { return assignedPiece; }
-            set { assignedPiece = value; NotifyPropertyChanged(); }
+            set { assignedPiece = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(IsAssigned)); }
         }
 
 
@@ -44,13 +45,13 @@ namespace Zebra.PdfHandling
         public Part AssignedPart
         {
             get { return assignedPart; }
-            set { assignedPart = value; NotifyPropertyChanged(); }
+            set { assignedPart = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(IsAssigned)); }
         }
 
 
         public ImportCandidate(String documentPath)
         {
-            Pages = new SortedList<int, ImportPage>();
+            Pages = new ObservableCollection<ImportPage>();
             DocumentPath = documentPath;
         }
 
