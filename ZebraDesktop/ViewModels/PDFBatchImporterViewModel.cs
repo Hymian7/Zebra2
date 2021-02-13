@@ -86,6 +86,15 @@ namespace ZebraDesktop.ViewModels
             set { _report = value; NotifyPropertyChanged(); }
         }
 
+        private bool _takeoverAssignedPiece;
+
+        public bool TakeoverAssignedPiece
+        {
+            get { return _takeoverAssignedPiece; }
+            set { _takeoverAssignedPiece = value; NotifyPropertyChanged(); }
+        }
+
+
         private DelegateCommand _openFileCommand;
 
         public DelegateCommand OpenFileCommand
@@ -168,6 +177,7 @@ namespace ZebraDesktop.ViewModels
             OpenDocumentInExplorerCommand = new DelegateCommand(executeOpenDocumentInExplorerCommand, canExecuteOpenDocumentInExplorerCommand);
             SplitImportCandidateOnPage = new DelegateCommand(executeSplitImportCandidateOnPage, canExecuteSplitImportCandidateOnPage);
 
+            TakeoverAssignedPiece = true;
         }
 
         
@@ -209,33 +219,15 @@ namespace ZebraDesktop.ViewModels
 
         private void executeImportCommand(object obj)
         {
-            foreach (var item in Batch.ImportCandidates)
-            {
-                if (item.IsAssigned)
-                {
-                    //Batch.ImportAssignments.Add(new ImportAssignment(item.AssignedPiece, item.AssignedPart, new List<int>() { item.PageNumber }));
-                    throw new NotImplementedException("Needs reimplementation");
-                }
-            }
-
-            var frm = new frmPdfBatchImportPreview(Batch);
-            frm.ShowDialog();
+            
+            //Batch.ImportAssignments.Add(new ImportAssignment(item.AssignedPiece, item.AssignedPart, new List<int>() { item.PageNumber }));
+            throw new NotImplementedException("Needs reimplementation");
+                
         }
 
         private bool canExecuteImportCommand(object obj)
         {
-            //return Batch != null ? (Batch.importAssignments.Count > 0) : false ;
-
-            if (Batch == null) return false;
-
-            foreach (var item in Batch.ImportCandidates)
-            {
-                if (item.IsAssigned)
-                {
-                    return true;
-                }
-            }
-                return false;
+            return SelectedImportCandidate.IsAssigned;
         }
 
         private void executeAssignCommand(object obj)
@@ -302,14 +294,16 @@ namespace ZebraDesktop.ViewModels
         private void executeSplitImportCandidateOnPage(object obj)
         {
             var pageIndex = SelectedImportPage.ImportCandidate.Pages.IndexOf(SelectedImportPage);
+            var numPages = SelectedImportPage.ImportCandidate.Pages.Count;
             var importCandidateIndex = Batch.ImportCandidates.IndexOf(SelectedImportCandidate);
 
             var newImportCandidate = new ImportCandidate(SelectedImportCandidate.DocumentPath);
+            var oldImportCandidate = SelectedImportPage.ImportCandidate;
 
-            for (int i = pageIndex; i < SelectedImportCandidate.Pages.Count; i++)
-            {
-                var oldImportCandidate = SelectedImportPage.ImportCandidate;
-                var page = SelectedImportCandidate.Pages[i];
+            for (int i = pageIndex; i < numPages; i++)
+            {                
+                // Always same pageIndex, because page gets removed and following page indices decrease
+                var page = oldImportCandidate.Pages[pageIndex];
 
                 // Set new parent for the page and add to new Import Candidate
                 page.ImportCandidate = newImportCandidate;
@@ -317,7 +311,12 @@ namespace ZebraDesktop.ViewModels
 
                 // Remove page from old ImportCandidate
                 oldImportCandidate.Pages.Remove(page);
-                
+
+            }
+
+            if (TakeoverAssignedPiece == true)
+            {
+                newImportCandidate.AssignedPiece = oldImportCandidate.AssignedPiece;
             }
 
             Batch.ImportCandidates.Add(newImportCandidate);
