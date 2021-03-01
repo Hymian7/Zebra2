@@ -14,53 +14,15 @@ namespace Zebra.PdfHandling
 {
     public class ImportBatch : INotifyPropertyChanged
     {
-        public FileInfo File { get; set; }
-
         public ObservableCollection<ImportCandidate> ImportCandidates { get; set; }
 
-        public ImportBatch()
+        private ImportCandidateImporter Importer { get; set; }
+
+        public ImportBatch(ImportCandidateImporter importer)
         {
             ImportCandidates = new ObservableCollection<ImportCandidate>();
-        }
-
-        #region PropertyChanged
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-
-        #endregion
-
-        /// <summary>
-        /// Sends generated ImportCandidates back to UI Thread in the ImportBatchProgressReport
-        /// Items have to be added to Collection manually in UI Thread
-        /// </summary>
-        /// <param name="progress"></param>
-        /// <returns></returns>
-        //public async Task LoadImportCandidatesAsync(IProgress<ImportBatchProgressReport> progress)
-        //{
-        //    ImportBatchProgressReport report = new ImportBatchProgressReport();
-
-        //    for (int i = 0; i < Document.PageCount; i++)
-        //    {
-        //        await Task.Run(() => report.LastImported = (new ImportCandidate(i, Document.Pages[i].Thumbnail)));
-        //        report.ImportedCandidates.Add(report.LastImported);
-        //        report.Percentage=((int)(i + 1) * 100 / Document.PageCount);
-        //        report.GenerateMessage(i + 1, Document.PageCount);
-
-        //        progress.Report(report);
-
-        //    }
-        //    report.Percentage = 0;
-        //    report.Message = "Import erfolgreich!";
-        //    progress.Report(report);
-        //}
-
-
+            Importer = importer;
+        }   
 
         public void AddDocument(string pdfDocument)
         {
@@ -79,6 +41,49 @@ namespace Zebra.PdfHandling
             ImportCandidates.Add(newCandidate);
 
         }
+
+
+        /// <summary>
+        /// Imports all assigned ImportCandidates from the batch.
+        /// NOTE: Does not remove them from the batch.
+        /// </summary>
+        /// <returns></returns>
+        public async Task ImportAllAssignedCandidatesAsync()
+        {
+            foreach (var candidate in ImportCandidates)
+            {
+                if (candidate.IsAssigned)
+                {
+                    await Importer.ImportImportCandidate(candidate);
+                    //ImportCandidates.Remove(candidate);
+
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Imports the given importCandidate and removes it from the ImportBatch.
+        /// </summary>
+        /// <param name="importCandidate">ImportCandidate to be imported.</param>
+        /// <returns></returns>
+        public async Task ImportCandidateAsync(ImportCandidate importCandidate)
+        {
+            await Importer.ImportImportCandidate(importCandidate);
+            ImportCandidates.Remove(importCandidate);
+        }
+
+     #region PropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        #endregion
 
     }
 }

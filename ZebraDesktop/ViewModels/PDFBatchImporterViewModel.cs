@@ -168,6 +168,8 @@ namespace ZebraDesktop.ViewModels
             Manager.Context.Part.Load();
             AllParts = Manager.Context.Part.Local.ToObservableCollection();
 
+            Batch = new ImportBatch(new ImportCandidateImporter(Manager));
+
             OpenFileCommand = new DelegateCommand(executeOpenFileCommand, canExecuteOpenFileCommand);
             ImportCommand = new DelegateCommand(executeImportCommand, canExecuteImportCommand);
             AssignCommand = new DelegateCommand(executeAssignCommand, canExecuteAssignCommand);
@@ -199,8 +201,6 @@ namespace ZebraDesktop.ViewModels
             if (System.IO.File.Exists(ofd.FileName))
             {
 
-                if(Batch == null) Batch = new ImportBatch();
-
                 foreach (var file in ofd.FileNames)
                 {
 
@@ -217,17 +217,24 @@ namespace ZebraDesktop.ViewModels
             return true;
         }
 
-        private void executeImportCommand(object obj)
+        private async void executeImportCommand(object obj)
         {
-            
-            //Batch.ImportAssignments.Add(new ImportAssignment(item.AssignedPiece, item.AssignedPart, new List<int>() { item.PageNumber }));
-            throw new NotImplementedException("Needs reimplementation");
+            try
+            {
+                await Batch.ImportCandidateAsync(SelectedImportCandidate);
+                MessageBox.Show("Import war erfolgreich!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                throw;
+            }
                 
         }
 
         private bool canExecuteImportCommand(object obj)
         {
-            return SelectedImportCandidate.IsAssigned;
+            return SelectedImportCandidate != null;
         }
 
         private void executeAssignCommand(object obj)

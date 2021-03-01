@@ -8,7 +8,7 @@ namespace Zebra.PdfHandling
     public class SheetAlreadyExistsException : ZebraImportException
     {
         public Sheet ExistingSheet { get; private set; }
-        public ImportAssignment Assignment { get; private set; }
+        public ImportCandidate Candidate { get; private set; }
 
         public SheetAlreadyExistsException() : base()
         { }
@@ -28,10 +28,10 @@ namespace Zebra.PdfHandling
             ExistingSheet = _sheet;
         }
 
-        public SheetAlreadyExistsException(Sheet _sheet, ImportAssignment _assignment) : base($"Sheet {_sheet.Piece.Name} - {_sheet.Part.Name} already exists.")
+        public SheetAlreadyExistsException(Sheet _sheet, ImportCandidate _candidate) : base($"Sheet {_sheet.Piece.Name} - {_sheet.Part.Name} already exists.")
         {
             ExistingSheet = _sheet;
-            Assignment = _assignment;
+            Candidate = _candidate;
         }
 
     }

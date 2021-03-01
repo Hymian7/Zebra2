@@ -85,7 +85,7 @@ namespace Zebra.PdfHandling
                 {
 
                     //If no overwriting is intended, throw exception
-                    if (_override == false) throw new SheetAlreadyExistsException(sheet, this);
+                    if (_override == false) throw new SheetAlreadyExistsException(sheet);
 
                     //If overwriting is intended, set bool to true, so that the sheet does not get created twice in the database
                     alreadyExists = true;
