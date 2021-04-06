@@ -109,6 +109,30 @@ namespace ZebraDesktop.ViewModels
             set { _deletePieceCommand = value; NotifyPropertyChanged(); }
         }
 
+        private DelegateCommand _addPartCommand;
+
+        public DelegateCommand AddPartCommand
+        {
+            get { return _addPartCommand; }
+            set { _addPartCommand = value; NotifyPropertyChanged(); }
+        }
+
+        private DelegateCommand _editPartCommand;
+
+        public DelegateCommand EditPartCommand
+        {
+            get { return _editPartCommand; }
+            set { _editPartCommand = value; NotifyPropertyChanged(); }
+        }
+
+        private DelegateCommand _deletePartCommand;
+
+        public DelegateCommand DeletePartCommand
+        {
+            get { return _deletePartCommand; }
+            set { _deletePartCommand = value; NotifyPropertyChanged(); }
+        }
+
         private DelegateCommand _importPDFBatchCommand;
 
         public DelegateCommand ImportPDFBatchCommand
@@ -130,14 +154,23 @@ namespace ZebraDesktop.ViewModels
             UnloadConfigCommand = new DelegateCommand(ExecuteUnloadConfigCommand, canExecuteUnloadConfigCommand);
             NewConfigCommand = new DelegateCommand(ExecuteNewConfigCommand);
             ExitCommand = new DelegateCommand((object obj) => { Application.Current.Shutdown(); });
+            
             AddPieceCommand = new DelegateCommand(ExecuteNewPieceCommand, CanExecuteNewPieceCommand);
             EditPieceCommand = new DelegateCommand(ExecuteEditPieceCommand, CanExecuteEditPieceCommand);
             DeletePieceCommand = new DelegateCommand(ExecuteDeletePieceCommand, canExecuteDeletePieceCommand);
+
+            AddPartCommand = new DelegateCommand(ExecuteNewPartCommand, CanExecuteNewPartCommand);
+            EditPartCommand = new DelegateCommand(ExecuteEditPartCommand, CanExecuteEditPartCommand);
+            DeletePartCommand = new DelegateCommand(ExecuteDeletePartCommand, canExecuteDeletePartCommand);
+
+
             ImportPDFBatchCommand = new DelegateCommand(ExecuteImportPDFBatchCommand, canExecuteImportPDFBatchCommand);
             
         }
 
         
+
+
         #endregion
 
         #region Commands
@@ -213,6 +246,38 @@ namespace ZebraDesktop.ViewModels
             frmPieceDetail frm = new frmPieceDetail(PiecesPageViewModel?.SelectedPiece);
             frm.Show();
         }
+
+        private bool canExecuteDeletePartCommand(object obj)
+        {
+            return (PartsPageViewModel?.SelectedPart != null);
+        }
+
+        private void ExecuteDeletePartCommand(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool CanExecuteEditPartCommand(object obj)
+        {
+            return (PartsPageViewModel?.SelectedPart != null);
+        }
+
+        private void ExecuteEditPartCommand(object obj)
+        {
+            frmPartDetail frm = new frmPartDetail(PartsPageViewModel?.SelectedPart);
+            frm.Show();
+        }
+
+        private bool CanExecuteNewPartCommand(object obj)
+        {
+            return CurrentApp.Manager != null;
+        }
+
+        private void ExecuteNewPartCommand(object obj)
+        {
+            frmNewPart frm = new frmNewPart();
+            frm.Show();
+        }
         #endregion
 
         #region Methods
@@ -239,6 +304,8 @@ namespace ZebraDesktop.ViewModels
                 
                 //await CurrentApp.Manager.Context.Database.GetPendingMigrationsAsync();
 
+
+                //TODO: Make Creation of ViewModels Async
                 PiecesPageViewModel = new PiecesPageViewModel();
                 PartsPageViewModel = new PartsPageViewModel();
                 

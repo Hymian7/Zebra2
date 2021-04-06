@@ -67,6 +67,8 @@ namespace ZebraDesktop.ViewModels
 
         public PieceDetailViewModel()
         {
+            Piece testPiece = new Piece("Quak", "Frosch");
+            CurrentPiece = testPiece;
         }
 
         #endregion

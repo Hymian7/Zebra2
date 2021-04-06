@@ -7,6 +7,8 @@ using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using Zebra.Library;
+using ZebraDesktop.Views;
+using System.Linq;
 
 namespace ZebraDesktop.ViewModels
 {
@@ -70,12 +72,14 @@ namespace ZebraDesktop.ViewModels
 
             CurrentApp.Manager.Context.Part.LoadAsync<Part>();
             AllParts = CurrentApp.Manager.Context.Part.Local.ToObservableCollection();
+            
 
             FilteredParts = new CollectionViewSource
             {
                 Source = AllParts
             };
 
+            FilteredParts.SortDescriptions.Add(new SortDescription("Position", ListSortDirection.Ascending));
             FilteredParts.Filter += ApplyFilter;
 
             ItemDoubleClickCommand = new DelegateCommand(ExecuteItemDoubleClick);
@@ -87,8 +91,8 @@ namespace ZebraDesktop.ViewModels
         #region Commands
         private void ExecuteItemDoubleClick(object obj)
         {
-            //frmPartDetail frm = new frmPartDetail(SelectedPart);
-            //frm.Show();
+            frmPartDetail frm = new frmPartDetail(SelectedPart);
+            frm.Show();
         }
         #endregion
 

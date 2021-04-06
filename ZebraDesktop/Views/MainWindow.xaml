@@ -49,7 +49,22 @@
                     <Image Source="/Icons/delete.png" Height="Auto" Stretch="Fill"></Image>
                 </Button>
             </ToolBar>
+
+            <ToolBar Height="35">
+                <Label VerticalAlignment="Center" Width="Auto">Stimmen</Label>
+                <Button x:Name="tbButtonAddPart" VerticalAlignment="Center" Command="{Binding AddPartCommand}">
+                    <Image Source="/Icons/add.png" Height="Auto"></Image>
+                </Button>
+                <Button x:Name="tbButtonEditPart" VerticalAlignment="Center" Command="{Binding EditPartCommand}">
+                    <Image Source="/Icons/edit.png" Height="Auto"></Image>
+                </Button>
+                <Button x:Name="tbButtonDeletePart" VerticalAlignment="Center" Command="{Binding DeletePartCommand}">
+                    <Image Source="/Icons/delete.png" Height="Auto" Stretch="Fill"></Image>
+                </Button>
+            </ToolBar>
         </ToolBarTray>
+        
+
 
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>

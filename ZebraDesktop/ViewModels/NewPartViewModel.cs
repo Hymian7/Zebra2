@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text;
 using System.Windows;
-using System.Xml.Linq;
 using Zebra.Library;
+using System.Collections;
 
 namespace ZebraDesktop.ViewModels
 {
-    public class NewPieceViewModel : ViewModelBase
+    public class NewPartViewModel : ViewModelBase
     {
+
         #region Properties
 
-        private Piece _piece;
+        private Part _part;
 
-        public Piece Piece
+        public Part Part
         {
-            get { return _piece; }
-            set { _piece = value; NotifyPropertyChanged(); }
+            get { return _part; }
+            set { _part = value; NotifyPropertyChanged(); }
         }
 
         private DelegateCommand _cancelCommand;
@@ -43,21 +43,21 @@ namespace ZebraDesktop.ViewModels
 
         #region Constructors
 
-        public NewPieceViewModel()
+        public NewPartViewModel()
         {
-            Piece = new Piece("<Neues Stück>");
+            Part = new Part("<Neue Stimme>");
 
             CancelCommand = new DelegateCommand(executeCancelCommand, canExecuteCancelCommand);
             SaveCommand = new DelegateCommand(executeSaveCommand, canExecuteSaveCommand);
         }
-        #endregion
 
+        #endregion
 
         #region Commands
 
         private bool canExecuteCancelCommand(object obj)
         {
-           return true; 
+            return true;
         }
 
         private void executeCancelCommand(object obj)
@@ -67,17 +67,16 @@ namespace ZebraDesktop.ViewModels
 
         private bool canExecuteSaveCommand(object obj)
         {
-            return !String.IsNullOrEmpty(Piece.Name); 
+            return !String.IsNullOrEmpty(Part.Name);
         }
 
         private void executeSaveCommand(object obj)
         {
-            Manager.Context.Add<Piece>(this.Piece);
+            Manager.Context.Add<Part>(this.Part);
             Manager.Context.SaveChanges();
             (obj as Window).Close();
         }
 
         #endregion
-
     }
 }
