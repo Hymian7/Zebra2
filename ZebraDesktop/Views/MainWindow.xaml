@@ -79,7 +79,9 @@
             <TabItem Name="tiParts" Header="Stimmen">
                 <Frame Name="tiPartsFrame" NavigationUIVisibility="Hidden" Content="{Binding PartsPage}"></Frame>
             </TabItem>                
-            <TabItem Header="Verzeichnisse"></TabItem>
+            <TabItem Header="Verzeichnisse">
+                <Frame Name="tiSetlistsFrame" NavigationUIVisibility="Hidden" Content="{Binding SetlistsPage}"></Frame>
+            </TabItem>
         </TabControl>
 
     </DockPanel>

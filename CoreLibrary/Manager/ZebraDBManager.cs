@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -101,6 +103,12 @@ namespace Zebra.Library
             return Context.Part.ToList<Part>();
         }
 
+        public ObservableCollection<Setlist> GetAllSetlists() 
+        {
+            Context.Setlist.LoadAsync<Setlist>();
+            return Context.Setlist.Local.ToObservableCollection();
+        }
+
         public Piece NewPiece(string newname, string newarranger)
         {
             var _newpiece = Context.Add<Piece>(Piece.Create(newname, newarranger));
@@ -128,9 +136,7 @@ namespace Zebra.Library
             return newsheet.Entity;
         }
 
-        //public void StorePDF(FileInfo file, Sheet sheet) => Archive.PushFile(file, sheet);
-
-        //public FileInfo GetPDF(Sheet sheet) => Archive.GetFile(sheet);
+        
 
         #region LINQ Queries
 

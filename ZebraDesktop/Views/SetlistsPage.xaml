@@ -1,0 +1,36 @@
+﻿<Page x:Class="ZebraDesktop.Views.SetlistsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ZebraDesktop.Views"
+      xmlns:vm="clr-namespace:ZebraDesktop.ViewModels"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Setlists">
+
+    <Page.DataContext>
+        <vm:SetlistsPageViewModel/>
+    </Page.DataContext>
+
+    <StackPanel x:Name="page_Setlists">
+        <Label  Margin="10,10,10,0" Content="Suchen:"></Label>
+        <TextBox x:Name="tbFilter" Height="20" Margin="10,0,10,10" Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+        <ListView Name="lvPieces" Margin="10,0,10,10" VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True" MaxHeight="500px" SelectedItem="{Binding SelectedSetlist}" ItemsSource="{Binding FilteredSetlists.View}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="Auto" Header="ID" DisplayMemberBinding="{Binding Path=SetlistID}"></GridViewColumn>
+                    <GridViewColumn Width="150" Header="Erstellt am" DisplayMemberBinding="{Binding Path=CreationDate}"></GridViewColumn>
+                    <GridViewColumn Width="150" Header="Letztes Update" DisplayMemberBinding="{Binding Path=LastUpdate}"></GridViewColumn>
+                </GridView>
+            </ListView.View>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding ItemDoubleClickCommand}">
+                    </i:InvokeCommandAction>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ListView>
+    </StackPanel>
+</Page>

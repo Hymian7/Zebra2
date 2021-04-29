@@ -37,6 +37,15 @@ namespace ZebraDesktop.ViewModels
             set { _piecesPage = value; NotifyPropertyChanged(); }
         }
 
+        private SetlistsPage _setlistsPage;
+
+        public SetlistsPage SetlistsPage
+        {
+            get { return _setlistsPage; }
+            set { _setlistsPage = value; NotifyPropertyChanged(); }
+        }
+
+
         private PiecesPageViewModel _piecesPageViewModel;
 
         public PiecesPageViewModel PiecesPageViewModel
@@ -52,6 +61,15 @@ namespace ZebraDesktop.ViewModels
             get { return _partsPageViewModel; }
             set { _partsPageViewModel = value; NotifyPropertyChanged(); }
         }
+
+        private SetlistsPageViewModel _setlistsPageViewModel;
+
+        public SetlistsPageViewModel SetlistsPageViewModel
+        {
+            get { return _setlistsPageViewModel; }
+            set { _setlistsPageViewModel = value; NotifyPropertyChanged(); }
+        }
+
 
         private DelegateCommand _loadConfigCommand;
 
@@ -308,15 +326,19 @@ namespace ZebraDesktop.ViewModels
                 //TODO: Make Creation of ViewModels Async
                 PiecesPageViewModel = new PiecesPageViewModel();
                 PartsPageViewModel = new PartsPageViewModel();
+                SetlistsPageViewModel = new SetlistsPageViewModel();
                 
                 //Register Eventhandler for Button States to be updated
                 PiecesPageViewModel.PropertyChanged += ChildSelectionChanged;
                 PartsPageViewModel.PropertyChanged += ChildSelectionChanged;
+                SetlistsPageViewModel.PropertyChanged += ChildSelectionChanged;
 
                 PiecesPage = new PiecesPage();
                 PiecesPage.DataContext = PiecesPageViewModel;
                 PartsPage = new PartsPage();
                 PartsPage.DataContext = PartsPageViewModel;
+                SetlistsPage = new SetlistsPage();
+                SetlistsPage.DataContext = SetlistsPageViewModel;
             }
 
             UpdateButtonStatus();

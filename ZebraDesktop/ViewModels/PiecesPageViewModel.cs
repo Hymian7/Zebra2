@@ -44,8 +44,7 @@ namespace ZebraDesktop.ViewModels
         private App _currentApp;
         private App CurrentApp
         {
-            get { return _currentApp; }
-            set { _currentApp = value; NotifyPropertyChanged(); }
+            get { return (App)Application.Current; }
         }
 
         private string _filter;
@@ -72,7 +71,6 @@ namespace ZebraDesktop.ViewModels
 
         public PiecesPageViewModel()
         {
-            CurrentApp = (App)Application.Current;
 
             CurrentApp.Manager.Context.Piece.LoadAsync<Piece>();
             AllPieces = CurrentApp.Manager.Context.Piece.Local.ToObservableCollection();
