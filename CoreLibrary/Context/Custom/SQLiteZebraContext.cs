@@ -7,6 +7,19 @@ namespace Zebra.Library
 {
     class SQLiteZebraContext : ZebraContext
     {
+        /// <summary>
+        /// Only for EF Core Migrations
+        /// </summary>
+        public SQLiteZebraContext() : base() 
+        {
+
+            this.Settings = new ZebraConfig
+            {
+                DatabaseCredentials = new SQLiteCredentials { Path = ":memory:" },
+            };
+        }
+
+        
         public SQLiteZebraContext(ZebraConfig config) : base(config)
         {
 

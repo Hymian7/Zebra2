@@ -317,10 +317,26 @@ namespace ZebraDesktop.ViewModels
                 var conf = (frmConfigSelector.DataContext as ConfigSelectorViewModel).LoadedConfiguration;
                 CurrentApp.ZebraConfig = conf;
 
-                await CurrentApp.Manager.EnsureDatabaseCreatedAsync();
-                // TODO: Check for pending migrations
-                
-                //await CurrentApp.Manager.Context.Database.GetPendingMigrationsAsync();
+                var pendingMigrations = await CurrentApp.Manager.Context.Database.GetPendingMigrationsAsync();
+
+                var message = "Folgende Migrations müssen angewendet werden, bevor die Datenbank verwendet werden kann:\n\n";
+                bool migrationRequired = false;
+
+                foreach (var mig in pendingMigrations)
+                {
+                    migrationRequired = true;
+                    message += mig + "\n";
+                }
+
+                message += "\nWollen Sie die Migrationen jetzt durchführen?";
+
+                if(migrationRequired && MessageBox.Show(message, "Achtung", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                {
+                    //Abort Migration
+                    CurrentApp.ZebraConfig = null; return;
+                }            
+
+                await CurrentApp.Manager.Context.Database.MigrateAsync();
 
 
                 //TODO: Make Creation of ViewModels Async
