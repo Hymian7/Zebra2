@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Zebra.Library
 {
-    public abstract partial class ZebraContext
+    public abstract partial class ZebraContext : DbContext
     {
         /// <summary>
         /// Zebra Settings for the Database Connection
@@ -21,5 +21,11 @@ namespace Zebra.Library
 
         }
 
+        /// <summary>
+        /// Only for EF Core Migrations
+        /// </summary>
+        public ZebraContext()
+        {
+        }
     }
 }
