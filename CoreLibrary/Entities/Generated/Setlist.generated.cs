@@ -63,6 +63,126 @@ namespace Zebra.Library
       /// </summary>
       public DateTime? LastUpdate { get; set; }
 
+      /// <summary>
+      /// Backing field for Name
+      /// </summary>
+      protected string _Name;
+      /// <summary>
+      /// When provided in a partial class, allows value of Name to be changed before setting.
+      /// </summary>
+      partial void SetName(string oldValue, ref string newValue);
+      /// <summary>
+      /// When provided in a partial class, allows value of Name to be changed before returning.
+      /// </summary>
+      partial void GetName(ref string result);
+
+      /// <summary>
+      /// Max length = 100
+      /// Setlist Name
+      /// </summary>
+      /// <remarks>
+      /// Description of the Setlist
+      /// </remarks>
+      [MaxLength(100)]
+      [StringLength(100)]
+      public string Name
+      {
+         get
+         {
+            string value = _Name;
+            GetName(ref value);
+            return (_Name = value);
+         }
+         set
+         {
+            string oldValue = _Name;
+            SetName(oldValue, ref value);
+            if (oldValue != value)
+            {
+               _Name = value;
+               OnPropertyChanged();
+            }
+         }
+      }
+
+      /// <summary>
+      /// Backing field for Date
+      /// </summary>
+      protected DateTime? _Date;
+      /// <summary>
+      /// When provided in a partial class, allows value of Date to be changed before setting.
+      /// </summary>
+      partial void SetDate(DateTime? oldValue, ref DateTime? newValue);
+      /// <summary>
+      /// When provided in a partial class, allows value of Date to be changed before returning.
+      /// </summary>
+      partial void GetDate(ref DateTime? result);
+
+      /// <summary>
+      /// Date for Setlist
+      /// </summary>
+      /// <remarks>
+      /// e.g. when Setlist is performed
+      /// </remarks>
+      public DateTime? Date
+      {
+         get
+         {
+            DateTime? value = _Date;
+            GetDate(ref value);
+            return (_Date = value);
+         }
+         set
+         {
+            DateTime? oldValue = _Date;
+            SetDate(oldValue, ref value);
+            if (oldValue != value)
+            {
+               _Date = value;
+               OnPropertyChanged();
+            }
+         }
+      }
+
+      /// <summary>
+      /// Backing field for Location
+      /// </summary>
+      protected string _Location;
+      /// <summary>
+      /// When provided in a partial class, allows value of Location to be changed before setting.
+      /// </summary>
+      partial void SetLocation(string oldValue, ref string newValue);
+      /// <summary>
+      /// When provided in a partial class, allows value of Location to be changed before returning.
+      /// </summary>
+      partial void GetLocation(ref string result);
+
+      /// <summary>
+      /// Max length = 50
+      /// Location where the Setlist is perfomed
+      /// </summary>
+      [MaxLength(50)]
+      [StringLength(50)]
+      public string Location
+      {
+         get
+         {
+            string value = _Location;
+            GetLocation(ref value);
+            return (_Location = value);
+         }
+         set
+         {
+            string oldValue = _Location;
+            SetLocation(oldValue, ref value);
+            if (oldValue != value)
+            {
+               _Location = value;
+               OnPropertyChanged();
+            }
+         }
+      }
+
       /*************************************************************************
        * Navigation properties
        *************************************************************************/

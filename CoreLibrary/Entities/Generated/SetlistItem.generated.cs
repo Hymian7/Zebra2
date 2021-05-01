@@ -88,6 +88,42 @@ namespace Zebra.Library
       /// </summary>
       public DateTime? LastUpdate { get; set; }
 
+      /// <summary>
+      /// Backing field for Position
+      /// </summary>
+      protected int? _Position;
+      /// <summary>
+      /// When provided in a partial class, allows value of Position to be changed before setting.
+      /// </summary>
+      partial void SetPosition(int? oldValue, ref int? newValue);
+      /// <summary>
+      /// When provided in a partial class, allows value of Position to be changed before returning.
+      /// </summary>
+      partial void GetPosition(ref int? result);
+
+      /// <summary>
+      /// Ordinal Number of the Setlist Item within a Setlist
+      /// </summary>
+      public int? Position
+      {
+         get
+         {
+            int? value = _Position;
+            GetPosition(ref value);
+            return (_Position = value);
+         }
+         set
+         {
+            int? oldValue = _Position;
+            SetPosition(oldValue, ref value);
+            if (oldValue != value)
+            {
+               _Position = value;
+               OnPropertyChanged();
+            }
+         }
+      }
+
       /*************************************************************************
        * Navigation properties
        *************************************************************************/

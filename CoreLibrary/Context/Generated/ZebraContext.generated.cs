@@ -131,6 +131,20 @@ namespace Zebra.Library
                      .Property(t => t.SetlistID)
                      .IsRequired()
                      .ValueGeneratedOnAdd();
+         modelBuilder.Entity<global::Zebra.Library.Setlist>()
+                     .Property(t => t.Name)
+                     .HasMaxLength(100)
+                     .HasField("_Name")
+                     .UsePropertyAccessMode(PropertyAccessMode.Property);
+         modelBuilder.Entity<global::Zebra.Library.Setlist>()
+                     .Property(t => t.Date)
+                     .HasField("_Date")
+                     .UsePropertyAccessMode(PropertyAccessMode.Property);
+         modelBuilder.Entity<global::Zebra.Library.Setlist>()
+                     .Property(t => t.Location)
+                     .HasMaxLength(50)
+                     .HasField("_Location")
+                     .UsePropertyAccessMode(PropertyAccessMode.Property);
 
          modelBuilder.Entity<global::Zebra.Library.SetlistItem>()
                      .ToTable("SetlistItem")
@@ -139,6 +153,10 @@ namespace Zebra.Library
                      .Property(t => t.SetlistItemID)
                      .IsRequired()
                      .ValueGeneratedOnAdd();
+         modelBuilder.Entity<global::Zebra.Library.SetlistItem>()
+                     .Property(t => t.Position)
+                     .HasField("_Position")
+                     .UsePropertyAccessMode(PropertyAccessMode.Property);
          modelBuilder.Entity<global::Zebra.Library.SetlistItem>()
                      .HasOne(x => x.Piece)
                      .WithMany(x => x.SetlistItem)
