@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Zebra.Library
 {
-    class SQLiteZebraContext : ZebraContext
+    public class SQLiteZebraContext : ZebraContext
     {
         /// <summary>
         /// Only for EF Core Migrations
@@ -15,7 +15,10 @@ namespace Zebra.Library
 
             this.Settings = new ZebraConfig
             {
-                DatabaseCredentials = new SQLiteCredentials { Path = ":memory:" },
+                //DatabaseCredentials = new SQLiteCredentials { Path = ":memory:" },
+                DatabaseProvider = DatabaseProvider.SQLite,
+                DatabaseCredentials = new SQLiteCredentials { Path = @"D:\Desktop\ZebraTemp\Database\zebra.db" },
+                
             };
         }
 
