@@ -16,6 +16,9 @@ using Zebra.Library;
 using Newtonsoft.Json;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Zebra.Library.PdfHandling;
+using Zebra.Library.Services;
+using System.Diagnostics;
 
 namespace ZebraServer
 {
@@ -35,7 +38,13 @@ namespace ZebraServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<SQLiteZebraContext>(b => b.UseLazyLoadingProxies());
+            services.AddDbContext<ZebraContext, SQLiteZebraContext>(b => b.UseLazyLoadingProxies());
+            Debug.Write("After AddDbContext");
+
+
+            services.AddScoped<IImportCandidateImporter, ImportCandidateImporter>();
+            services.AddTransient<FileNameService>();
+            services.AddTransient<ArchiveService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -45,9 +54,10 @@ namespace ZebraServer
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SQLiteZebraContext context)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ZebraContext context)
         {
             context.Database.EnsureCreated();
+            Debug.Write("After Database.EnsureCreated()");
             
             if (env.IsDevelopment())
             {

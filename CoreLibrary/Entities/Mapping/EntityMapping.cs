@@ -55,6 +55,7 @@ namespace Zebra.Library.Mapping
         {
             var newSetlistDTO = new SetlistDTO()
             {
+                SetlistID = setlist.SetlistID,
                 Name = setlist.Name,
                 Date = setlist.Date,
                 Location = setlist.Location
@@ -69,6 +70,7 @@ namespace Zebra.Library.Mapping
         {
             var newSLI = new SetlistItemDTO
             {
+                
                 PieceID = sli.Piece.PieceID,
                 PieceName = sli.Piece.Name,
                 Position = sli.Position,

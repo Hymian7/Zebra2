@@ -42,15 +42,15 @@ namespace Zebra.Library
         //        default:
         //            break;
         //    }
-            
+
         //    this.Archive = new LocalArchive(ZebraConfig.ArchiveCredentials as LocalArchiveCredentials);
         //    Context.Database.EnsureCreated();
         //}
-        
+
         public ZebraDBManager(ZebraConfig ZebraConf)
         {
             ZebraConfig = ZebraConf;
-            
+
 
             // Setup Context
             switch (ZebraConf.DatabaseProvider)
@@ -72,7 +72,7 @@ namespace Zebra.Library
             switch (ZebraConf.ArchiveType)
             {
                 case ArchiveType.FTP:
-                    this.Archive = new FTPArchive(ZebraConf.ArchiveCredentials as FTPCredentials); 
+                    this.Archive = new FTPArchive(ZebraConf.ArchiveCredentials as FTPCredentials);
                     break;
                 case ArchiveType.SFTP:
                     this.Archive = new SFTPArchive(ZebraConf.ArchiveCredentials as SFTPCredentials);
@@ -103,7 +103,7 @@ namespace Zebra.Library
             return Context.Part.ToList<Part>();
         }
 
-        public ObservableCollection<Setlist> GetAllSetlists() 
+        public virtual ObservableCollection<Setlist> GetAllSetlists()
         {
             Context.Setlist.LoadAsync<Setlist>();
             return Context.Setlist.Local.ToObservableCollection();
@@ -136,7 +136,7 @@ namespace Zebra.Library
             return newsheet.Entity;
         }
 
-        
+
 
         #region LINQ Queries
 
@@ -165,7 +165,7 @@ namespace Zebra.Library
         }
 
         public Sheet GetSheet(int id) => Context.Sheet.Find(id);
-        
+
 
         #endregion
 
@@ -178,7 +178,7 @@ namespace Zebra.Library
 
         protected virtual void Dispose(bool disposing) => Context.Dispose();
 
-        ~ZebraDBManager() => Dispose(false); 
+        ~ZebraDBManager() => Dispose(false);
         #endregion
     }
 }

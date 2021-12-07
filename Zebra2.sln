@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfiumLight", "D:\Dokumente
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDFtkSharp", "D:\Dokumente\Visual Studio 2019\Projects\PDFtkSharp\PDFtkSharp\PDFtkSharp.csproj", "{FEE68FE3-33D9-455C-8EBA-83EE91F7A29B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfHandling", "PdfHandling\PdfHandling.csproj", "{9CFD3E44-2613-41F2-97F9-74BC53540CDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfHandling", "PdfHandling\PdfHandling.csproj", "{9CFD3E44-2613-41F2-97F9-74BC53540CDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZebraServer", "ZebraServer\ZebraServer.csproj", "{B8F6A808-DE33-484E-AE87-F9F1AB97F925}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{9CFD3E44-2613-41F2-97F9-74BC53540CDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CFD3E44-2613-41F2-97F9-74BC53540CDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CFD3E44-2613-41F2-97F9-74BC53540CDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8F6A808-DE33-484E-AE87-F9F1AB97F925}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8F6A808-DE33-484E-AE87-F9F1AB97F925}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8F6A808-DE33-484E-AE87-F9F1AB97F925}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8F6A808-DE33-484E-AE87-F9F1AB97F925}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -54,12 +54,21 @@
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Width="Auto" Header="ID" DisplayMemberBinding="{Binding Path=SheetID}"></GridViewColumn>
-                                    <GridViewColumn Width="150" Header="Name" DisplayMemberBinding="{Binding Path=Part.Name}"></GridViewColumn>
+                                    <GridViewColumn Width="Auto" Header="Name" DisplayMemberBinding="{Binding Path=PartName}"></GridViewColumn>
                                 </GridView>
                             </ListView.View>
                         </ListView>
                     </TabItem>
-                    <TabItem Header="Verzeichnisse"></TabItem>
+                    <TabItem Header="Verzeichnisse">
+                        <ListView x:Name="lvSetlists" Margin="10,10,10,10" ItemsSource="{Binding CurrentPiece.Setlist}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Width="Auto" Header="ID" DisplayMemberBinding="{Binding Path=SetlistID}"></GridViewColumn>
+                                    <GridViewColumn Width="Auto" Header="Name" DisplayMemberBinding="{Binding Path=Name}"></GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </TabItem>
                 </TabControl>
                 
             </StackPanel>

@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Zebra.Library;
-using Zebra.PdfHandling;
+using Zebra.Library.PdfHandling;
 
 namespace ZebraDesktop
 {
@@ -15,7 +15,7 @@ namespace ZebraDesktop
     public partial class frmPdfBatchImporter : Window
     {
 
-        public frmPdfBatchImporter(ZebraContext context)
+        public frmPdfBatchImporter()
         {
             InitializeComponent();
         }

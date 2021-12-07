@@ -6,6 +6,8 @@ using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.ComponentModel;
 using System.Windows;
+using System.Threading.Tasks;
+using System.Collections.Specialized;
 
 namespace ZebraDesktop.ViewModels
 {
@@ -21,9 +23,9 @@ namespace ZebraDesktop.ViewModels
             set { _selectedSetlist = value; NotifyPropertyChanged(); }
         }
 
-        private ObservableCollection<Setlist> _allSetlists;
+        private ObservableCollection<SetlistDTO> _allSetlists;
 
-        public ObservableCollection<Setlist> AllSetlists
+        public ObservableCollection<SetlistDTO> AllSetlists
         {
             get { return _allSetlists; }
             set { _allSetlists = value; NotifyPropertyChanged(); }
@@ -68,14 +70,31 @@ namespace ZebraDesktop.ViewModels
 
         public SetlistsPageViewModel()
         {
+            AllSetlists = new ObservableCollection<SetlistDTO>();
 
-            AllSetlists = CurrentApp.Manager.GetAllSetlists();
+            UpdateAsync();
 
             FilteredSetlists = new CollectionViewSource();
             FilteredSetlists.Source = AllSetlists;
             FilteredSetlists.Filter += ApplyFilter;
 
             ItemDoubleClickCommand = new DelegateCommand(ExecuteItemDoubleClick);
+        }
+
+        public async Task UpdateAsync()
+        {
+            var collection = await CurrentApp.Manager.GetAllSetlistsAsync();
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+
+            {
+                AllSetlists.Clear();
+                foreach (var item in collection)
+                {
+                    AllSetlists.Add(item);
+                }
+                
+                }));;
+            
         }
 
         #endregion
@@ -113,7 +132,6 @@ namespace ZebraDesktop.ViewModels
         {
             FilteredSetlists.View.Refresh();
         }
-
 
         #endregion
     }

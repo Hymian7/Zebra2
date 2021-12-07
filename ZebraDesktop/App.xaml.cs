@@ -33,7 +33,7 @@ namespace ZebraDesktop
 
                 if (value != null)
                 {
-                    Manager = new ZebraDBManager(value); 
+                    Manager = ZebraDbManagerFactory.GetManager(value); 
                 }
                 else
                 {
@@ -43,9 +43,9 @@ namespace ZebraDesktop
                     OnPropertyChanged(nameof(ZebraConfig)); }
         }
 
-        private ZebraDBManager _manager;
+        private IZebraDBManager _manager;
 
-        public ZebraDBManager Manager
+        public IZebraDBManager Manager
         {
             get { return _manager; }
             private set { _manager = value; OnPropertyChanged(nameof(Manager)); }

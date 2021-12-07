@@ -16,6 +16,8 @@ namespace Zebra.Library
             this.Settings = new ZebraConfig
             {
                 //DatabaseCredentials = new SQLiteCredentials { Path = ":memory:" },
+
+                //For debugging the ZebraServer Application
                 DatabaseProvider = DatabaseProvider.SQLite,
                 DatabaseCredentials = new SQLiteCredentials { Path = @"D:\Desktop\ZebraTemp\Database\zebra.db" },
                 

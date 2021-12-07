@@ -21,8 +21,9 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="Auto" Header="ID" DisplayMemberBinding="{Binding Path=SetlistID}"></GridViewColumn>
-                    <GridViewColumn Width="150" Header="Erstellt am" DisplayMemberBinding="{Binding Path=CreationDate}"></GridViewColumn>
-                    <GridViewColumn Width="150" Header="Letztes Update" DisplayMemberBinding="{Binding Path=LastUpdate}"></GridViewColumn>
+                    <GridViewColumn Width="Auto" Header="Name" DisplayMemberBinding="{Binding Path=Name}"></GridViewColumn>
+                    <GridViewColumn Width="Auto" Header="Location" DisplayMemberBinding="{Binding Path=Location}"></GridViewColumn>
+                    <GridViewColumn Width="Auto" Header="Datum" DisplayMemberBinding="{Binding Path=Date}"></GridViewColumn>
                 </GridView>
             </ListView.View>
             <i:Interaction.Triggers>

@@ -57,7 +57,7 @@
                 <ColumnDefinition Width="31*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <ListView x:Name="lbDocuments" Grid.Column="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding Batch.ImportCandidates}" SelectedItem="{Binding SelectedImportCandidate}" Margin="0,10,0,0" SelectionMode="Single">
+            <ListView x:Name="lbDocuments" Grid.Column="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding Batch}" SelectedItem="{Binding SelectedImportCandidate}" Margin="0,10,0,0" SelectionMode="Single">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Width="Auto" Orientation="Vertical">
@@ -72,6 +72,7 @@
                             
                             
                             <TextBlock Name="lblDocumentName" DockPanel.Dock="Top" Width="Auto" HorizontalAlignment="Left" Margin="0,5,0,10" Text="{Binding DocumentPath, FallbackValue=Error with Document Name}" FontWeight="Bold"></TextBlock>
+                            <TextBlock Name="lblDocumentId" DockPanel.Dock="Top" Width="Auto" HorizontalAlignment="Left" Margin="0,0,0,10" Text="{Binding DocumentId, FallbackValue=Error with Document Id}"></TextBlock>
                             <TextBlock Name="lblPart" DockPanel.Dock="Top" Width="Auto" HorizontalAlignment="Left" Margin="0,5,0,0" Text="{Binding AssignedPiece.Name, FallbackValue=Piece not assigned}"></TextBlock>
                             <TextBlock x:Name="lblPiece" DockPanel.Dock="Top" Width="Auto" HorizontalAlignment="Left" Text="{Binding AssignedPart.Name,FallbackValue=Part not assigned}"></TextBlock>
                             <TextBlock Name="lblIsAssigned" DockPanel.Dock="Top" Width="Auto" HorizontalAlignment="Left" Margin="0,5,0,0" Text="{Binding IsAssigned, FallbackValue=Null}"></TextBlock>

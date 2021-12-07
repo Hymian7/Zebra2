@@ -88,6 +88,7 @@ namespace ZebraDesktop.ViewModels
         private void ExecuteLoadConfigCommand(object obj)
         {
             LoadConfig();
+  
             CloseWindow((Window)obj);
         }
 

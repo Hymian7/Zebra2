@@ -9,6 +9,7 @@ using System.Windows.Data;
 using Zebra.Library;
 using ZebraDesktop.Views;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ZebraDesktop.ViewModels
 {
@@ -16,15 +17,15 @@ namespace ZebraDesktop.ViewModels
     {
         #region Properties
 
-        private Part _selectedPart = null;
-        public Part SelectedPart
+        private PartDTO _selectedPart = null;
+        public PartDTO SelectedPart
         {
             get { return _selectedPart; }
             set { _selectedPart = value; NotifyPropertyChanged(); }
         }
 
-        private ObservableCollection<Part> _allParts;
-        public ObservableCollection<Part> AllParts
+        private ObservableCollection<PartDTO> _allParts;
+        public ObservableCollection<PartDTO> AllParts
         {
             get { return _allParts; }
             set { _allParts = value; NotifyPropertyChanged(); }
@@ -70,8 +71,9 @@ namespace ZebraDesktop.ViewModels
         {
             CurrentApp = (Application.Current as App);
 
-            CurrentApp.Manager.Context.Part.LoadAsync<Part>();
-            AllParts = CurrentApp.Manager.Context.Part.Local.ToObservableCollection();
+            AllParts = new ObservableCollection<PartDTO>();
+
+            UpdateAsync();
             
 
             FilteredParts = new CollectionViewSource
@@ -89,14 +91,30 @@ namespace ZebraDesktop.ViewModels
         #endregion
 
         #region Commands
-        private void ExecuteItemDoubleClick(object obj)
+        private async void ExecuteItemDoubleClick(object obj)
         {
-            frmPartDetail frm = new frmPartDetail(SelectedPart);
+            
+            frmPartDetail frm = new frmPartDetail(await CurrentApp.Manager.GetPartAsync(SelectedPart.PartID));
             frm.Show();
         }
         #endregion
 
         #region Methods
+
+        public async Task UpdateAsync()
+        {
+            var collection = await CurrentApp.Manager.GetAllPartsAsync();
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+
+            {
+                AllParts.Clear();
+                foreach (var item in collection)
+                {
+                    AllParts.Add(item);
+                }
+
+            })); ;
+        }
 
         private void ApplyFilter(object sender, FilterEventArgs e)
         {
@@ -104,7 +122,7 @@ namespace ZebraDesktop.ViewModels
             { e.Accepted = true; }
             else
             {
-                Part itm = e.Item as Part;
+                PartDTO itm = e.Item as PartDTO;
                 e.Accepted = itm.Name.Contains(Filter, StringComparison.OrdinalIgnoreCase) || itm.PartID.ToString().Contains(Filter, StringComparison.OrdinalIgnoreCase);
             }
 

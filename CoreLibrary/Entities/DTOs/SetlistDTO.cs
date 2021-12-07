@@ -7,6 +7,8 @@ namespace Zebra.Library
 {
     public class SetlistDTO
     {
+        [JsonPropertyName("setlistid")]
+        public int SetlistID { get; set; }
         [JsonPropertyName("name")]
         public string Name { get; set; }
 

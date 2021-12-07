@@ -1,0 +1,14 @@
+2021-12-07 22:01:48.539 +01:00 [INF] Loaded 3 extensions
+2021-12-07 22:01:52.138 +01:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\2.1.200\
+2021-12-07 22:01:52.558 +01:00 [ERR] Unexpected error
+System.TypeLoadException: Could not load type 'NuGet.Credentials.DefaultCredentialServiceUtility' from assembly 'NuGet.Credentials, Version=4.7.0.5, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.NuGetCredentialsStartup.StartupAsync(CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleRunner.RunStartupAsync(IEnumerable`1 startups, CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/ConsoleRunner.cs:line 95
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleRunner.StartAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/ConsoleRunner.cs:line 60
+2021-12-07 22:04:35.678 +01:00 [INF] Loaded 3 extensions
+2021-12-07 22:04:38.715 +01:00 [INF] MSBuild registered from C:\Program Files\dotnet\sdk\2.1.200\
+2021-12-07 22:04:38.870 +01:00 [ERR] Unexpected error
+System.TypeLoadException: Could not load type 'NuGet.Credentials.DefaultCredentialServiceUtility' from assembly 'NuGet.Credentials, Version=4.7.0.5, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.
+   at Microsoft.DotNet.UpgradeAssistant.MSBuild.NuGetCredentialsStartup.StartupAsync(CancellationToken token)
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleRunner.RunStartupAsync(IEnumerable`1 startups, CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/ConsoleRunner.cs:line 95
+   at Microsoft.DotNet.UpgradeAssistant.Cli.ConsoleRunner.StartAsync(CancellationToken token) in /_/src/cli/Microsoft.DotNet.UpgradeAssistant.Cli/ConsoleRunner.cs:line 60

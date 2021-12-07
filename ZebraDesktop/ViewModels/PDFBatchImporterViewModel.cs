@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Zebra.Library;
-using Zebra.PdfHandling;
+using Zebra.Library.PdfHandling;
 using System.Linq;
 using System.IO;
 using System.Diagnostics;
@@ -19,17 +19,17 @@ namespace ZebraDesktop.ViewModels
     {
         #region Properties
 
-        private ZebraDBManager Manager { get { return (Application.Current as App).Manager; } }
+        private IZebraDBManager Manager { get { return (Application.Current as App).Manager; } }
 
-        private ObservableCollection<Piece> _allPieces;
-        public ObservableCollection<Piece> AllPieces
+        private ObservableCollection<PieceDTO> _allPieces;
+        public ObservableCollection<PieceDTO> AllPieces
         {
             get { return _allPieces; }
             set { _allPieces = value; NotifyPropertyChanged(); }
         }
         
-        private ObservableCollection<Part> _allParts;
-        public ObservableCollection<Part> AllParts
+        private ObservableCollection<PartDTO> _allParts;
+        public ObservableCollection<PartDTO> AllParts
         {
             get { return _allParts; }
             set { _allParts = value; NotifyPropertyChanged(); }
@@ -162,13 +162,9 @@ namespace ZebraDesktop.ViewModels
 
         public PDFBatchImporterViewModel()
         {
-            Manager.Context.Piece.Load();
-            AllPieces = Manager.Context.Piece.Local.ToObservableCollection();
+            LoadCollectionsAsync();
 
-            Manager.Context.Part.Load();
-            AllParts = Manager.Context.Part.Local.ToObservableCollection();
-
-            Batch = new ImportBatch(new ImportCandidateImporter(Manager));
+            Batch = new ImportBatch();
 
             OpenFileCommand = new DelegateCommand(executeOpenFileCommand, canExecuteOpenFileCommand);
             ImportCommand = new DelegateCommand(executeImportCommand, canExecuteImportCommand);
@@ -203,11 +199,8 @@ namespace ZebraDesktop.ViewModels
 
                 foreach (var file in ofd.FileNames)
                 {
-
-                    Batch.AddDocument(file);
-
+                    Batch.Add((await Manager.GetImportCandidateAsync(file)).LoadThumbnails(file));
                 }
-                
 
             }
         }
@@ -221,20 +214,22 @@ namespace ZebraDesktop.ViewModels
         {
             try
             {
-                await Batch.ImportCandidateAsync(SelectedImportCandidate);
+                await Manager.ImportImportCandidateAsync(SelectedImportCandidate);
+                Batch.Remove(SelectedImportCandidate);
                 MessageBox.Show("Import war erfolgreich!");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                throw;
             }
                 
         }
 
         private bool canExecuteImportCommand(object obj)
         {
-            return SelectedImportCandidate != null;
+            if (SelectedImportCandidate == null) return false;
+            
+            return SelectedImportCandidate.IsAssigned;
         }
 
         private void executeAssignCommand(object obj)
@@ -252,7 +247,7 @@ namespace ZebraDesktop.ViewModels
         {
             // Page can only be deleted if the selected ImportCandidate has 2 or more pages.
             // In case of 1 page only, the document has to be deleted instead.
-            return SelectedImportPage != null && SelectedImportPage.ImportCandidate.Pages.Count >1;
+            return SelectedImportPage != null && SelectedImportPage.ImportCandidate.Pages.Count > 1;
         }
 
         private bool canExecuteDeleteSelectedImportCandidateCommand(object obj)
@@ -262,7 +257,7 @@ namespace ZebraDesktop.ViewModels
 
         private void executeDelteSelectedImportCandidateCommand(object obj)
         {
-            Batch.ImportCandidates.Remove(SelectedImportCandidate);
+            Batch.Remove(SelectedImportCandidate);
         }
 
         private void executeDeleteSelectedImportPageCommand(object obj)
@@ -281,7 +276,7 @@ namespace ZebraDesktop.ViewModels
 
         private void executeOpenDocumentInExplorerCommand(object obj)
         {
-            Process.Start("explorer.exe", $"/select, { SelectedImportCandidate.DocumentPath }");
+            //Process.Start("explorer.exe", $"/select, { SelectedImportCandidate.DocumentPath }");
         }
 
         private bool canExecuteSplitImportCandidateOnPage(object obj)
@@ -301,35 +296,24 @@ namespace ZebraDesktop.ViewModels
         private void executeSplitImportCandidateOnPage(object obj)
         {
             var pageIndex = SelectedImportPage.ImportCandidate.Pages.IndexOf(SelectedImportPage);
-            var numPages = SelectedImportPage.ImportCandidate.Pages.Count;
-            var importCandidateIndex = Batch.ImportCandidates.IndexOf(SelectedImportCandidate);
+            var importCandidateIndex = Batch.IndexOf(SelectedImportCandidate);
 
-            var newImportCandidate = new ImportCandidate(SelectedImportCandidate.DocumentPath);
-            var oldImportCandidate = SelectedImportPage.ImportCandidate;
+            var newImportCandidate = SelectedImportCandidate.Split(pageIndex, TakeoverAssignedPiece);
 
-            for (int i = pageIndex; i < numPages; i++)
-            {                
-                // Always same pageIndex, because page gets removed and following page indices decrease
-                var page = oldImportCandidate.Pages[pageIndex];
-
-                // Set new parent for the page and add to new Import Candidate
-                page.ImportCandidate = newImportCandidate;
-                newImportCandidate.Pages.Add(page);
-
-                // Remove page from old ImportCandidate
-                oldImportCandidate.Pages.Remove(page);
-
-            }
-
-            if (TakeoverAssignedPiece == true)
-            {
-                newImportCandidate.AssignedPiece = oldImportCandidate.AssignedPiece;
-            }
-
-            Batch.ImportCandidates.Add(newImportCandidate);
-            Batch.ImportCandidates.Move(Batch.ImportCandidates.IndexOf(newImportCandidate), importCandidateIndex + 1);
+            Batch.Add(newImportCandidate);
+            Batch.Move(Batch.IndexOf(newImportCandidate), importCandidateIndex + 1);
 
 
+        }
+
+        #endregion
+
+        #region Methods
+
+        private async void LoadCollectionsAsync()
+        {
+            AllParts = new ObservableCollection<PartDTO>(await Manager.GetAllPartsAsync());
+            AllPieces = new ObservableCollection<PieceDTO>(await Manager.GetAllPiecesAsync());
         }
 
         #endregion

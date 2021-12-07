@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using Zebra.Library;
-using Zebra.PdfHandling;
+using Zebra.Library.PdfHandling;
 
 namespace ZebraDesktop.ViewModels
 {
@@ -12,30 +12,25 @@ namespace ZebraDesktop.ViewModels
     {
         #region Properties
 
-        private Piece _currentPiece;
+        private PieceDTO _currentPiece;
 
-        public Piece CurrentPiece
+        public PieceDTO CurrentPiece
         {
             get { return _currentPiece; }
             set { _currentPiece = value; NotifyPropertyChanged(); }
         }
 
-        public ZebraDBManager Manager
+        public IZebraDBManager Manager
         { get { return ((Application.Current) as App).Manager; } }
 
-        private Sheet _selectedSheet;
+        private SheetDTO _selectedSheet;
 
-        public Sheet SelectedSheet
+        public SheetDTO SelectedSheet
         {
             get { return _selectedSheet; }
             set
             {
                 _selectedSheet = value;
-                if (value != null)
-                {
-                    CurrentSheetDocumentPath = SelectedSheet.DocumentPath(Manager);
-                    CurrentSheetDocument = new PreviewablePdfDocument(CurrentSheetDocumentPath);
-                }
                 NotifyPropertyChanged();
             }
         }
@@ -60,20 +55,24 @@ namespace ZebraDesktop.ViewModels
 
         #region Constructors
 
-        public PieceDetailViewModel(Piece piece)
+        public PieceDetailViewModel(PieceDTO piece)
         {
             CurrentPiece = piece;
         }
 
         public PieceDetailViewModel()
         {
-            Piece testPiece = new Piece("Quak", "Frosch");
+            PieceDTO testPiece = new PieceDTO() { Name = "Quak", Arranger = "Frosch"};
             CurrentPiece = testPiece;
         }
 
         #endregion
 
         #region Commands
+
+        #endregion
+
+        #region Methods
 
         #endregion
     }

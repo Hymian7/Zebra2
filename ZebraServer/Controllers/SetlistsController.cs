@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Zebra.Library;
+using Zebra.Library.Mapping;
 
 namespace ZebraServer.Controllers
 {
@@ -13,9 +14,9 @@ namespace ZebraServer.Controllers
     [ApiController]
     public class SetlistsController : ControllerBase
     {
-        private readonly SQLiteZebraContext _context;
+        private readonly ZebraContext _context;
 
-        public SetlistsController(SQLiteZebraContext context)
+        public SetlistsController(ZebraContext context)
         {
             _context = context;
         }
@@ -30,7 +31,7 @@ namespace ZebraServer.Controllers
 
             foreach (var sl in SetlistList)
             {
-                var newSetlistDTO = new SetlistDTO { Name = sl.Name, Date = sl.Date, Location = sl.Location };
+                var newSetlistDTO = sl.ToDTO();
                 newSetlistDTO.SetlistItems = new List<SetlistItemDTO>();
 
                 foreach (var item in sl.SetlistItem)
@@ -56,13 +57,12 @@ namespace ZebraServer.Controllers
             }
 
 
-            var newSetlistDTO = new SetlistDTO { Name = sl.Name, Date = sl.Date, Location = sl.Location };
-            newSetlistDTO.SetlistItems = new List<SetlistItemDTO>();
+            var newSetlistDTO = sl.ToDTO();
 
-            foreach (var item in sl.SetlistItem)
-            {
-                    newSetlistDTO.SetlistItems.Add(new SetlistItemDTO { SetlistItemID = item.SetlistItemID, PieceName = item.Piece.Name, Position = item.Position });
-            }
+            //foreach (var item in sl.SetlistItem)
+            //{
+            //        newSetlistDTO.SetlistItems.Add(new SetlistItemDTO { SetlistItemID = item.SetlistItemID, PieceName = item.Piece.Name, Position = item.Position });
+            //}
 
             return newSetlistDTO;
         }

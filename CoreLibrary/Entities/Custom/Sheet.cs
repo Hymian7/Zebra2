@@ -21,9 +21,10 @@ namespace Zebra.Library
             }
         }
 
-       public String DocumentPath(ZebraDBManager manager)
+       public String DocumentPath(IZebraDBManager manager)
         {
-            return manager.Archive.GetFile(this).FullName;
+            throw new NotImplementedException();
+            //return manager.Archive.GetFile(this).FullName;
         }
 
     }

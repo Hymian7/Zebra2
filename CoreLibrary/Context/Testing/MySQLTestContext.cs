@@ -25,7 +25,7 @@ namespace Zebra.Library.ConnectionTesting
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseLazyLoadingProxies(true).UseMySql(Credentials.ConnectionString);
+            optionsBuilder.UseLazyLoadingProxies(true).UseMySql(Credentials.ConnectionString, ServerVersion.AutoDetect(Credentials.ConnectionString));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
