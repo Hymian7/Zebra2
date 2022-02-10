@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj" />
-    <ProjectReference Include="D:\Dokumente\Visual Studio 2019\Projects\PDFium Light\PdfiumLight.csproj" />
-    <ProjectReference Include="D:\Dokumente\Visual Studio 2019\Projects\PDFtkSharp\PDFtkSharp\PDFtkSharp.csproj" />
+    <ProjectReference Include="..\PdfiumLight\PdfiumLight.csproj" />
+    <PackageReference Include="PDFtkSharp" Version="1.0.1" />
   </ItemGroup>
 
 </Project>

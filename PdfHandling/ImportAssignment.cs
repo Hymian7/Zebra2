@@ -101,18 +101,32 @@ namespace Zebra.PdfHandling
                 if (alreadyExists == false)
                 {
 
-                    //Create database entry (only if sheet does not exists yet)
-                    var _newsheet = manager.NewSheet(Piece.PieceID, Part.PartID);
+            //Extract page
+            PDFExtractor extractor = new PDFExtractor()
+            { 
+                InputFile=file,
+                OutputName=_newsheet.SheetID.ToString().PadLeft(8, '0'),
+                OutputPath=new DirectoryInfo(manager.ZebraConfig.TempDir)
+            };
 
-                    this.Progress = 50;
+            foreach(int page in Pages)
+            {
+                extractor.AddPage(page);
+            }
 
-                    //Extract page
-                    PDFExtractor extractor = new PDFExtractor()
-                    {
-                        InputDocument = file,
-                        OutputName = _newsheet.SheetID.ToString().PadLeft(8, '0'),
-                        OutputPath = new DirectoryInfo(manager.ZebraConfig.TempDir)
-                    };
+            this.Progress = 75;
+
+            try
+            {
+                //Extract the page from the batch
+                await extractor.ExtractAsync();
+            }
+            catch (Exception)
+            {
+                manager.Context.Remove<Sheet>(_newsheet);
+                Progress = -1;
+                throw;
+            }
 
                     this.Progress = 75;
 
