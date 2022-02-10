@@ -338,3 +338,10 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# Visual Studio Code Build Files
+.vscode/
+
+# Zebra Config Files
+*.zebraconfig
+configs/

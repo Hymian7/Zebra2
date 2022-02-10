@@ -37,7 +37,9 @@ namespace ZebraDesktop
         {
             lvConfigs.Items.Clear();
             
+            if(!Directory.Exists("configs")) Directory.CreateDirectory("configs");
             var configs = Directory.GetFiles("configs", "*.zebraconfig");
+
             List<FileInfo> files = new List<FileInfo>();
 
             foreach (var direntry in configs)
