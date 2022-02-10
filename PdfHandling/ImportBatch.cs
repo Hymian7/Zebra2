@@ -25,7 +25,7 @@ namespace Zebra.PdfHandling
             importAssignments = new List<ImportAssignment>();
             importCandidates = new List<ImportCandidate>();
 
-            for (int i = 0; i < Document.PageCount; i++)
+            for (int i = 0; i < Document.PageCount(); i++)
             {
                 importCandidates.Add(new ImportCandidate(i, Document.Pages[i].Thumbnail));
             }
