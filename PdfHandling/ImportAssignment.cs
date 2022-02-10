@@ -92,17 +92,22 @@ namespace Zebra.PdfHandling
             //Extract page
             PDFExtractor extractor = new PDFExtractor()
             { 
-                InputDocument=file,
+                InputFile=file,
                 OutputName=_newsheet.SheetID.ToString().PadLeft(8, '0'),
                 OutputPath=new DirectoryInfo(manager.ZebraConfig.TempDir)
             };
+
+            foreach(int page in Pages)
+            {
+                extractor.AddPage(page);
+            }
 
             this.Progress = 75;
 
             try
             {
                 //Extract the page from the batch
-                await extractor.ExtractPagesAsync(Pages.ToArray());
+                await extractor.ExtractAsync();
             }
             catch (Exception)
             {

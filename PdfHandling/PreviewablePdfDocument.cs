@@ -23,7 +23,7 @@ namespace Zebra.PdfHandling
             Pages = new List<PreviewablePdfPage>();
 
             //Add pages to Document
-            for (int i = 0; i < PageCount; i++)
+            for (int i = 0; i < PageCount(); i++)
             {
                 Pages.Add(GetPreviewablePage(i));
             }
@@ -35,7 +35,7 @@ namespace Zebra.PdfHandling
                 Pages = new List<PreviewablePdfPage>();
 
                 //Add pages to Document
-                for (int i = 0; i < PageCount; i++)
+                for (int i = 0; i < PageCount(); i++)
                 {
                     Pages.Add(GetPreviewablePage(i));
                 }

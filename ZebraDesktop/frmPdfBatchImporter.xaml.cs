@@ -13,7 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
-using PdfiumLight;
 using Zebra.Library;
 using Zebra.PdfHandling;
 
