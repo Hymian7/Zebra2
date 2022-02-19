@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using Zebra.Library;
+using ZebraDesktop.Views;
+
 
 namespace ZebraDesktop.ViewModels
 {

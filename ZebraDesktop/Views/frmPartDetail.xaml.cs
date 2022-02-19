@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -9,20 +8,21 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Zebra.Library;
+using ZebraDesktop.ViewModels;
 
 namespace ZebraDesktop.Views
 {
     /// <summary>
-    /// Interaktionslogik für PartsPage.xaml
+    /// Interaktionslogik für frmPartDetail.xaml
     /// </summary>
-    public partial class PartsPage : Page
+    public partial class frmPartDetail : Window
     {
-        public PartsPage()
+        public frmPartDetail(Part part)
         {
             InitializeComponent();
+            this.DataContext = new PartDetailViewModel(part);
         }
     }
 }

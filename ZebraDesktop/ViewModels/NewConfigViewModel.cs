@@ -6,13 +6,10 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Security.Policy;
-using System.Text;
 using System.Windows;
 using Zebra.Library;
 using ZebraDesktop.Enums;
+using ZebraDesktop.Views;
 
 namespace ZebraDesktop.ViewModels
 {
