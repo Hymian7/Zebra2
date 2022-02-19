@@ -21,7 +21,7 @@ namespace Zebra.Library
             throw new NotImplementedException();
         }
 
-        public override void PushFile(FileInfo file, Sheet sheet, FileImportMode mode = FileImportMode.Copy)
+        public override void PushFile(FileInfo file, Sheet sheet, FileImportMode mode = FileImportMode.Copy, bool _override = false)
         {
             throw new NotImplementedException();
         }

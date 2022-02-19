@@ -8,7 +8,6 @@ namespace Zebra.Library
     [XmlInclude(typeof(LocalArchiveCredentials))]
     public abstract class ArchiveCredentials
     {
-        // Private Constructor for XML Serialization
         public ArchiveCredentials() { }
     }
 
@@ -29,8 +28,7 @@ namespace Zebra.Library
             Port = port;
         }
 
-        // Private Constructor for XML Serialization
-        private FTPCredentials() { }
+        public FTPCredentials() { }
     }
 
 
@@ -51,8 +49,7 @@ namespace Zebra.Library
             Port = port;
         }
 
-        // Private Constructor for XML Serialization
-        private SFTPCredentials() { }
+        public SFTPCredentials() { }
     }
 
     public class LocalArchiveCredentials : ArchiveCredentials
@@ -64,7 +61,6 @@ namespace Zebra.Library
             this.Path = path;
         }
 
-        // Private Constructor for XML Serialization
-        private LocalArchiveCredentials() { }
+        public LocalArchiveCredentials() { }
     }
 }

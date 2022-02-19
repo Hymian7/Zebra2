@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 using Zebra.Library;
 
 namespace Zebra.Library
@@ -65,8 +66,6 @@ namespace Zebra.Library
                     throw new Exception("Invalid Database Type in Config File");
             }
 
-            Context.Database.EnsureCreated();
-
             // Setup Archive
             switch (ZebraConf.ArchiveType)
             {
@@ -82,6 +81,11 @@ namespace Zebra.Library
                 default:
                     throw new Exception("Invalid Archive Type in Config File");
             }
+        }
+
+        public async Task<bool> EnsureDatabaseCreatedAsync()
+        {
+            return await Context.Database.EnsureCreatedAsync();
         }
 
         public List<Piece> GetAllPieces()

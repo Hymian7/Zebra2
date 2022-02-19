@@ -1,0 +1,86 @@
+﻿<Window x:Name="frmMainWindow" x:Class="ZebraDesktop.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ZebraDesktop"
+        xmlns:zebra="clr-namespace:Zebra.Library;assembly=CoreLibrary"
+        xmlns:vm="clr-namespace:ZebraDesktop.ViewModels"
+        mc:Ignorable="d"
+        Title="Zebra" Height="800" Width="1400">
+    <Window.DataContext>
+        <vm:MainWindowViewModel></vm:MainWindowViewModel>
+    </Window.DataContext>
+    
+    <DockPanel LastChildFill="True">
+        <Menu IsMainMenu="True" DockPanel.Dock="Top">
+            <MenuItem Header="Datei">
+                <MenuItem x:Name="mitm_NewConfig" Header="Neue Konfiguration" Command="{Binding NewConfigCommand}"></MenuItem>
+                <MenuItem x:Name="mitm_LoadConfig" Header="Konfiguration laden" Command="{Binding LoadConfigCommand}"></MenuItem>
+                <MenuItem x:Name="mitm_UnloadConfig" Header="Konfiguration schließen" Command="{Binding UnloadConfigCommand}"></MenuItem>
+                <Separator></Separator>
+                <MenuItem x:Name="mitm_Exit" Header="Programm beenden" Command="{Binding ExitCommand}"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Bearbeiten">
+                <MenuItem Header="Neuer Notensatz" Command="{Binding AddPieceCommand}"></MenuItem>
+                <MenuItem Header="Notensatz bearbeiten" Command="{Binding EditPieceCommand}"></MenuItem>
+                <MenuItem Header="Notensatz löschen" Command="{Binding DeletePieceCommand}"></MenuItem>
+                <Separator></Separator>
+                <MenuItem Header="Neue Stimme"></MenuItem>
+                <MenuItem Header="Stimme bearbeiten"></MenuItem>
+                <MenuItem Header="Stimme löschen"></MenuItem>
+            </MenuItem>
+            
+            <MenuItem Header="Importieren">
+                <MenuItem x:Name="mitm_ImportPdfBatch" Header="PDF-Stapel importieren" Command="{Binding ImportPDFBatchCommand}">                   
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar Height="35">
+                <Label VerticalAlignment="Center" Width="Auto">Notensätze</Label>
+                <Button x:Name="tbButtonAddPiece" VerticalAlignment="Center" Command="{Binding AddPieceCommand}">
+                    <Image Source="/Icons/add.png" Height="Auto"></Image>
+                </Button>
+                <Button x:Name="tbButtonEditPiece" VerticalAlignment="Center" Command="{Binding EditPieceCommand}">
+                    <Image Source="/Icons/edit.png" Height="Auto"></Image>
+                </Button>
+                <Button x:Name="tbButtonDeletePiece" VerticalAlignment="Center" Command="{Binding DeletePieceCommand}">
+                    <Image Source="/Icons/delete.png" Height="Auto" Stretch="Fill"></Image>
+                </Button>
+            </ToolBar>
+
+            <ToolBar Height="35">
+                <Label VerticalAlignment="Center" Width="Auto">Stimmen</Label>
+                <Button x:Name="tbButtonAddPart" VerticalAlignment="Center" Command="{Binding AddPartCommand}">
+                    <Image Source="/Icons/add.png" Height="Auto"></Image>
+                </Button>
+                <Button x:Name="tbButtonEditPart" VerticalAlignment="Center" Command="{Binding EditPartCommand}">
+                    <Image Source="/Icons/edit.png" Height="Auto"></Image>
+                </Button>
+                <Button x:Name="tbButtonDeletePart" VerticalAlignment="Center" Command="{Binding DeletePartCommand}">
+                    <Image Source="/Icons/delete.png" Height="Auto" Stretch="Fill"></Image>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+        
+
+
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <Label Name="lbl_ConfigName" Content="{Binding CurrentApp.Manager.ZebraConfig.ConfigName, FallbackValue=Keine Konfiguration geladen.}"></Label>
+            </StatusBarItem>
+        </StatusBar>
+        
+        <TabControl DockPanel.Dock="Top" Height="Auto" IsEnabled="True" Name="tcViews">
+            <TabItem Name="tiPieces" Header="Notensätze">
+                <Frame Name="tiPiecesFrame" NavigationUIVisibility="Hidden" Content="{Binding PiecesPage}"></Frame>
+            </TabItem>
+            <TabItem Name="tiParts" Header="Stimmen">
+                <Frame Name="tiPartsFrame" NavigationUIVisibility="Hidden" Content="{Binding PartsPage}"></Frame>
+            </TabItem>                
+            <TabItem Header="Verzeichnisse"></TabItem>
+        </TabControl>
+
+    </DockPanel>
+</Window>

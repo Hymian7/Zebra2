@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Zebra.Library;
@@ -7,30 +9,35 @@ namespace Zebra.PdfHandling
 {
     public class ImportCandidate : INotifyPropertyChanged
     {
-        private int pageNumber;
-        public int PageNumber
+        private String _documentPath;
+
+        public String DocumentPath
         {
-            get { return pageNumber; }
-            set { pageNumber = value; NotifyPropertyChanged(); }
+            get { return _documentPath; }
+            set { _documentPath = value; NotifyPropertyChanged(); }
         }
 
-        private System.Drawing.Image thumbnail;
-        public System.Drawing.Image Thumbnail {
-            get { return thumbnail; }
-            private set { thumbnail = value; NotifyPropertyChanged(); }
+
+        private ObservableCollection<ImportPage> pages;
+
+        public ObservableCollection<ImportPage> Pages
+        {
+            get { return pages; }
+            set { pages = value; NotifyPropertyChanged(); }
         }
+
 
         private bool isAssigned;
         public bool IsAssigned 
         {
             get { return (assignedPiece != null && assignedPart != null); }
         }
-            //set { isAssigned = value; NotifyPropertyChanged(); } }
+
         
         private Piece assignedPiece;
         public Piece AssignedPiece {
             get { return assignedPiece; }
-            set { assignedPiece = value; NotifyPropertyChanged(); }
+            set { assignedPiece = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(IsAssigned)); }
         }
 
 
@@ -38,19 +45,16 @@ namespace Zebra.PdfHandling
         public Part AssignedPart
         {
             get { return assignedPart; }
-            set { assignedPart = value; NotifyPropertyChanged(); }
+            set { assignedPart = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(IsAssigned)); }
         }
 
 
-        public ImportCandidate(int _num, System.Drawing.Image _thumb)
+        public ImportCandidate(String documentPath)
         {
-            PageNumber = _num;
-            Thumbnail = _thumb;
-            //IsAssigned = false;
-            assignedPiece = null;
-            assignedPart = null;
-
+            Pages = new ObservableCollection<ImportPage>();
+            DocumentPath = documentPath;
         }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

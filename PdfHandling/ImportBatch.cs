@@ -6,54 +6,84 @@ using Zebra.Library;
 using PDFtkSharp;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Collections.ObjectModel;
 
 namespace Zebra.PdfHandling
 {
-    public class ImportBatch
+    public class ImportBatch : INotifyPropertyChanged
     {
-        public FileInfo File { get; set; }
-        public PreviewablePdfDocument Document { get; set; }
-        public List<ImportAssignment> importAssignments { get; set; }
+        public ObservableCollection<ImportCandidate> ImportCandidates { get; set; }
 
-        public List<ImportCandidate> importCandidates { get; set; }
+        private ImportCandidateImporter Importer { get; set; }
 
-        public ImportBatch(string filename)
+        public ImportBatch(ImportCandidateImporter importer)
         {
-            File = new FileInfo(filename);
-            Document = new PreviewablePdfDocument(File.FullName);
+            ImportCandidates = new ObservableCollection<ImportCandidate>();
+            Importer = importer;
+        }   
 
-            importAssignments = new List<ImportAssignment>();
-            importCandidates = new List<ImportCandidate>();
+        public void AddDocument(string pdfDocument)
+        {
+            PreviewablePdfDocument doc = new PreviewablePdfDocument(pdfDocument);
 
-            for (int i = 0; i < Document.PageCount(); i++)
+            SortedList<int, ImportPage> pages = new SortedList<int, ImportPage>();
+
+            ImportCandidate newCandidate = new ImportCandidate(pdfDocument);
+
+            for (int i = 0; i < doc.PageCount(); i++)
             {
-                importCandidates.Add(new ImportCandidate(i, Document.Pages[i].Thumbnail));
+                ImportPage page = new ImportPage(newCandidate, i+1, doc.Pages[i].Thumbnail);
+                newCandidate.Pages.Add(page);
+            }
+
+            ImportCandidates.Add(newCandidate);
+
+        }
+
+
+        /// <summary>
+        /// Imports all assigned ImportCandidates from the batch.
+        /// NOTE: Does not remove them from the batch.
+        /// </summary>
+        /// <returns></returns>
+        public async Task ImportAllAssignedCandidatesAsync()
+        {
+            foreach (var candidate in ImportCandidates)
+            {
+                if (candidate.IsAssigned)
+                {
+                    await Importer.ImportImportCandidate(candidate);
+                    //ImportCandidates.Remove(candidate);
+
+                }
             }
 
         }
 
-        public async Task ImportAllAssignments(ZebraDBManager manager)
+        /// <summary>
+        /// Imports the given importCandidate and removes it from the ImportBatch.
+        /// </summary>
+        /// <param name="importCandidate">ImportCandidate to be imported.</param>
+        /// <returns></returns>
+        public async Task ImportCandidateAsync(ImportCandidate importCandidate)
         {
-            var tasks = new List<Task>();
-
-            foreach (var item in importAssignments)
-            {
-                tasks.Add(item.ImportAsync(manager, File));
-            }
-
-            try
-            {
-                await Task.WhenAll(tasks);
-            }
-            catch (SheetAlreadyExistsException ex)
-            {
-                Debug.Print($"{ex.ExistingSheet.Part.Name} - {ex.ExistingSheet.Piece.Name} wurde nicht importiert, da das Sheet schon existiert hat.");
-            }
-
-            catch (Exception ex)
-            { Debug.Print(ex.Message); }
-
+            await Importer.ImportImportCandidate(importCandidate);
+            ImportCandidates.Remove(importCandidate);
         }
+
+     #region PropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        #endregion
 
     }
 }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <Folder Include="Forms\" />
+    <Folder Include="Misc\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,6 +33,10 @@
     <Content Include="Icons\edit.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
   </ItemGroup>
 
 </Project>

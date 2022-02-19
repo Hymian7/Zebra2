@@ -1,11 +1,16 @@
-﻿<Window x:Class="ZebraDesktop.frmPieceDetail"
+﻿<Window x:Class="ZebraDesktop.Views.frmPieceDetail"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:ZebraDesktop.ViewModels"
         xmlns:local="clr-namespace:ZebraDesktop"
         mc:Ignorable="d"
-        Title="frmPieceDetail" Height="450" Width="800">
+        Title="frmPieceDetail" Height="600" Width="800">
+    <Window.DataContext>
+        <vm:PieceDetailViewModel></vm:PieceDetailViewModel>
+    </Window.DataContext>
+
     <DockPanel>
         <ToolBar DockPanel.Dock="Top" Height="Auto">
             <Button>Test</Button>
@@ -29,20 +34,23 @@
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
 
                     <Label Grid.Row="0" Grid.Column="0" Margin="5,5,5,0">ID</Label>
                     <Label Grid.Row="1" Grid.Column="0" Margin="5,5,5,0">Name</Label>
                     <Label Grid.Row="2" Grid.Column="0" Margin="5,5,5,0">Arrangeur</Label>
+                    <Label Grid.Row="3" Grid.Column="0" Margin="5,5,5,0">Memo</Label>
 
-                    <TextBox Name="tbID" Grid.Row="0" Grid.Column="1" Margin=" 5,5,5,0" IsEnabled="False" Text="{Binding Path=PieceID, Mode=OneWay}"></TextBox>
-                    <TextBox Name="tbName" Grid.Row="1" Grid.Column="1" Margin=" 5,5,5,0" Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=Default}"></TextBox>
-                    <TextBox Name="tbArranger" Grid.Row="2" Grid.Column="1" Margin=" 5,5,5,0" Text="{Binding Path=Arranger, Mode=TwoWay, UpdateSourceTrigger=Default}"></TextBox>
+                    <TextBox Name="tbID" Grid.Row="0" Grid.Column="1" Margin=" 5,5,5,0" IsEnabled="False" Text="{Binding Path=CurrentPiece.PieceID, Mode=OneWay}"></TextBox>
+                    <TextBox Name="tbName" Grid.Row="1" Grid.Column="1" Margin=" 5,5,5,0" Text="{Binding Path=CurrentPiece.Name, Mode=TwoWay, UpdateSourceTrigger=Default}"></TextBox>
+                    <TextBox Name="tbArranger" Grid.Row="2" Grid.Column="1" Margin=" 5,5,5,0" Text="{Binding Path=CurrentPiece.Arranger, Mode=TwoWay, UpdateSourceTrigger=Default}"></TextBox>
+                    <TextBox Name="tbMemo" Grid.Row="3" Grid.Column="1" Margin=" 5,5,5,0" Height="50" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding Path=CurrentPiece.Memo, Mode=TwoWay, UpdateSourceTrigger=Default}"></TextBox>
                 </Grid>
 
-                <TabControl Margin="0,10,0,0" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Height="238">
+                <TabControl Margin="0,10,0,0" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Height="Auto" MinHeight="300">
                     <TabItem Header="Stimmen">
-                        <ListView x:Name="lvSheets" Margin="10,10,10,10" SelectionChanged="lvSheets_SelectionChanged">
+                        <ListView x:Name="lvSheets" Margin="10,10,10,10" SelectedItem="{Binding SelectedSheet}" ItemsSource="{Binding CurrentPiece.Sheet}" SelectionChanged="lvSheets_SelectionChanged">
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Width="Auto" Header="ID" DisplayMemberBinding="{Binding Path=SheetID}"></GridViewColumn>

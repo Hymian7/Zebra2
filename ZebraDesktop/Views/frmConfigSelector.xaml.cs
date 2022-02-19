@@ -12,16 +12,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Zebra.Library;
 
-namespace ZebraDesktop
+namespace ZebraDesktop.Views
 {
     /// <summary>
     /// Interaktionslogik für ConfigSelector.xaml
     /// </summary>
-    public partial class ConfigSelector : Window
+    public partial class frmConfigSelector : Window
     {
         public ZebraConfig SelectedConfiguration { get; set; }
 
-        public ConfigSelector()
+        public frmConfigSelector()
         {
             InitializeComponent();
             SelectedConfiguration = null;
