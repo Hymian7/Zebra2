@@ -284,7 +284,7 @@ namespace ZebraDesktop.ViewModels
 
         private async void LoadConfig()
         {
-            ConfigSelector frmConfigSelector = new ConfigSelector();
+            frmConfigSelector frmConfigSelector = new frmConfigSelector();
             frmConfigSelector.DataContext = new ConfigSelectorViewModel();
             frmConfigSelector.ShowDialog();
 

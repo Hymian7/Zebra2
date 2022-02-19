@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using Zebra.Library;
+using ZebraDesktop.Views;
 
 namespace ZebraDesktop.ViewModels
 {

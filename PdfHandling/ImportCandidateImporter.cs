@@ -47,7 +47,7 @@ namespace Zebra.PdfHandling
             await Manager.Context.SaveChangesAsync();
 
             //Extract page
-            Extractor.InputDocument = new FileInfo(importCandidate.DocumentPath);
+            Extractor.InputFile = new FileInfo(importCandidate.DocumentPath);
             Extractor.OutputPath = new DirectoryInfo(Manager.ZebraConfig.TempDir);
             Extractor.OutputName = FileNameResolver.GetFileName(newSheet);
 
@@ -61,7 +61,7 @@ namespace Zebra.PdfHandling
             try
             {
                 //Extract pages to be imported and save into temp PDF file
-                await Extractor.ExtractPagesAsync(pages);
+                await Extractor.ExtractAsync(pages);
 
                 //Push file to archive
                 Manager.Archive.PushFile(new FileInfo(Manager.ZebraConfig.TempDir + "\\" + FileNameResolver.GetFileName(newSheet)), newSheet, FileImportMode.Copy, false);
