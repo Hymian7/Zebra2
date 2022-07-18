@@ -34,8 +34,7 @@ namespace ZebraDesktop.ViewModels
         public PiecesPage PiecesPage
         {
             get { return _piecesPage; }
-            set { _piecesPage = value; 
-            NotifyPropertyChanged(); }
+            set { _piecesPage = value; NotifyPropertyChanged(); }
         }
 
         private PiecesPageViewModel _piecesPageViewModel;
