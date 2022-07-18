@@ -23,7 +23,7 @@
             </ListView.View>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
-                    <i:InvokeCommandAction Command="{Binding LoadConfigCommand}" CommandParameter="{Binding ElementName=frmConfigSelector}"></i:InvokeCommandAction>
+                    <i:InvokeCommandAction Command="{Binding LoadConfigCommand}"></i:InvokeCommandAction>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </ListView>
@@ -36,8 +36,8 @@
                 <Button x:Name="btnNewConfig" Margin="0,0" MinWidth="80" IsEnabled="True">Neu</Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
-                <Button x:Name="btnCancel" Margin="10,0" MinWidth="80" IsCancel="True" Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=frmConfigSelector}">Abbrechen</Button>
-                <Button x:Name="btnLoad" Margin="10,0,0,0" MinWidth="80" IsDefault="True" Command="{Binding LoadConfigCommand}" CommandParameter="{Binding ElementName=frmConfigSelector}">Laden</Button>
+                <Button x:Name="btnCancel" Margin="10,0" MinWidth="80" IsCancel="True" Command="{Binding CancelCommand}">Abbrechen</Button>
+                <Button x:Name="btnLoad" Margin="10,0,0,0" MinWidth="80" IsDefault="True" Command="{Binding LoadConfigCommand}">Laden</Button>
             </StackPanel>
         </Grid>
     </StackPanel>

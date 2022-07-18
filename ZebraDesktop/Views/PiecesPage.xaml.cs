@@ -1,7 +1,6 @@
-﻿using Microsoft.Win32;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,22 +9,20 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Zebra.Library;
 
 namespace ZebraDesktop.Views
 {
     /// <summary>
-    /// Interaktionslogik für frmNewConfig.xaml
+    /// Interaktionslogik für PartsPage.xaml
     /// </summary>
-    public partial class frmNewConfig : Window, IClosable
+    public partial class PiecesPage : Page
     {
-        public frmNewConfig()
+        public PiecesPage()
         {
             InitializeComponent();
-            (this.DataContext as ZebraDesktop.ViewModels.NewConfigViewModel).ParentContainer = this;
         }
-
-        void IClosable.Close() => this.Close();
-
     }
 }
