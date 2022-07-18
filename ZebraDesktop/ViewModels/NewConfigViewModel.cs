@@ -137,6 +137,13 @@ namespace ZebraDesktop.ViewModels
             set { _saveNewConfigCommand = value; NotifyPropertyChanged(); }
         }
 
+        private IClosable _parentContainer;
+        public IClosable ParentContainer
+        {
+            get { return _parentContainer; }
+            set { _parentContainer = value; NotifyPropertyChanged();}
+        }
+        
 
         #endregion
 
@@ -153,6 +160,7 @@ namespace ZebraDesktop.ViewModels
 
             BrowseLocalDBCommand = new DelegateCommand(ExecuteBrowseLocalDBCommand, canExecuteBrowseLocalDBCommand);
             BrowseLocalArchiveCommand = new DelegateCommand(ExecuteBrowseLocalArchiveCommand, canExecuteBrowseLocalArchiveCommand);
+            BrowseTempDirCommand = new DelegateCommand(ExecuteBrowseTempDirCommand);
             TestMySQLServerCredentialsCommand = new DelegateCommand(ExecuteTestMySQLServerCredentialsCommand, canExecuteTestMySQLServerCredentialsCommand);
             TestFTPArchiveCredentialsCommand = new DelegateCommand(ExecuteTestFTPArchiveCredentialsCommand, canExecuteFTPArchiveCredentialsCommand);
             SaveNewConfigCommand = new DelegateCommand(ExecuteSaveNewConfigCommand, canExecuteSaveNewConfigCommand);
@@ -236,8 +244,12 @@ namespace ZebraDesktop.ViewModels
 
             try
             {
-                conf.Serialize(@"F:\GitHub\Zebra2\ZebraDesktop\bin\Debug\netcoreapp3.1\configs");
-                (obj as Window).Close();
+                if(!Directory.Exists(@"configs"))
+                {
+                    Directory.CreateDirectory(@"configs");
+                }
+                conf.Serialize(@"configs");
+                ParentContainer.Close();
             }
             catch (Exception ex)
             {
@@ -291,6 +303,11 @@ namespace ZebraDesktop.ViewModels
                 }
 
             }
+        }
+
+        private void ExecuteBrowseTempDirCommand(object obj)
+        {
+            MessageBox.Show("Einfach Pfad in die Textbox kopieren");
         }
 
         private bool canExecuteBrowseLocalArchiveCommand(object obj)
