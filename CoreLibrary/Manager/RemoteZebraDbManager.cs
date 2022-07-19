@@ -37,10 +37,8 @@ namespace Zebra.Library
 
             //Load IP Address and Cache folder from Configuration
 
-            //Test purposes
-            IPAdress = "localhost:44347";
-            //IPAdress = "localhost:5001";
-            CacheFolder = new DirectoryInfo(@"D:\Desktop\ZebraTemp\Archive\");
+            IPAdress = conf.ServerIPAddress + ':' + conf.ServerPort;
+            CacheFolder = new DirectoryInfo(conf.RepositoryDirectory);
 
         }
 

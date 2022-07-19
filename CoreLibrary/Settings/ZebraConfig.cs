@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -7,7 +8,9 @@ namespace Zebra.Library
     
     public class ZebraConfig
     {
-        public string ConfigName { get; set; }        
+        public string ConfigName { get; set; }
+        
+        public RepositoryType RepositoryType { get; set; }
 
         public DatabaseProvider DatabaseProvider { get; set; }
         public ArchiveType ArchiveType { get; set; }
@@ -16,10 +19,14 @@ namespace Zebra.Library
 
         public ArchiveCredentials ArchiveCredentials { get; set; }
 
-        public string TempDir { get; set; }
+        public String RepositoryDirectory { get; set; }
 
-        public char BarcodeSeperatorChar { get; set; }
-        public string DummyIndicator { get; set; }
+        [XmlIgnore]
+        public String TempDir => Path.Combine(RepositoryDirectory, "temp");
+
+        public string ServerIPAddress { get; set; }
+
+        public string ServerPort { get; set; }
 
         /// <summary>
         /// Parameterless Constructor for Serialization
@@ -28,31 +35,51 @@ namespace Zebra.Library
 
         private void SetDefaults()
         {
-            ConfigName = "New Config";
-            DatabaseProvider = DatabaseProvider.MySQL;
-            ArchiveType = ArchiveType.Local;
-            DatabaseCredentials = null;
-            ArchiveCredentials = null;
-            TempDir = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
-            BarcodeSeperatorChar = '#';
-            DummyIndicator = "dummy";
+            //ConfigName = "New Config";
+            //RepositoryType = RepositoryType.Local;
+            //DatabaseProvider = DatabaseProvider.MySQL;
+            //ArchiveType = ArchiveType.Local;
+            //DatabaseCredentials = null;
+            //ArchiveCredentials = null;
+            //TempDir = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
+            //BarcodeSeperatorChar = '#';
+            //DummyIndicator = "dummy";
         }
         
-        public ZebraConfig(string _name)
+        /// <summary>
+        /// Constructor for local SQLite repository
+        /// </summary>
+        /// <param name="_name"></param>
+        /// <param name="_repositoryDirectory"></param>
+        public ZebraConfig(string _name, DirectoryInfo _repositoryDirectory)
         {
-            SetDefaults();
             ConfigName = _name;
+            RepositoryType = RepositoryType.Local;
+            DatabaseProvider = DatabaseProvider.SQLite;
+            RepositoryDirectory = _repositoryDirectory.FullName;
+            ArchiveType = ArchiveType.Local;
+            ArchiveCredentials = new LocalArchiveCredentials(Path.Combine(RepositoryDirectory, "archive"));
+            DatabaseCredentials = new SQLiteCredentials(Path.Combine(RepositoryDirectory, "database.db"));
+            ArchiveCredentials = new LocalArchiveCredentials(Path.Combine(RepositoryDirectory, "archive"));
         }
-        public ZebraConfig(string _name, DatabaseProvider _databaseprovider, DatabaseCredentials _databaseCredentials, ArchiveType _archiveType, ArchiveCredentials _archiveCredentials, string _tempDir)
+
+        /// <summary>
+        /// Constructor for remote repository
+        /// </summary>
+        /// <param name="_name"></param>
+        /// <param name="_localRepositoryDirectory"></param>
+        /// <param name="_IPAddress"></param>
+        /// <param name="_port"></param>
+        public ZebraConfig(string _name, DirectoryInfo _localRepositoryDirectory, string _IPAddress, string _port)
         {
-            SetDefaults();
             ConfigName = _name;
-            DatabaseProvider = _databaseprovider;
-            DatabaseCredentials = _databaseCredentials;
-            ArchiveType = _archiveType;
-            ArchiveCredentials = _archiveCredentials;
-            TempDir = _tempDir;
-                       
+            RepositoryDirectory = _localRepositoryDirectory.FullName;
+            RepositoryType = RepositoryType.Remote;
+            DatabaseProvider = DatabaseProvider.SQLite;
+            ArchiveType = ArchiveType.Local;
+            ArchiveCredentials = new LocalArchiveCredentials(Path.Combine(RepositoryDirectory, "archive"));
+            ServerIPAddress = _IPAddress;
+            ServerPort = _port;
         }
 
         /// <summary>
@@ -64,7 +91,7 @@ namespace Zebra.Library
         {
             try
             {
-                string _fullpath = _path + @"\" + $"{this.ConfigName}.zebraconfig";
+                string _fullpath = Path.Combine(_path, $"{this.ConfigName}.zebraconfig");
                 XmlSerializer serializer = new XmlSerializer(this.GetType());
                 StreamWriter writer = new StreamWriter(_fullpath);
 
@@ -72,9 +99,9 @@ namespace Zebra.Library
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.InnerException);
-                Console.WriteLine(ex.Data);
+                Debug.WriteLine(ex.Message);
+                Debug.WriteLine(ex.InnerException);
+                Debug.WriteLine(ex.Data);
                 return false;
                 throw;
             }
@@ -123,5 +150,14 @@ namespace Zebra.Library
         FTP,
         SFTP,
         Local
+    }
+
+    /// <summary>
+    /// Defines, if Repository is local or remote (via API)
+    /// </summary>
+    public enum RepositoryType
+    {
+        Local,
+        Remote
     }
 }

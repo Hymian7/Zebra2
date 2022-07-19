@@ -13,7 +13,11 @@ namespace Zebra.Library
         /// <returns></returns>
         public static String GetFileName(Sheet sheet)
         {
-            return sheet.SheetID.ToString("00000000") + ".pdf";
+            return GetFileName(sheet.SheetID);
+        }
+        public static String GetFileName(int id)
+        {
+            return id.ToString("00000000") + ".pdf";
         }
     }
 }

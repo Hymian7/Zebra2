@@ -8,10 +8,12 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Zebra.Library;
+using Zebra.Library.Mapping;
+using Zebra.Library.PdfHandling;
 
 namespace Zebra.Library
 {
-    public class ZebraDBManager : IDisposable
+    public class ZebraDBManager : IDisposable, IZebraDBManager
     {
 
         public ZebraConfig ZebraConfig { get; private set; }
@@ -83,6 +85,12 @@ namespace Zebra.Library
                 default:
                     throw new Exception("Invalid Archive Type in Config File");
             }
+
+            // Make sure that all Directories exist
+            if (!Directory.Exists(ZebraConfig.RepositoryDirectory)) Directory.CreateDirectory(ZebraConfig.RepositoryDirectory);
+            if (!Directory.Exists(ZebraConfig.TempDir)) Directory.CreateDirectory(ZebraConfig.TempDir);
+            if (!Directory.Exists((ZebraConfig.ArchiveCredentials as LocalArchiveCredentials).Path)) Directory.CreateDirectory((ZebraConfig.ArchiveCredentials as LocalArchiveCredentials).Path);
+            if (ZebraConfig.RepositoryType == RepositoryType.Local && !File.Exists((ZebraConfig.DatabaseCredentials as SQLiteCredentials).Path)) File.Create((ZebraConfig.DatabaseCredentials as SQLiteCredentials).Path);
         }
 
         public async Task<bool> EnsureDatabaseCreatedAsync()
@@ -90,10 +98,38 @@ namespace Zebra.Library
             return await Context.Database.EnsureCreatedAsync();
         }
 
-        public List<Piece> GetAllPieces()
+        //public List<Piece> GetAllPieces()
+        //{
+        //    return Context.Piece.ToList<Piece>();
+        //}
+        public async Task<List<PieceDTO>> GetAllPiecesAsync()
         {
-            return Context.Piece.ToList<Piece>();
+            var allpieces = await Context.Piece.ToListAsync();
+            var allpiecesDTO = new List<PieceDTO>();
+
+            foreach (var piece in allpieces)
+            {
+                var pieceDTO = piece.ToDTO();
+                pieceDTO.Sheet = new List<SheetDTO>();
+                pieceDTO.Setlist = new List<SetlistDTO>();
+
+                allpiecesDTO.Add(pieceDTO);
+            }
+
+            return allpiecesDTO;
         }
+
+        public async Task<PieceDTO> GetPieceAsync(int id)
+        {
+            var piece = await Context.FindAsync<Piece>(id);
+
+            var pieceDTO = piece.ToDTO();
+            pieceDTO.Sheet = new List<SheetDTO>();
+            pieceDTO.Setlist = new List<SetlistDTO>();
+
+            return pieceDTO;
+        }
+
         public List<Sheet> GetAllSheets()
         {
             return Context.Sheet.ToList<Sheet>();
@@ -134,6 +170,85 @@ namespace Zebra.Library
             var newsheet = Context.Add<Sheet>(Sheet.Create(Context.Part.Find(partid), Context.Piece.Find(pieceid)));
             Context.SaveChanges();
             return newsheet.Entity;
+        }
+
+
+        
+
+        public async Task<List<PartDTO>> GetAllPartsAsync()
+        {
+            var allparts = await Context.Part.ToListAsync();
+            var allpartsDTO = new List<PartDTO>();
+
+            foreach (var part in allparts)
+            {
+                allpartsDTO.Add(part.ToDTO());
+            }
+
+            return allpartsDTO;
+        }
+
+        public async Task<PartDTO> GetPartAsync(int id)
+        {
+            var part = await Context.Part.FindAsync(id);
+            return part.ToDTO();
+        }
+
+        public async Task<PartDTO> PostPartAsync(PartDTO newPart)
+        {
+            var part = new Part(newPart.Name) { Position = newPart.Position };
+
+            Context.Part.Add(part);
+            await Context.SaveChangesAsync();
+
+            var changedentity = await Context.Part.FindAsync(part.PartID);
+            return changedentity.ToDTO();
+        }
+
+        public async Task<List<SetlistDTO>> GetAllSetlistsAsync()
+        {
+            var SetlistList = await Context.Setlist.ToListAsync();
+            List<SetlistDTO> SetlistDTOList = new List<SetlistDTO>();
+
+            foreach (var sl in SetlistList)
+            {
+                var newSetlistDTO = sl.ToDTO();
+                newSetlistDTO.SetlistItems = new List<SetlistItemDTO>();
+
+                foreach (var item in sl.SetlistItem)
+                {
+                    newSetlistDTO.SetlistItems.Add(new SetlistItemDTO { SetlistItemID = item.SetlistItemID, PieceName = item.Piece.Name, Position = item.Position });
+                }
+
+                SetlistDTOList.Add(newSetlistDTO);
+
+            }
+            return SetlistDTOList;
+        }
+
+        public async Task<SetlistDTO> GetSetlistAsync(int id)
+        {
+            return (await Context.Setlist.FindAsync(id)).ToDTO();
+        }
+
+        public async Task<SheetDTO> GetSheetAsync(int id)
+        {
+            return (await Context.Sheet.FindAsync(id)).ToDTO();
+        }
+
+        public Task<string> GetPDFPathAsync(int id)
+        {
+            return Task.FromResult(Path.Combine((ZebraConfig.ArchiveCredentials as LocalArchiveCredentials).Path, FileNameResolver.GetFileName(id)));
+        }
+
+        public Task<ImportCandidate> GetImportCandidateAsync(string filepath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ImportImportCandidateAsync(ImportCandidate ic)
+        {
+            throw new NotImplementedException();
         }
 
 
