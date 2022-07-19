@@ -75,7 +75,7 @@ namespace Zebra.Library.PdfHandling
         public async Task ImportAsync(ZebraDBManager manager, FileInfo file, bool _override = false)
         {
             bool alreadyExists = false;
-            Sheet existingSheet=null;
+            Sheet existingSheet = null;
 
             //Check if Sheet is already in Database
             foreach (var sheet in Piece.Sheet)
@@ -98,75 +98,82 @@ namespace Zebra.Library.PdfHandling
             this.Progress = 25;
 
 
-                if (alreadyExists == false)
+            if (alreadyExists == false)
+            {
+
+                //Create database entry (only if sheet does not exists yet)
+                var _newsheet = manager.NewSheet(Piece.PieceID, Part.PartID);
+
+                this.Progress = 50;
+
+                //Extract page
+                PDFExtractor extractor = new PDFExtractor()
                 {
+                    InputFile = file,
+                    OutputName = _newsheet.SheetID.ToString().PadLeft(8, '0'),
+                    OutputPath = new DirectoryInfo(manager.ZebraConfig.TempDir)
+                };
 
-                    //Create database entry (only if sheet does not exists yet)
-                    var _newsheet = manager.NewSheet(Piece.PieceID, Part.PartID);
-
-                    this.Progress = 50;
-
-                    //Extract page
-                    PDFExtractor extractor = new PDFExtractor()
-                    {
-                        InputDocument = file,
-                        OutputName = _newsheet.SheetID.ToString().PadLeft(8, '0'),
-                        OutputPath = new DirectoryInfo(manager.ZebraConfig.TempDir)
-                    };
-
-                    this.Progress = 75;
-
-                    try
-                    {
-                        //Extract the page from the batch
-                        await extractor.ExtractPagesAsync(Pages.ToArray());
-                    }
-                    catch (Exception)
-                    {
-                        manager.Context.Remove<Sheet>(_newsheet);
-                        Progress = -1;
-                        throw;
-                    }
-
-
-                    ProcessFile(manager, _newsheet.SheetID.ToString().PadLeft(8, '0'), _newsheet);
-
-                    this.Progress = 100;
-                    IsImported = true;
+                foreach (int page in Pages)
+                {
+                    extractor.AddPage(page);
                 }
 
-                else if (alreadyExists == true)
+                this.Progress = 75;
+
+                try
                 {
-                    this.Progress = 50;
-
-                    //Extract page
-                    PDFExtractor extractor = new PDFExtractor()
-                    {
-                        InputDocument = file,
-                        OutputName = existingSheet.SheetID.ToString().PadLeft(8, '0'),
-                        OutputPath = new DirectoryInfo(manager.ZebraConfig.TempDir)
-                    };
-
-                    this.Progress = 75;
-
-                    try
-                    {
-                        //Extract the page from the batch
-                        await extractor.ExtractPagesAsync(Pages.ToArray());
-                    }
-                    catch (Exception)
-                    {
-                        Progress = -1;
-                        throw;
-                    }
-
-                    ProcessFile(manager, existingSheet.SheetID.ToString().PadLeft(8, '0'), existingSheet, FileImportMode.Copy, true);
-
-                    this.Progress = 100;
-                    IsImported = true;
-
+                    //Extract the page from the batch
+                    await extractor.ExtractAsync();
                 }
-                  
+                catch (Exception)
+                {
+                    manager.Context.Remove<Sheet>(_newsheet);
+                    Progress = -1;
+                    throw;
+                }
+
+                this.Progress = 75;
+
+
+                ProcessFile(manager, _newsheet.SheetID.ToString().PadLeft(8, '0'), _newsheet);
+
+                this.Progress = 100;
+                IsImported = true;
+            }
+
+            else if (alreadyExists == true)
+            {
+                this.Progress = 50;
+
+                //Extract page
+                PDFExtractor extractor = new PDFExtractor()
+                {
+                    InputFile = file,
+                    OutputName = existingSheet.SheetID.ToString().PadLeft(8, '0'),
+                    OutputPath = new DirectoryInfo(manager.ZebraConfig.TempDir)
+                };
+
+                this.Progress = 75;
+
+                try
+                {
+                    //Extract the page from the batch
+                    await extractor.ExtractAsync(Pages.ToArray());
+                }
+                catch (Exception)
+                {
+                    Progress = -1;
+                    throw;
+                }
+
+                ProcessFile(manager, existingSheet.SheetID.ToString().PadLeft(8, '0'), existingSheet, FileImportMode.Copy, true);
+
+                this.Progress = 100;
+                IsImported = true;
+
+            }
+
         }
 
         private void ProcessFile(ZebraDBManager manager, string filename, Sheet _sheet, FileImportMode importMode = FileImportMode.Copy, bool _override = false)

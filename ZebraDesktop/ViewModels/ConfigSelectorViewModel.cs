@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using Zebra.Library;
+using ZebraDesktop.Views;
 
 namespace ZebraDesktop.ViewModels
 {
@@ -43,7 +44,13 @@ namespace ZebraDesktop.ViewModels
             set { _cancelCommand = value; NotifyPropertyChanged(); }
         }
 
-
+        private IClosable _parentContainer;
+        public IClosable ParentContainer
+        {
+            get { return _parentContainer; }
+            set { _parentContainer = value; NotifyPropertyChanged();}
+        }
+        
 
         #endregion
 
@@ -77,7 +84,7 @@ namespace ZebraDesktop.ViewModels
 
         private void ExecuteCancelCommand(object obj)
         {
-            CloseWindow((Window)obj);
+            CloseParentContainer();
         }
 
         private bool canExecuteLoadConfigCommand(object obj)
@@ -88,8 +95,7 @@ namespace ZebraDesktop.ViewModels
         private void ExecuteLoadConfigCommand(object obj)
         {
             LoadConfig();
-  
-            CloseWindow((Window)obj);
+            CloseParentContainer();
         }
 
         private void ExecuteNewConfigCommand(object obj)
@@ -109,10 +115,18 @@ namespace ZebraDesktop.ViewModels
         private void GetConfigs()
         {
             ConfigFiles.Clear();
-            foreach (var info in Directory.GetFiles("configs", "*.zebraconfig"))
+            try
             {
-                ConfigFiles.Add(new FileInfo(info));
-            };
+                foreach (var info in Directory.GetFiles("configs", "*.zebraconfig"))
+                {
+                    ConfigFiles.Add(new FileInfo(info));
+                };
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Laden der Konfigurationen!\n {ex.Message}");
+            }
 
         }
 
@@ -129,9 +143,9 @@ namespace ZebraDesktop.ViewModels
             }
         }
 
-        private void CloseWindow(Window window)
+        private void CloseParentContainer()
         {
-            window.Close();
+            ParentContainer.Close();
         }
         #endregion
     }

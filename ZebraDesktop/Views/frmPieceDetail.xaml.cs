@@ -12,7 +12,7 @@ using System.Windows.Shapes;
 using Zebra.Library;
 using ZebraDesktop.ViewModels;
 
-namespace ZebraDesktop
+namespace ZebraDesktop.Views
 {
     /// <summary>
     /// Interaktionslogik für frmPieceDetail.xaml

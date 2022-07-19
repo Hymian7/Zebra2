@@ -52,7 +52,7 @@ namespace ZebraServer.Controllers
 
             var pages = new List<ImportPage>();
 
-            for (int i = 0; i < doc.PageCount; i++)
+            for (int i = 0; i < doc.PageCount(); i++)
             {
                 ImportPage page = new ImportPage(i + 1);
                 pages.Add(page);

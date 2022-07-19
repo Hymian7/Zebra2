@@ -39,6 +39,7 @@ namespace Zebra.Library
 
             //Test purposes
             IPAdress = "localhost:44347";
+            //IPAdress = "localhost:5001";
             CacheFolder = new DirectoryInfo(@"D:\Desktop\ZebraTemp\Archive\");
 
         }

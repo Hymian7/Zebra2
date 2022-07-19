@@ -1,4 +1,4 @@
-﻿<Window x:Class="ZebraDesktop.frmNewConfig"
+﻿<Window x:Class="ZebraDesktop.Views.frmNewConfig"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -110,7 +110,7 @@
             <Label Margin="0,10,0,0" Content="Pfad zur Datenbank"/>
             <StackPanel Margin="0,5,20,0" Orientation="Horizontal" HorizontalAlignment="Stretch">
                 <TextBox x:Name="tbDBPath" Margin="0,0,10,0" Width="484" Text="{Binding SQLiteCredentials.Path}"/>
-                <Button x:Name="btnBrowseDBPath" Width="80px" HorizontalAlignment="Right" Content="Durchsuchen"/>
+                <Button x:Name="btnBrowseDBPath" Width="80px" HorizontalAlignment="Right" Content="Durchsuchen" Command="{Binding BrowseLocalDBCommand}"/>
             </StackPanel>
         </StackPanel>
         <StackPanel Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=rbLocalArchive}">
@@ -126,7 +126,7 @@
             <TextBox x:Name="tbTempDirPath" Margin="0,0,10,0" Width="484" Text="{Binding TempDirPath}"/>
             <Button x:Name="btnBrowseTempDirPath" Width="80px" HorizontalAlignment="Right" Command="{Binding BrowseTempDirCommand}" Content="Durchsuchen"/>
         </StackPanel>
-        <Button x:Name="btnOK" Width="100" Command="{Binding SaveNewConfigCommand}" CommandParameter="{Binding ElementName=NewConfigfrm}" Content="OK"/>
+        <Button x:Name="btnOK" Width="100" Command="{Binding SaveNewConfigCommand}" CommandParameter="{Binding ElementName=frmNewConfig}" Content="OK"/>
     </StackPanel>
 
 </Window>

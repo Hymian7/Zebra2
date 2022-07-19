@@ -12,17 +12,20 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace ZebraDesktop
+namespace ZebraDesktop.Views
 {
     /// <summary>
     /// Interaktionslogik für frmNewConfig.xaml
     /// </summary>
-    public partial class frmNewConfig : Window
+    public partial class frmNewConfig : Window, IClosable
     {
         public frmNewConfig()
         {
             InitializeComponent();
+            (this.DataContext as ZebraDesktop.ViewModels.NewConfigViewModel).ParentContainer = this;
         }
+
+        void IClosable.Close() => this.Close();
 
     }
 }

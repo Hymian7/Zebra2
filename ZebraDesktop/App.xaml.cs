@@ -21,6 +21,19 @@ namespace ZebraDesktop
         {
             _ZebraConfig = null;
             _manager = null;
+
+            try
+            {
+                if(!System.IO.Directory.Exists(@"configs"))
+                {
+                    System.IO.Directory.CreateDirectory(@"configs");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private ZebraConfig _ZebraConfig;

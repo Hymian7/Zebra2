@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,8 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="D:\Dokumente\Visual Studio 2019\Projects\PDFium Light\PdfiumLight.csproj" />
-    <ProjectReference Include="D:\Dokumente\Visual Studio 2019\Projects\PDFtkSharp\PDFtkSharp\PDFtkSharp.csproj" />
+    <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj" />
+    <ProjectReference Include="..\PdfiumLight\PdfiumLight.csproj" />
+    <PackageReference Include="PDFtkSharp" Version="1.0.1" />
   </ItemGroup>
 
 </Project>

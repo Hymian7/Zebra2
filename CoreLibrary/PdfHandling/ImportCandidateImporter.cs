@@ -56,7 +56,7 @@ namespace Zebra.Library.PdfHandling
                 newId = await AddSheetToDatabase(importCandidate);
                 await StoreFileInArchive(importCandidate, newId);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 // Remove sheet from database if it was added
                 if (newId != null)
@@ -82,7 +82,7 @@ namespace Zebra.Library.PdfHandling
             FileInfo extractedFile = new FileInfo(extractedFilePath);
 
             //Extract page
-            Extractor.InputDocument = new FileInfo(_fileNameService.GetFilePath(FolderType.Temp,importCandidate.DocumentId));
+            Extractor.InputFile = new FileInfo(_fileNameService.GetFilePath(FolderType.Temp,importCandidate.DocumentId));
             Extractor.OutputPath = new DirectoryInfo(extractedFile.DirectoryName);
             Extractor.OutputName = extractedFile.Name;
 
@@ -96,7 +96,7 @@ namespace Zebra.Library.PdfHandling
             try
             {
                 //Extract pages to be imported and save into temp PDF file
-                await Extractor.ExtractPagesAsync(pages);
+                await Extractor.ExtractAsync(pages);
 
                 //Push file to archive
                 _archiveService.PushFile(extractedFile, newFile, FileImportMode.Copy, false);

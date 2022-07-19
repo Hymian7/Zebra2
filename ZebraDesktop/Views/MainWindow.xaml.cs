@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Zebra.Library;
 
-namespace ZebraDesktop
+namespace ZebraDesktop.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

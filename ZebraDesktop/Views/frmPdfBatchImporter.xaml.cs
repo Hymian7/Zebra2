@@ -7,7 +7,7 @@ using System.Windows.Media;
 using Zebra.Library;
 using Zebra.Library.PdfHandling;
 
-namespace ZebraDesktop
+namespace ZebraDesktop.Views
 {
     /// <summary>
     /// Interaktionslogik für frmPdfBatchImporter.xaml

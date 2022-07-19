@@ -27,7 +27,7 @@
                 </Grid.RowDefinitions>
 
                 <Label Grid.Row="0" Grid.Column="0" Margin="5,5,5,0">Name</Label>
-                <Label Grid.Row="1" Grid.Column="0" Margin="5,5,5,0">Position</Label>
+                <Label Grid.Row="1" Grid.Column="0" Margin="5,5,5,0">Sortierreihenfolge</Label>
                 
 
                 <TextBox Name="tbName" Grid.Row="0" Grid.Column="1" Margin=" 5,5,10,0" Text="{Binding Part.Name}"></TextBox>

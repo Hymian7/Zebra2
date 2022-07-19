@@ -16,13 +16,13 @@ using Zebra.Library;
 namespace ZebraDesktop.Views
 {
     /// <summary>
-    /// Interaktionslogik für Pieces.xaml
+    /// Interaktionslogik für PartsPage.xaml
     /// </summary>
     public partial class PiecesPage : Page
     {
         public PiecesPage()
         {
             InitializeComponent();
-        }    
+        }
     }
 }
