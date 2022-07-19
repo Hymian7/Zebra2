@@ -70,7 +70,7 @@ namespace Zebra.Library
            
         protected override void CustomInit(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseLazyLoadingProxies(true).UseMySql((Settings.DatabaseCredentials as MySQLCredentials).ConnectionString);
+            optionsBuilder.UseLazyLoadingProxies(true).UseMySql((Settings.DatabaseCredentials as MySQLCredentials).ConnectionString, ServerVersion.AutoDetect((Settings.DatabaseCredentials as MySQLCredentials).ConnectionString));
         }
 
         
