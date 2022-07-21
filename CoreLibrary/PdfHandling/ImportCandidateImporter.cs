@@ -49,17 +49,19 @@ namespace Zebra.Library.PdfHandling
         /// <exception cref="SheetAlreadyExistsException"></exception>
         public async Task ImportImportCandidateAsync(ImportCandidate importCandidate)
         {
-            int? newId = null;
+            int newId = -1;
+            bool isAdded = false;
 
             try
             {
                 newId = await AddSheetToDatabase(importCandidate);
                 await StoreFileInArchive(importCandidate, newId);
+                isAdded = true;
             }
             catch(Exception)
             {
                 // Remove sheet from database if it was added
-                if (newId != null)
+                if (isAdded == false)
                 {
                     var newSheet = await _context.Sheet.FindAsync(newId);
                     if (newSheet != null)
@@ -73,12 +75,12 @@ namespace Zebra.Library.PdfHandling
             }        
         }
 
-        private async Task StoreFileInArchive(ImportCandidate importCandidate, int? newId)
+        private async Task StoreFileInArchive(ImportCandidate importCandidate, int newId)
         {
-            string newFilePath = _fileNameService.GetFilePath(FolderType.Archive, newId.ToString());
+            string newFilePath = _fileNameService.GetFilePath(FolderType.Archive, newId);
             FileInfo newFile = new FileInfo(newFilePath);
 
-            string extractedFilePath = _fileNameService.GetFilePath(FolderType.Temp, newId.ToString());
+            string extractedFilePath = _fileNameService.GetFilePath(FolderType.Temp, newId);
             FileInfo extractedFile = new FileInfo(extractedFilePath);
 
             //Extract page

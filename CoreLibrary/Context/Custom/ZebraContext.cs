@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Zebra.Library.Services;
 
 namespace Zebra.Library
 {
@@ -21,11 +22,16 @@ namespace Zebra.Library
 
         }
 
+        public ZebraContext(ZebraConfigurationService configurationService)
+        {
+            this.Settings = new ZebraConfig("Server Configuration", new System.IO.DirectoryInfo(configurationService.GetRepositoryDirectory()));
+        }
+
         /// <summary>
         /// Only for EF Core Migrations
         /// </summary>
-        public ZebraContext()
-        {
-        }
+        //public ZebraContext()
+        //{
+        //}
     }
 }

@@ -111,7 +111,7 @@ namespace Zebra.Library.PdfHandling
                 {
                     InputFile = file,
                     OutputName = _newsheet.SheetID.ToString().PadLeft(8, '0'),
-                    OutputPath = new DirectoryInfo(manager.ZebraConfig.TempDir)
+                    OutputPath = new DirectoryInfo(manager.ZebraConfig.TempDirectory)
                 };
 
                 foreach (int page in Pages)
@@ -151,7 +151,7 @@ namespace Zebra.Library.PdfHandling
                 {
                     InputFile = file,
                     OutputName = existingSheet.SheetID.ToString().PadLeft(8, '0'),
-                    OutputPath = new DirectoryInfo(manager.ZebraConfig.TempDir)
+                    OutputPath = new DirectoryInfo(manager.ZebraConfig.TempDirectory)
                 };
 
                 this.Progress = 75;
@@ -179,10 +179,10 @@ namespace Zebra.Library.PdfHandling
         private void ProcessFile(ZebraDBManager manager, string filename, Sheet _sheet, FileImportMode importMode = FileImportMode.Copy, bool _override = false)
         {
             //Push file to archive
-            manager.Archive.PushFile(new FileInfo(manager.ZebraConfig.TempDir + $"/{filename}.pdf"), _sheet, importMode, _override);
+            manager.Archive.PushFile(new FileInfo(manager.ZebraConfig.TempDirectory + $"/{filename}.pdf"), _sheet, importMode, _override);
 
             //Remove temp file
-            var oldfile = new FileInfo(manager.ZebraConfig.TempDir + $"/{filename}.pdf");
+            var oldfile = new FileInfo(manager.ZebraConfig.TempDirectory + $"/{filename}.pdf");
             oldfile.Delete();
         }
     }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Zebra.Library.Services;
 
 namespace Zebra.Library
 {
@@ -10,18 +11,14 @@ namespace Zebra.Library
         /// <summary>
         /// Only for EF Core Migrations
         /// </summary>
-        public SQLiteZebraContext() : base() 
+        //public SQLiteZebraContext() : base() 
+        //{
+
+        //}
+
+        public SQLiteZebraContext(ZebraConfigurationService configurationService) : base(configurationService)
         {
 
-            this.Settings = new ZebraConfig
-            {
-                //DatabaseCredentials = new SQLiteCredentials { Path = ":memory:" },
-
-                //For debugging the ZebraServer Application
-                DatabaseProvider = DatabaseProvider.SQLite,
-                DatabaseCredentials = new SQLiteCredentials { Path = @"D:\Desktop\ZebraTemp\Database\zebra.db" },
-                
-            };
         }
 
         
@@ -37,8 +34,6 @@ namespace Zebra.Library
 
         protected override void OnModelCreatedImpl(ModelBuilder modelBuilder)
         {
-            //throw new NotImplementedException("SQLite Default Values for Timestamps are not implemented yet.");
-
             //TODO Update Timestamp on Change
 
             //Part

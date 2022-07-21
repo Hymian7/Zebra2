@@ -88,7 +88,7 @@ namespace Zebra.Library
 
             // Make sure that all Directories exist
             if (!Directory.Exists(ZebraConfig.RepositoryDirectory)) Directory.CreateDirectory(ZebraConfig.RepositoryDirectory);
-            if (!Directory.Exists(ZebraConfig.TempDir)) Directory.CreateDirectory(ZebraConfig.TempDir);
+            if (!Directory.Exists(ZebraConfig.TempDirectory)) Directory.CreateDirectory(ZebraConfig.TempDirectory);
             if (!Directory.Exists((ZebraConfig.ArchiveCredentials as LocalArchiveCredentials).Path)) Directory.CreateDirectory((ZebraConfig.ArchiveCredentials as LocalArchiveCredentials).Path);
             if (ZebraConfig.RepositoryType == RepositoryType.Local && !File.Exists((ZebraConfig.DatabaseCredentials as SQLiteCredentials).Path)) File.Create((ZebraConfig.DatabaseCredentials as SQLiteCredentials).Path);
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Zebra.Library.Services
@@ -9,30 +10,54 @@ namespace Zebra.Library.Services
         private const int FileNameLength = 8;
         private const string Extension = ".pdf";
 
-        public string GetFilePath(FolderType type, string filename)
+        private ZebraConfigurationService _configurationService;
+
+        public FileNameService(ZebraConfigurationService configurationService)
         {
-            return $"D:\\Desktop\\ZebraTemp\\{GetSubfolder(type)}\\{filename.PadLeft(8, '0')}{Extension}"; 
+            _configurationService = configurationService;
+        }
+
+        public string GetFilePath(FolderType type, int id)
+        {
+            switch (type)
+            {
+                case FolderType.Archive:
+                    return Path.Combine(_configurationService.GetArchiveDirectory(), FileNameResolver.GetFileName(id));
+                   
+                case FolderType.Temp:
+                    return Path.Combine(_configurationService.GetTempDirectory(), FileNameResolver.GetFileName(id));
+                    
+                default:
+                    throw new Exception();
+            }
         }
 
         public string GetFilePath(FolderType type, Guid guid)
         {
-            return $"D:\\Desktop\\ZebraTemp\\{GetSubfolder(type)}\\{guid}{Extension}";
+            switch (type)
+            {
+                case FolderType.Archive:
+                    return Path.Combine(_configurationService.GetArchiveDirectory(), $"{guid}{Extension}");
+
+                case FolderType.Temp:
+                    return Path.Combine(_configurationService.GetTempDirectory(), $"{guid}{Extension}");
+
+                default:
+                    throw new Exception();
+            }
         }
 
         public string GetFolderPath(FolderType type)
         {
-            return $"D:\\Desktop\\ZebraTemp\\{GetSubfolder(type)}";
-        }
-
-        private string GetSubfolder(FolderType type)
-        {
-            return type switch
+            switch (type)
             {
-                FolderType.Archive => "ServerArchive",
-                FolderType.Temp => "ServerTemp",
-                _ => throw new ArgumentException($"Invalid FolderType {type}")
-
-            };
+                case FolderType.Archive:
+                    return _configurationService.GetArchiveDirectory();
+                case FolderType.Temp:
+                    return _configurationService.GetTempDirectory();
+                default:
+                    throw new Exception();
+            }
         }
 
     }

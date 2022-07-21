@@ -5,11 +5,11 @@ using System.Xml.Serialization;
 
 namespace Zebra.Library
 {
-    
+
     public class ZebraConfig
     {
         public string ConfigName { get; set; }
-        
+
         public RepositoryType RepositoryType { get; set; }
 
         public DatabaseProvider DatabaseProvider { get; set; }
@@ -22,7 +22,13 @@ namespace Zebra.Library
         public String RepositoryDirectory { get; set; }
 
         [XmlIgnore]
-        public String TempDir => Path.Combine(RepositoryDirectory, "temp");
+        public String TempDirectory => Path.Combine(RepositoryDirectory, "temp");
+
+        [XmlIgnore]
+        public String DatabasePath => Path.Combine(RepositoryDirectory, "database.db");
+
+        [XmlIgnore]
+        public String ArchiveDirectory => Path.Combine(RepositoryDirectory, "archive");
 
         public string ServerIPAddress { get; set; }
 
