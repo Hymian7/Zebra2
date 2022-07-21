@@ -38,7 +38,7 @@ namespace Zebra.Library
             //Load IP Address and Cache folder from Configuration
 
             IPAdress = conf.ServerIPAddress + ':' + conf.ServerPort;
-            CacheFolder = new DirectoryInfo(conf.RepositoryDirectory);
+            CacheFolder = new DirectoryInfo(Path.Combine(conf.RepositoryDirectory, "archive"));
 
         }
 
@@ -127,13 +127,13 @@ namespace Zebra.Library
 
         public async Task<string> GetPDFPathAsync(int id)
         {
-            if (!File.Exists(CacheFolder + $"{id.ToString().PadLeft(8, '0')}.pdf"))
+            if (!File.Exists(Path.Combine(CacheFolder.FullName, FileNameResolver.GetFileName(id))))
             {
                 var bytes = await GetFileAsync(id);
-                await File.WriteAllBytesAsync(CacheFolder + $"{id.ToString().PadLeft(8, '0')}.pdf", bytes);                
+                await File.WriteAllBytesAsync(Path.Combine(CacheFolder.FullName , FileNameResolver.GetFileName(id)), bytes);                
             }
 
-            return CacheFolder + $"{id.ToString().PadLeft(8, '0')}.pdf";
+            return Path.Combine(CacheFolder.FullName, FileNameResolver.GetFileName(id));
         }
 
         public async Task<ImportCandidate> GetImportCandidateAsync(string filepath)
