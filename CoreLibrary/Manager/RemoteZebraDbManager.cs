@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -26,6 +27,10 @@ namespace Zebra.Library
 
         private DirectoryInfo CacheFolder { get; set; }
 
+        public bool UseHttps { get; set; }
+
+        public string Protocol => UseHttps ? "https" : "http";
+
 
         #endregion
 
@@ -38,7 +43,13 @@ namespace Zebra.Library
             //Load IP Address and Cache folder from Configuration
 
             IPAdress = conf.ServerIPAddress + ':' + conf.ServerPort;
-            CacheFolder = new DirectoryInfo(Path.Combine(conf.RepositoryDirectory, "archive"));
+            CacheFolder = new DirectoryInfo(conf.ArchiveDirectory);
+
+
+            // Do not use https by default, except if Swagger is used (Port 44347)
+            // Mainly for testing purposes
+            if (ZebraConfig.ServerPort == "44347") UseHttps = true;
+            else UseHttps = false;
 
         }
 
@@ -51,7 +62,8 @@ namespace Zebra.Library
             HttpClient.DefaultRequestHeaders.Accept.Clear();
             HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            var apiPath = $"https://{IPAdress}/api/{GetApiPath(typeof(T))}";
+            var apiPath = $"{ Protocol }://{IPAdress}/api/{GetApiPath(typeof(T))}";
+
             var streamTask = HttpClient.GetStreamAsync(apiPath);
 
             var list = await JsonSerializer.DeserializeAsync<List<T>>(await streamTask);
@@ -64,7 +76,7 @@ namespace Zebra.Library
             HttpClient.DefaultRequestHeaders.Accept.Clear();
             HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            var streamTask = HttpClient.GetStreamAsync($"https://{IPAdress}/api/{GetApiPath(typeof(T))}/{id}");
+            var streamTask = HttpClient.GetStreamAsync($"{ Protocol }://{IPAdress}/api/{GetApiPath(typeof(T))}/{id}");
 
             var entity = await JsonSerializer.DeserializeAsync<T>(await streamTask);
 
@@ -78,7 +90,7 @@ namespace Zebra.Library
 
             var json = JsonSerializer.Serialize<T>(entity);
 
-            var streamTask = await HttpClient.PostAsync($"https://{IPAdress}/api/{GetApiPath(typeof(T))}", new StringContent( json, Encoding.UTF8, "application/json"));
+            var streamTask = await HttpClient.PostAsync($"{ Protocol }://{IPAdress}/api/{GetApiPath(typeof(T))}", new StringContent( json, Encoding.UTF8, "application/json"));
 
             var newEntity = await JsonSerializer.DeserializeAsync<T>(await streamTask.Content.ReadAsStreamAsync());
             return newEntity;
@@ -92,7 +104,7 @@ namespace Zebra.Library
             HttpClient.DefaultRequestHeaders.Accept.Clear();
             HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/pdf"));
 
-            var streamTask = HttpClient.GetByteArrayAsync($"https://{IPAdress}/api/{GetApiPath(typeof(FileInfo))}/{id}");
+            var streamTask = HttpClient.GetByteArrayAsync($"{ Protocol }://{IPAdress}/api/{GetApiPath(typeof(FileInfo))}/{id}");
 
             return await streamTask;
         }
@@ -154,7 +166,7 @@ namespace Zebra.Library
             content.Add(fileContent, "file", filepath);
 
 
-            var apiPath = $"https://{IPAdress}/api/{GetApiPath(typeof(ImportCandidate))}";
+            var apiPath = $"{ Protocol }://{IPAdress}/api/{GetApiPath(typeof(ImportCandidate))}";
             var streamTask = await HttpClient.PostAsync(apiPath, content);
 
             if (streamTask.IsSuccessStatusCode == false)
@@ -183,7 +195,7 @@ namespace Zebra.Library
             var json = JsonSerializer.Serialize<ImportCandidate>(ic);
 
             //var streamTask = await HttpClient.PostAsync($"https://{IPAdress}/api/{GetApiPath(typeof(ImportCandidate))}", new StringContent(json, Encoding.UTF8, "application/json"));
-            var streamTask = await HttpClient.PutAsync($"https://{IPAdress}/api/{GetApiPath(typeof(ImportCandidate))}/{ic.DocumentId}", new StringContent(json, Encoding.UTF8, "application/json"));
+            var streamTask = await HttpClient.PutAsync($"{ Protocol }://{IPAdress}/api/{GetApiPath(typeof(ImportCandidate))}/{ic.DocumentId}", new StringContent(json, Encoding.UTF8, "application/json"));
 
             if (streamTask.IsSuccessStatusCode == false)
             {
