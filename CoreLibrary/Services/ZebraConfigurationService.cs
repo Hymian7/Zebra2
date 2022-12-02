@@ -24,7 +24,7 @@ namespace Zebra.Library.Services
             if (!Directory.Exists(config.TempDirectory)) Directory.CreateDirectory(config.TempDirectory);
 
 
-            Debug.Print($"Configuration path set to " + config.RepositoryDirectory);
+            Debug.Print($"Configuration path set to " + Path.GetFullPath(config.RepositoryDirectory));
             IsConfigured = true;
         }
 

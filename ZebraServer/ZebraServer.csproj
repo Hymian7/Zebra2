@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <StartupObject>ZebraServer.Program</StartupObject>
+    <StartupObject>ZebraServer.ZebraServer</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

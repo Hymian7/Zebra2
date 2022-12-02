@@ -14,15 +14,92 @@ using Microsoft.EntityFrameworkCore;
 using Zebra.Library.PdfHandling;
 using Zebra.Library.Services;
 using Microsoft.OpenApi.Models;
+using System.Threading;
+using System.IO;
 
 namespace ZebraServer
 {
-    public class Program
+    public class ZebraServer
     {
-        public static void Main(string[] args)
-        {
 
-            var builder = WebApplication.CreateBuilder(args);
+        private WebApplication _webApplication;
+
+        /// <summary>
+        /// Command Line Arguments
+        /// Can only be set when run from Command Line
+        /// </summary>
+        public string[] Args { get; private set; }
+
+        /// <summary>
+        /// Path to ZebraConfig Configuration File for Server
+        /// If not set, the path defaults to ./zebraconfig.json
+        /// </summary>
+        public FileInfo ConfigurationFilePath { get; set; }
+
+        public static async Task Main(string[] args)
+        {
+            var server = new ZebraServer();
+            server.Args = args;
+
+            server.ConfigureInstance();
+
+            await server.RunAsync();
+       
+        }
+
+        /// <summary>
+        /// Creates new Instance of Zebra Server
+        /// Define Configuration File path by setting Property ConfigurationFilePath
+        /// </summary>
+        public ZebraServer()
+        {
+            ConfigurationFilePath = new FileInfo(Path.Combine(AppContext.BaseDirectory, "zebraconfig.json"));
+        }
+
+        /// <summary>
+        /// Wrapper around the WebApplication.StartAsync() call.
+        /// This method is used to start the Webserver from another application, e.g. ZebraDesktop
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task StartAsync(CancellationToken token = default)
+        {
+            // The instance has to be configured every time before it is stared
+            // Otherwise, the instance throws an Operation Cancelled Exception
+            ConfigureInstance();
+            await _webApplication.StartAsync(token);
+        }
+
+        /// <summary>
+        /// Wrapper around the WebApplication.StopAsync() call.
+        /// This method is used to stop the Webserver from another application, e.g. ZebraDesktop
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task StopAsync(CancellationToken token = default)
+        {
+            await _webApplication.StopAsync(token);
+        }
+
+        /// <summary>
+        /// Internal wrapper around WebApplication.RunAsync()
+        /// To be used by standalone Zebra Server
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        private async Task RunAsync(CancellationToken token = default)
+        {
+            ConfigureInstance();
+            await _webApplication.RunAsync(token);
+        }
+
+        /// <summary>
+        /// Sets up the internal instance of WebApplication
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        private void ConfigureInstance()
+        {
+            var builder = WebApplication.CreateBuilder(this.Args);
 
             // Configure Configuration File
 
@@ -32,15 +109,30 @@ namespace ZebraServer
 
                 var env = hostingContext.HostingEnvironment;
 
-                config.AddJsonFile("zebraconfig.json",
-                       optional: false,
-                       reloadOnChange: true);
 
+                // Support for both, XML and JSON Files
+
+                switch (ConfigurationFilePath.Extension)
+                {
+                    case ".json":
+                       config.AddJsonFile(ConfigurationFilePath.FullName,
+                                    optional: false,
+                                        reloadOnChange: true);
+                        break;
+                    case ".xml":
+                        config.AddXmlFile(ConfigurationFilePath.FullName,
+                                    optional: false,
+                                        reloadOnChange: true);
+                        break;
+                    default:
+                        throw new Exception("Configuration File format was neither JSON nor XML");
+                }
+                
                 //config.AddEnvironmentVariables();
 
-                if (args != null)
+                if (this.Args != null)
                 {
-                    config.AddCommandLine(args);
+                    config.AddCommandLine(this.Args);
                 }
             });
 
@@ -84,7 +176,8 @@ namespace ZebraServer
                 endpoints.MapControllers();
             });
 
-            // Setup Configuration Service
+            // Setup ZebraConfig Configuration Service
+            // This Service loads the provided Configuration File and exposes the paths
 
             using (var scope = app.Services.CreateScope())
             {
@@ -96,12 +189,12 @@ namespace ZebraServer
 
                     var config = section.Get<ZebraConfig>();
                     if (config is null) throw new Exception("Configuration file could not be read.");
-                    
+
                     app.Services.GetRequiredService<ZebraConfigurationService>().LoadConfiguration(config);
                 }
                 catch (Exception ex)
                 {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    var logger = services.GetRequiredService<ILogger<ZebraServer>>();
                     logger.LogError(ex, "An error occurred while setting up the configuration service.");
                     logger.LogError("Quitting Application");
                     return;
@@ -121,31 +214,19 @@ namespace ZebraServer
                 }
                 catch (Exception ex)
                 {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    var logger = services.GetRequiredService<ILogger<ZebraServer>>();
                     logger.LogError(ex, "An error occurred while seeding the database.");
                     logger.LogError("Quitting Application");
                     return;
 
                 }
 
-
-                // Run the app
-
-                app.Run();
-
-                
-
-                //ZebraContext dbcontext = app.Services.GetRequiredService<ZebraContext>();
-                //dbcontext.Database.EnsureCreated();
-
             }
 
-            //public static IHostBuilder CreateHostBuilder(string[] args) =>
-            //    Host.CreateDefaultBuilder(args)
-            //        .ConfigureWebHostDefaults(webBuilder =>
-            //        {
-            //            webBuilder.UseStartup<Startup>();
-            //        });
+
+            // Set internal property to newly created App
+
+            _webApplication = app;
         }
     }
 }
