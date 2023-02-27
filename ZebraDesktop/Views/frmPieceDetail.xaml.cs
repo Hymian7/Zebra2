@@ -31,7 +31,8 @@ namespace ZebraDesktop.Views
         {
             if (lvSheets.SelectedIndex !=-1)
             {
-                dvSheet.Navigate(await ((App)Application.Current).Manager.GetPDFPathAsync((this.DataContext as PieceDetailViewModel).SelectedSheet.SheetID));
+                await dvSheet.EnsureCoreWebView2Async();
+                dvSheet.CoreWebView2.Navigate("file:///"  + await ((App)Application.Current).Manager.GetPDFPathAsync((this.DataContext as PieceDetailViewModel).SelectedSheet.SheetID));
             }
         }
     }
