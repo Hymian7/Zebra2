@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -17,7 +18,7 @@ namespace ZebraDesktop.Views
     /// <summary>
     /// Interaktionslogik für ConfigSelector.xaml
     /// </summary>
-    public partial class frmConfigSelector : Window, IClosable
+    public partial class frmConfigSelector : Window, IClosable, IDialogPrompt
     {
         public ZebraConfig SelectedConfiguration { get; set; }
 
@@ -25,10 +26,14 @@ namespace ZebraDesktop.Views
         {
             InitializeComponent();
             (this.DataContext as ViewModels.ConfigSelectorViewModel).ParentContainer = this;
+            (this.DataContext as ViewModels.ConfigSelectorViewModel).Dialog = this;
             //SelectedConfiguration = null;
+            
         }
 
         void IClosable.Close() => this.Close();
+
+        void IDialogPrompt.SetDialogResult(bool value) => this.DialogResult = value;
 
         // private void frmConfigSelector_Loaded(object sender, RoutedEventArgs e)
         // {
@@ -39,7 +44,7 @@ namespace ZebraDesktop.Views
         // private void GetConfigs()
         // {
         //     lvConfigs.Items.Clear();
-            
+
         //     if(!Directory.Exists("configs")) Directory.CreateDirectory("configs");
         //     var configs = Directory.GetFiles("configs", "*.zebraconfig");
 
@@ -62,7 +67,7 @@ namespace ZebraDesktop.Views
         //     {
         //         LoadConfiguration(lvConfigs.SelectedItem as FileInfo);                
         //     }
-            
+
         // }
 
         // private void btnCancel_Click(object sender, RoutedEventArgs e)

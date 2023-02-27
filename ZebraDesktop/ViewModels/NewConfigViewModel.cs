@@ -8,6 +8,7 @@ using System.IO;
 using System.Net;
 using System.Windows;
 using Zebra.Library;
+using Zebra.Library.Services;
 using ZebraDesktop.Enums;
 using ZebraDesktop.Views;
 
@@ -161,19 +162,8 @@ namespace ZebraDesktop.ViewModels
             }
 
 
-            try
-            {
-                if(!Directory.Exists(@"configs"))
-                {
-                    Directory.CreateDirectory(@"configs");
-                }
-                conf.Serialize(@"configs");
-                ParentContainer.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            ZebraConfigurationService.CreateConfigurationFile(conf);
+            ParentContainer.Close();
 
         }
 

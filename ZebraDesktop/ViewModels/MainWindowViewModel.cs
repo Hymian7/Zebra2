@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Zebra.Library;
 using ZebraDesktop.Views;
+using ZebraServer;
 
 namespace ZebraDesktop.ViewModels
 {
@@ -195,10 +196,10 @@ namespace ZebraDesktop.ViewModels
             ImportPDFBatchCommand = new DelegateCommand(ExecuteImportPDFBatchCommand, canExecuteImportPDFBatchCommand);
 
             UpdateCommand = new DelegateCommand(ExecuteUpdateCommand);
+
+            CurrentApp.ConfigurationService.ConfigurationLoaded += ConfigurationService_ConfigurationLoaded;
+            CurrentApp.ConfigurationService.ConfigurationUnloaded += ConfigurationService_ConfigurationUnloaded;
         }
-
-        
-
 
         #endregion
 
@@ -213,7 +214,7 @@ namespace ZebraDesktop.ViewModels
 
         private void ExecuteUnloadConfigCommand(object obj)
         {
-            UnloadConfig();
+            CurrentApp.ConfigurationService.UnloadConfig();
         }
         private void ExecuteNewConfigCommand(object obj)
         {
@@ -327,19 +328,17 @@ namespace ZebraDesktop.ViewModels
         private async void LoadConfig()
         {
             frmConfigSelector frmConfigSelector = new frmConfigSelector();
-            frmConfigSelector.ShowDialog();       
+            
+            
+            // Show Config Selector Dialog and cancel if no config was selected
+            if (frmConfigSelector.ShowDialog() is not true) return;   
 
-            // Cancel if no config was selected
-            if ((frmConfigSelector.DataContext as ConfigSelectorViewModel).LoadedConfiguration == null) return;
-
-            if (CurrentApp.Manager != null)
-            {
-                UnloadConfig();
-            }
+            // if ((frmConfigSelector.DataContext as ConfigSelectorViewModel).LoadedConfiguration == null) return;
 
             
-                var conf = (frmConfigSelector.DataContext as ConfigSelectorViewModel).LoadedConfiguration;
-                CurrentApp.ZebraConfig = conf;
+                //var conf = (frmConfigSelector.DataContext as ConfigSelectorViewModel).LoadedConfiguration;
+                //CurrentApp.ConfigurationService.LoadConfiguration(conf);
+                //CurrentApp.ZebraConfig = conf;
 
                 //var pendingMigrations = await CurrentApp.Manager.Context.Database.GetPendingMigrationsAsync();
 
@@ -362,43 +361,60 @@ namespace ZebraDesktop.ViewModels
 
                 //await CurrentApp.Manager.Context.Database.MigrateAsync();
 
-
-                //TODO: Make Creation of ViewModels Async
-                PiecesPageViewModel = new PiecesPageViewModel();
-                PartsPageViewModel = new PartsPageViewModel();
-                SetlistsPageViewModel = new SetlistsPageViewModel();
-                
-                //Register Eventhandler for Button States to be updated
-                PiecesPageViewModel.PropertyChanged += ChildSelectionChanged;
-                PartsPageViewModel.PropertyChanged += ChildSelectionChanged;
-                SetlistsPageViewModel.PropertyChanged += ChildSelectionChanged;
-
-                PiecesPage = new PiecesPage();
-                PiecesPage.DataContext = PiecesPageViewModel;
-                PartsPage = new PartsPage();
-                PartsPage.DataContext = PartsPageViewModel;
-                SetlistsPage = new SetlistsPage();
-                SetlistsPage.DataContext = SetlistsPageViewModel;
-            
-
-            UpdateButtonStatus();
         }
 
 
-        private void UnloadConfig()
-        {
+        //private void UnloadConfig()
+        //{
             // Cleanup
-            CurrentApp.ZebraConfig = null;
+            //CurrentApp.ZebraConfig = null;
 
+            //PiecesPage = null;
+            //PartsPage = null;
+            //SetlistsPage = null;
+
+            //PiecesPageViewModel = null;
+            //PartsPageViewModel =  null;
+            //SetlistsPageViewModel = null;
+
+            //MessageBox.Show("Konfiguration erfolgreich geschlossen", "Konfiguration geschlossen");
+
+            //UpdateButtonStatus();
+        //}
+
+        private void ConfigurationService_ConfigurationUnloaded(object sender, EventArgs e)
+        {
             PiecesPage = null;
             PartsPage = null;
             SetlistsPage = null;
 
             PiecesPageViewModel = null;
-            PartsPageViewModel =  null;
+            PartsPageViewModel = null;
             SetlistsPageViewModel = null;
 
-            MessageBox.Show("Konfiguration erfolgreich geschlossen", "Konfiguration geschlossen");
+            //MessageBox.Show("Konfiguration erfolgreich geschlossen", "Konfiguration geschlossen");
+
+            UpdateButtonStatus();
+        }
+
+        private void ConfigurationService_ConfigurationLoaded(object sender, EventArgs e)
+        {
+            //TODO: Make Creation of ViewModels Async
+            PiecesPageViewModel = new PiecesPageViewModel();
+            PartsPageViewModel = new PartsPageViewModel();
+            SetlistsPageViewModel = new SetlistsPageViewModel();
+
+            //Register Eventhandler for Button States to be updated
+            PiecesPageViewModel.PropertyChanged += ChildSelectionChanged;
+            PartsPageViewModel.PropertyChanged += ChildSelectionChanged;
+            SetlistsPageViewModel.PropertyChanged += ChildSelectionChanged;
+
+            PiecesPage = new PiecesPage();
+            PiecesPage.DataContext = PiecesPageViewModel;
+            PartsPage = new PartsPage();
+            PartsPage.DataContext = PartsPageViewModel;
+            SetlistsPage = new SetlistsPage();
+            SetlistsPage.DataContext = SetlistsPageViewModel;
 
             UpdateButtonStatus();
         }

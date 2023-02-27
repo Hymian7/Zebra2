@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
+using System.Text.Json;
 using System.Xml.Serialization;
 
 namespace Zebra.Library
@@ -67,6 +70,9 @@ namespace Zebra.Library
             ArchiveCredentials = new LocalArchiveCredentials(Path.Combine(RepositoryDirectory, "archive"));
             DatabaseCredentials = new SQLiteCredentials(Path.Combine(RepositoryDirectory, "database.db"));
             ArchiveCredentials = new LocalArchiveCredentials(Path.Combine(RepositoryDirectory, "archive"));
+
+            ServerIPAddress = "localhost";
+            ServerPort = "44347";
         }
 
         /// <summary>
@@ -103,6 +109,34 @@ namespace Zebra.Library
 
                 serializer.Serialize(writer, this);
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                Debug.WriteLine(ex.InnerException);
+                Debug.WriteLine(ex.Data);
+                return false;
+                throw;
+            }
+
+
+
+            return true;
+        }
+
+        /// <summary>
+        /// Speichert die ZebraConfig-Instanz als .json im angegebenen Pfad ab.
+        /// </summary>
+        /// <param name="_path">Pfad zum Speichern der Config. Der Name der Config und die Dateiendung werden automatisch angefügt.</param>
+        /// <returns>Gibt bei Erfolg true und im Falle eine Exception false zurück.</returns>
+        public bool SerializeAsJSON(string _path)
+        {
+            try
+            {
+                string _fullpath = Path.Combine(_path, $"{this.ConfigName}.zebraconfig");
+                var jsonString = JsonSerializer.Serialize<ZebraConfig>(this);
+                File.WriteAllText(_fullpath, jsonString);
+            }
+
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);

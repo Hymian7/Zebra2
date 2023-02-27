@@ -6,7 +6,7 @@ namespace Zebra.Library
     [XmlInclude(typeof(FTPCredentials))]
     [XmlInclude(typeof(SFTPCredentials))]
     [XmlInclude(typeof(LocalArchiveCredentials))]
-    public abstract class ArchiveCredentials
+    public class ArchiveCredentials
     {
         public ArchiveCredentials() { }
     }

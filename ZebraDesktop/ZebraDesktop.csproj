@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj" />
     <ProjectReference Include="..\PdfiumLight\PdfiumLight.csproj" />
+    <ProjectReference Include="..\ZebraServer\ZebraServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

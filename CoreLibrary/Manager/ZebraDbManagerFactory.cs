@@ -8,20 +8,23 @@ namespace Zebra.Library
     {
         public static IZebraDBManager GetManager(ZebraConfig config)
         {
-            switch (config.RepositoryType)
-            {
-                case RepositoryType.Local:
-                    return new ZebraDBManager(config);
-                    break;
-                case RepositoryType.Remote:
-                    return new RemoteZebraDbManager(config);
-                    break;
-                default:
-                    throw new NotImplementedException();
-                    break;
-            }
+            return new RemoteZebraDbManager(config);
 
-            
+            //switch (config.RepositoryType)
+            //{
+            //    case RepositoryType.Local:
+            //        return new RemoteZebraDbManager(config);
+            //        //return new ZebraDBManager(config);
+
+            //    case RepositoryType.Remote:
+            //        return new RemoteZebraDbManager(config);
+
+            //    default:
+            //        throw new NotImplementedException();
+
+            //}
+
+
         }
     }
 }

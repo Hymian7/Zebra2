@@ -48,7 +48,7 @@ namespace Zebra.Library
 
             // Do not use https by default, except if Swagger is used (Port 44347)
             // Mainly for testing purposes
-            if (ZebraConfig.ServerPort == "44347") UseHttps = true;
+            if (ZebraConfig.ServerPort == "44347" || ZebraConfig.ServerPort == "5001") UseHttps = true;
             else UseHttps = false;
 
         }
