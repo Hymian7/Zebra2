@@ -72,7 +72,7 @@ namespace Zebra.Library
             ArchiveCredentials = new LocalArchiveCredentials(Path.Combine(RepositoryDirectory, "archive"));
 
             ServerIPAddress = "localhost";
-            ServerPort = "44347";
+            ServerPort = "5001";
         }
 
         /// <summary>
