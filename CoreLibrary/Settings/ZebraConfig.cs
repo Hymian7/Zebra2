@@ -97,13 +97,14 @@ namespace Zebra.Library
         /// <summary>
         /// Speichert die ZebraConfig-Instanz als .xml im angegebenen Pfad ab.
         /// </summary>
-        /// <param name="_path">Pfad zum Speichern der Config. Der Name der Config und die Dateiendung werden automatisch angefügt.</param>
+        /// <param name="_path">Pfad zum Speichern der Config. Der Name der Config wirdd automatisch eingefügt.</param>
+        /// <param name="_extension">Dateiendung der Extension inkl. führendem Punkt</param>
         /// <returns>Gibt bei Erfolg true und im Falle eine Exception false zurück.</returns>
-        public bool Serialize(string _path)
+        public bool Serialize(string _path, string _extension)
         {
             try
             {
-                string _fullpath = Path.Combine(_path, $"{this.ConfigName}.zebraconfig");
+                string _fullpath = Path.Combine(_path, $"{ this.ConfigName }{ _extension }");
                 XmlSerializer serializer = new XmlSerializer(this.GetType());
                 StreamWriter writer = new StreamWriter(_fullpath);
 
@@ -126,9 +127,10 @@ namespace Zebra.Library
         /// <summary>
         /// Speichert die ZebraConfig-Instanz als .json im angegebenen Pfad ab.
         /// </summary>
-        /// <param name="_path">Pfad zum Speichern der Config. Der Name der Config und die Dateiendung werden automatisch angefügt.</param>
+        /// <param name="_path">Pfad zum Speichern der Config. Der Name der Config wird automatisch eingefügt</param>
+        /// <param name="_extension">Dateiendung der Extension inkl. führendem Punkt</param>
         /// <returns>Gibt bei Erfolg true und im Falle eine Exception false zurück.</returns>
-        public bool SerializeAsJSON(string _path)
+        public bool SerializeAsJSON(string _path, string _extension)
         {
             try
             {

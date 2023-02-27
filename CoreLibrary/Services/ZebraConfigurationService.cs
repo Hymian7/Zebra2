@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
@@ -16,6 +17,9 @@ namespace Zebra.Library.Services
 
         public bool IsConfigured = false;
 
+        const string ConfigurationDirectory = @"configs";
+        const string ConfigurationFileExtension = ".zebraconfig";
+
         public ZebraConfigurationService()
         {
         }
@@ -24,17 +28,22 @@ namespace Zebra.Library.Services
         {
             try
             {
-                if (!Directory.Exists(@"configs"))
+                if (!Directory.Exists(ConfigurationDirectory))
                 {
-                    Directory.CreateDirectory(@"configs");
+                    Directory.CreateDirectory(ConfigurationDirectory);
                 }
-                config.SerializeAsJSON(@"configs");
+                config.SerializeAsJSON(ConfigurationDirectory, ConfigurationFileExtension);
                 
             }
             catch (Exception ex)
             {
                 Debug.Print(ex.Message);
             }
+        }
+
+        public List<string> GetConfigurationFiles()
+        {
+            return new List<string>(Directory.GetFiles(ConfigurationDirectory, String.Concat("*", ConfigurationFileExtension)));
         }
         
 
