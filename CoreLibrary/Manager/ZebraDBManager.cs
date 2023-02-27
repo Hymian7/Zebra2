@@ -13,6 +13,7 @@ using Zebra.Library.PdfHandling;
 
 namespace Zebra.Library
 {
+    [Obsolete]
     public class ZebraDBManager : IDisposable, IZebraDBManager
     {
 
