@@ -16,6 +16,7 @@ using Zebra.Library.Services;
 using Microsoft.OpenApi.Models;
 using System.Threading;
 using System.IO;
+using ZebraServer.Controllers;
 
 namespace ZebraServer
 {
@@ -55,6 +56,23 @@ namespace ZebraServer
         {
             ConfigurationFilePath = new FileInfo(Path.Combine(AppContext.BaseDirectory, "zebraconfig.json"));
         }
+
+        /// <summary>
+        /// Creates new Instance of Zebra Server
+        /// Define Configuration File path by Parameter
+        /// </summary>
+        /// <param name="configurationFile"></param>
+        public ZebraServer(FileInfo configurationFile)
+        {
+            ConfigurationFilePath = configurationFile;
+        }
+
+        /// <summary>
+        /// Creates new Instance of Zebra Server
+        /// Define Configuration File path by Parameter
+        /// </summary>
+        /// <param name="configurationFile"></param>
+        public ZebraServer(string configurationFile) : this(new FileInfo(configurationFile)) { }
 
         /// <summary>
         /// Wrapper around the WebApplication.StartAsync() call.
@@ -112,14 +130,30 @@ namespace ZebraServer
 
                 // Support for both, XML and JSON Files
 
-                switch (ConfigurationFilePath.Extension)
+                //switch (ConfigurationFilePath.Extension)
+                //{
+                //    case ".json":
+                //       config.AddJsonFile(ConfigurationFilePath.FullName,
+                //                    optional: false,
+                //                        reloadOnChange: true);
+                //        break;
+                //    case ".xml":
+                //        config.AddXmlFile(ConfigurationFilePath.FullName,
+                //                    optional: false,
+                //                        reloadOnChange: true);
+                //        break;
+                //    default:
+                //        throw new Exception("Configuration File format was neither JSON nor XML");
+                //}
+
+                switch (File.ReadAllText(ConfigurationFilePath.FullName).Trim().First())
                 {
-                    case ".json":
-                       config.AddJsonFile(ConfigurationFilePath.FullName,
-                                    optional: false,
-                                        reloadOnChange: true);
+                    case '{':
+                        config.AddJsonFile(ConfigurationFilePath.FullName,
+                                     optional: false,
+                                         reloadOnChange: true);
                         break;
-                    case ".xml":
+                    case '<':
                         config.AddXmlFile(ConfigurationFilePath.FullName,
                                     optional: false,
                                         reloadOnChange: true);
@@ -127,7 +161,7 @@ namespace ZebraServer
                     default:
                         throw new Exception("Configuration File format was neither JSON nor XML");
                 }
-                
+
                 //config.AddEnvironmentVariables();
 
                 if (this.Args != null)
@@ -135,6 +169,21 @@ namespace ZebraServer
                     config.AddCommandLine(this.Args);
                 }
             });
+
+
+
+            // NOTE: This is the workaround.
+            // Uncomment in order to make controller discoverable when running from another .NET CORE app.
+            IMvcBuilder mvcBuilder = builder.Services.AddControllers();
+
+            mvcBuilder.AddApplicationPart(typeof(FilesController).Assembly);
+            mvcBuilder.AddApplicationPart(typeof(ImportCandidatesController).Assembly);
+            mvcBuilder.AddApplicationPart(typeof(PartsController).Assembly);
+            mvcBuilder.AddApplicationPart(typeof(PiecesController).Assembly);
+            mvcBuilder.AddApplicationPart(typeof(SetlistsController).Assembly);
+
+            builder.WebHost.UseUrls(new string[] { "https://localhost:5001", "http://localhost:5000" });
+
 
             // Configure Services
 
@@ -152,18 +201,18 @@ namespace ZebraServer
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ZebraServer", Version = "v1" });
             });
 
-
+            
 
             var app = builder.Build();
 
-
-
-            if (app.Environment.IsDevelopment())
-            {
+            //if (app.Environment.IsDevelopment())
+            //{
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ZebraServer v1"));
-            }
+            //}
+
+            
 
             //app.UseHttpsRedirection();
 
@@ -186,11 +235,17 @@ namespace ZebraServer
                 {
 
                     var section = builder.Configuration.GetSection(nameof(ZebraConfig));
+                    
 
                     var config = section.Get<ZebraConfig>();
+
+                    if (config == null)
+                    {
+                        config = builder.Configuration.Get<ZebraConfig>();
+                    }
                     if (config is null) throw new Exception("Configuration file could not be read.");
 
-                    app.Services.GetRequiredService<ZebraConfigurationService>().LoadConfiguration(config);
+                    app.Services.GetRequiredService<ZebraConfigurationService>().LoadConfigurationFromZebraConfig(config);
                 }
                 catch (Exception ex)
                 {
