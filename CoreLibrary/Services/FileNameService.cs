@@ -1,71 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 
 namespace Zebra.Library.Services
 {
     public class FileNameService
     {
+
         private const int FileNameLength = 8;
         private const string Extension = ".pdf";
 
-        private ZebraConfigurationService _configurationService;
-
-        public FileNameService(ZebraConfigurationService configurationService)
+        /// <summary>
+        /// Returns the filename for the PDF file of the provided sheet object including .pdf file extension.
+        /// </summary>
+        /// <param name="sheet"></param>
+        /// <returns></returns>
+        public string GetFileName(Sheet sheet)
         {
-            _configurationService = configurationService;
+            return GetFileName(sheet.SheetID);
         }
 
-        public string GetFilePath(FolderType type, int id)
+        /// <summary>
+        /// Returns the filename for the PDF file of the provided sheet id including .pdf file extension
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public string GetFileName(int id)
         {
-            switch (type)
-            {
-                case FolderType.Archive:
-                    return Path.Combine(_configurationService.GetArchiveDirectory(), FileNameResolver.GetFileName(id));
-                   
-                case FolderType.Temp:
-                    return Path.Combine(_configurationService.GetTempDirectory(), FileNameResolver.GetFileName(id));
-                    
-                default:
-                    throw new Exception();
-            }
+            return id.ToString("").PadLeft(FileNameLength, '0') + ".pdf";
         }
 
-        public string GetFilePath(FolderType type, Guid guid)
+        /// <summary>
+        /// Returns the filename for the PDF file of the provided GUID including .pdf file extension
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public string GetFileName(Guid guid)
         {
-            switch (type)
-            {
-                case FolderType.Archive:
-                    return Path.Combine(_configurationService.GetArchiveDirectory(), $"{guid}{Extension}");
-
-                case FolderType.Temp:
-                    return Path.Combine(_configurationService.GetTempDirectory(), $"{guid}{Extension}");
-
-                default:
-                    throw new Exception();
-            }
+            return guid.ToString("").PadLeft(FileNameLength, '0') + ".pdf";
         }
-
-        public string GetFolderPath(FolderType type)
-        {
-            switch (type)
-            {
-                case FolderType.Archive:
-                    return _configurationService.GetArchiveDirectory();
-                case FolderType.Temp:
-                    return _configurationService.GetTempDirectory();
-                default:
-                    throw new Exception();
-            }
-        }
-
     }
-
-    public enum FolderType
-    {
-        Archive,
-        Temp
-    }
-
 }

@@ -15,9 +15,9 @@ namespace ZebraServer.Controllers
     public class FilesController : ControllerBase
     {
         private ZebraConfigurationService _configurationService;
-        private FileNameService _fileNameService;
+        private FilePathService _fileNameService;
 
-        public FilesController(ZebraConfigurationService configurationService, FileNameService fileNameService)
+        public FilesController(ZebraConfigurationService configurationService, FilePathService fileNameService)
         {
             _configurationService = configurationService;
             _fileNameService = fileNameService;

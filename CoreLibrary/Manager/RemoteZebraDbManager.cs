@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Zebra.Library.PdfHandling;
+using Zebra.Library.Services;
 
 namespace Zebra.Library
 {
@@ -16,10 +17,11 @@ namespace Zebra.Library
     {
         #region Properties
 
-
         private static HttpClient _httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(15) };
 
         private HttpClient HttpClient { get { return RemoteZebraDbManager._httpClient; } }
+
+        private FileNameService _fileNameService;
 
         public ZebraConfig ZebraConfig { get; set; }
 
@@ -39,6 +41,7 @@ namespace Zebra.Library
         public RemoteZebraDbManager(ZebraConfig conf)
         {
             ZebraConfig = conf;
+            _fileNameService = new FileNameService();
 
             //Load IP Address and Cache folder from Configuration
 
@@ -139,13 +142,13 @@ namespace Zebra.Library
 
         public async Task<string> GetPDFPathAsync(int id)
         {
-            if (!File.Exists(Path.Combine(CacheFolder.FullName, FileNameResolver.GetFileName(id))))
+            if (!File.Exists(Path.Combine(CacheFolder.FullName, _fileNameService.GetFileName(id))))
             {
                 var bytes = await GetFileAsync(id);
-                await File.WriteAllBytesAsync(Path.Combine(CacheFolder.FullName , FileNameResolver.GetFileName(id)), bytes);                
+                await File.WriteAllBytesAsync(Path.Combine(CacheFolder.FullName , _fileNameService.GetFileName(id)), bytes);                
             }
 
-            return Path.Combine(CacheFolder.FullName, FileNameResolver.GetFileName(id));
+            return Path.Combine(CacheFolder.FullName, _fileNameService.GetFileName(id));
         }
 
         public async Task<ImportCandidate> GetImportCandidateAsync(string filepath)

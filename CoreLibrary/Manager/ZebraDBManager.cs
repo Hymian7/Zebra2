@@ -7,15 +7,16 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using Zebra.Library;
 using Zebra.Library.Mapping;
 using Zebra.Library.PdfHandling;
+using Zebra.Library.Services;
 
 namespace Zebra.Library
 {
     [Obsolete]
     public class ZebraDBManager : IDisposable, IZebraDBManager
     {
+        private FileNameService _fileNameService;
 
         public ZebraConfig ZebraConfig { get; private set; }
         public ZebraContext Context { get; private set; }
@@ -53,7 +54,7 @@ namespace Zebra.Library
         public ZebraDBManager(ZebraConfig ZebraConf)
         {
             ZebraConfig = ZebraConf;
-
+            _fileNameService = new FileNameService();
 
             // Setup Context
             switch (ZebraConf.DatabaseProvider)
@@ -239,7 +240,7 @@ namespace Zebra.Library
 
         public Task<string> GetPDFPathAsync(int id)
         {
-            return Task.FromResult(Path.Combine((ZebraConfig.ArchiveCredentials as LocalArchiveCredentials).Path, FileNameResolver.GetFileName(id)));
+            return Task.FromResult(Path.Combine((ZebraConfig.ArchiveCredentials as LocalArchiveCredentials).Path, _fileNameService.GetFileName(id)));
         }
 
         public Task<ImportCandidate> GetImportCandidateAsync(string filepath)

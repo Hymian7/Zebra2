@@ -14,13 +14,13 @@ namespace Zebra.Library.PdfHandling
         private IZebraDBManager Manager { get; set; }
         private PDFtkSharp.PDFExtractor Extractor { get; set; }
 
-        private FileNameService _fileNameService;
+        private FilePathService _fileNameService;
 
         private ZebraContext _context;
 
         private ArchiveService _archiveService;
 
-        public ImportCandidateImporter(FileNameService fileNameService, ZebraContext context, ArchiveService archiveService)
+        public ImportCandidateImporter(FilePathService fileNameService, ZebraContext context, ArchiveService archiveService)
         {
             _fileNameService = fileNameService;
             _archiveService = archiveService;

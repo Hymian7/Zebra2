@@ -192,6 +192,7 @@ namespace ZebraServer
 
             builder.Services.AddScoped<IImportCandidateImporter, ImportCandidateImporter>();
             builder.Services.AddTransient<FileNameService>();
+            builder.Services.AddTransient<FilePathService>();
             builder.Services.AddTransient<ArchiveService>();
             builder.Services.AddSingleton<ZebraConfigurationService>();
 

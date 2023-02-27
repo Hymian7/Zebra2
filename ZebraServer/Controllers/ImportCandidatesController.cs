@@ -18,11 +18,11 @@ namespace ZebraServer.Controllers
     {
         private IImportCandidateImporter Importer;
 
-        private FileNameService FileNameService;
+        private FilePathService FileNameService;
 
         private ZebraContext Context;
 
-        public ImportCandidatesController(IImportCandidateImporter importer, FileNameService fileNameService, ZebraContext context)
+        public ImportCandidatesController(IImportCandidateImporter importer, FilePathService fileNameService, ZebraContext context)
         {
             Importer = importer;
             FileNameService = fileNameService;

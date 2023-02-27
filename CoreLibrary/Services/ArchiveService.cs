@@ -7,9 +7,9 @@ namespace Zebra.Library.Services
 {
     public class ArchiveService
     {
-        private FileNameService _fileNameService;
+        private FilePathService _fileNameService;
 
-        public ArchiveService(FileNameService fileNameService)
+        public ArchiveService(FilePathService fileNameService)
         {
             _fileNameService = fileNameService;
         }

@@ -9,7 +9,7 @@ using Zebra.Library;
 
 namespace Zebra.Library.Services
 {
-    public class ZebraConfigurationService
+    public class ZebraConfigurationService : IZebraConfigurationService
     {
         private FileInfo ConfigurationFilePath { get; set; }
 
@@ -33,7 +33,7 @@ namespace Zebra.Library.Services
                     Directory.CreateDirectory(ConfigurationDirectory);
                 }
                 config.SerializeAsJSON(ConfigurationDirectory, ConfigurationFileExtension);
-                
+
             }
             catch (Exception ex)
             {
@@ -45,7 +45,7 @@ namespace Zebra.Library.Services
         {
             return new List<string>(Directory.GetFiles(ConfigurationDirectory, String.Concat("*", ConfigurationFileExtension)));
         }
-        
+
 
         public void LoadConfigurationFromZebraConfig(ZebraConfig _config)
         {
@@ -67,7 +67,7 @@ namespace Zebra.Library.Services
 
             // Check if JSON or XML
 
-            if(File.ReadAllText(configurationFilePath.FullName).Trim().StartsWith('<'))
+            if (File.ReadAllText(configurationFilePath.FullName).Trim().StartsWith('<'))
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(ZebraConfig));
                 using (FileStream reader = new FileStream(configurationFilePath.FullName, FileMode.Open))
@@ -81,9 +81,9 @@ namespace Zebra.Library.Services
             if (File.ReadAllText(configurationFilePath.FullName).Trim().StartsWith('{'))
             {
                 config = JsonSerializer.Deserialize<ZebraConfig>(File.ReadAllText(configurationFilePath.FullName));
-            }          
+            }
 
-            this.ConfigurationFilePath= configurationFilePath;
+            this.ConfigurationFilePath = configurationFilePath;
 
             ConfigurationLoaded?.Invoke(this, EventArgs.Empty);
         }
@@ -146,7 +146,7 @@ namespace Zebra.Library.Services
         public FileInfo GetConfigurationFilePath()
         {
             return ConfigurationFilePath ?? null;
-            
+
         }
 
         public RepositoryType GetRepositoryType()
