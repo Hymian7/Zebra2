@@ -23,9 +23,10 @@
         <Grid Height="Auto" Margin="20,0,20,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="120"></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
@@ -33,100 +34,46 @@
             </Grid.RowDefinitions>
             <Label Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left">Name:</Label>
             <TextBox x:Name="tbConfigName" Width="Auto" Height="Auto" Grid.Row="0" Grid.Column="1" Text="{Binding ConfigName}"></TextBox>
-            <Label Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left">Datenbankprovider:</Label>
-            <Label Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left">Archivtyp:</Label>
+            <Label Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left">Repositorytyp:</Label>
 
 
             <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center">
-                <RadioButton Name="rbSQLite" Margin="0,0,0,0" Content="SQLite" IsChecked="{Binding DBProvider[SQLite]}"/>
-                <RadioButton Name="rbMySQL" Margin="20 0 0 0" Content="MySQL" IsChecked="{Binding DBProvider[MySQL]}"/>
-
+                <RadioButton Name="rbLocal" Margin="0,0,0,0" Content="Local" IsChecked="{Binding RepositoryType[Local]}"/>
+                <RadioButton Name="rbRemote" Margin="20 0 0 0" Content="Remote" IsChecked="{Binding RepositoryType[Remote]}"/>
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center">
-                <RadioButton Name="rbLocalArchive" Content="Lokal" IsChecked="{Binding ArchiveType[Local]}"/>
-                <RadioButton Name="rbFTPArchive" Margin="20,0,0,0" Content="FTP" IsChecked="{Binding ArchiveType[FTP]}"/>
-
+            <Label Grid.Row="3">Datenordner:</Label>
+            <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
+                <TextBox Text="{Binding RepositoryPath}" MinWidth="500"></TextBox>
+                <Button x:Name="btnBrowseRepoDirPath" Width="80px" HorizontalAlignment="Right" Command="{Binding BrowseRepositoryDirectoryCommand}" Content="Durchsuchen"/>
             </StackPanel>
+
         </Grid>
 
-        <StackPanel Margin="20 20 20 20" Visibility="{Binding ElementName=rbMySQL, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Label FontWeight="Bold">MySQL-Datenbank</Label>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="150"></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Row="0">Server</Label>
-                <Label Grid.Row="1">Username</Label>
-                <Label Grid.Row="2">Password</Label>
-                <Label Grid.Row="3">Port</Label>
-                <Label Grid.Row="4">Datenbankname</Label>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding MySQLCredentials.Server}"></TextBox>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding MySQLCredentials.Username}"></TextBox>
-                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding MySQLCredentials.Password}"></TextBox>
-                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding MySQLCredentials.Port}"></TextBox>
-                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding MySQLCredentials.DatabaseName}"></TextBox>
-            </Grid>
-            <Button Width="100" Margin="5 10 0 5" HorizontalAlignment="Right" Command="{Binding TestMySQLServerCredentialsCommand}">Testen</Button>
-        </StackPanel>
+        <Grid Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=rbRemote}" Margin="20 20 20 20">
 
-        <StackPanel Margin="20 20 20 20" Visibility="{Binding ElementName=rbFTPArchive, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Label FontWeight="Bold">FTP Archiv</Label>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="150"></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Row="0">Server</Label>
-                <Label Grid.Row="1">Username</Label>
-                <Label Grid.Row="2">Password</Label>
-                <Label Grid.Row="3">Port</Label>
-                <Label Grid.Row="4">Pfad</Label>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding FTPCredentials.Server}"></TextBox>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding FTPCredentials.Username}"></TextBox>
-                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding FTPCredentials.Password}"></TextBox>
-                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding FTPCredentials.Port}"></TextBox>
-                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding FTPCredentials.Path}"></TextBox>
-            </Grid>
-            <Button Width="100" Margin="5 10 0 5" HorizontalAlignment="Right" Command="{Binding TestFTPArchiveCredentialsCommand}">Testen</Button>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            
+            <Label Grid.Row="0" Grid.Column="0" FontWeight="Bold" Content="Remote Endpoint:"/>
+            <Label Grid.Row="1" Content="IP-Adresse"/>
+            <Label Grid.Row="2" Content="Port"/>
+            
+            <TextBox x:Name="tbIPAddress" Grid.Row="1" Grid.Column="1" Width="484" HorizontalAlignment="Left" Text="{Binding IPAddress}"/>
+            <TextBox x:Name="tbPort" Grid.Row="2" Grid.Column="1" Width="484" HorizontalAlignment="Left" Text="{Binding Port}"/>
+            
+        </Grid>
+
+        <StackPanel Margin="20 20 20 20">
+            <Button x:Name="btnOK" Width="100" Command="{Binding SaveNewConfigCommand}" CommandParameter="{Binding ElementName=frmNewConfig}" Content="OK"/>
         </StackPanel>
-        <StackPanel Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=rbSQLite}">
-            <Label FontWeight="Bold" Content="Lokale SQLite Datenbank"/>
-            <Label Margin="0,10,0,0" Content="Pfad zur Datenbank"/>
-            <StackPanel Margin="0,5,20,0" Orientation="Horizontal" HorizontalAlignment="Stretch">
-                <TextBox x:Name="tbDBPath" Margin="0,0,10,0" Width="484" Text="{Binding SQLiteCredentials.Path}"/>
-                <Button x:Name="btnBrowseDBPath" Width="80px" HorizontalAlignment="Right" Content="Durchsuchen" Command="{Binding BrowseLocalDBCommand}"/>
-            </StackPanel>
-        </StackPanel>
-        <StackPanel Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=rbLocalArchive}">
-            <Label FontWeight="Bold" Content="Lokales Archiv"/>
-            <Label Content="Pfad zum Archiv"/>
-            <StackPanel Margin="0,5,20,0" Orientation="Horizontal" HorizontalAlignment="Stretch">
-                <TextBox x:Name="tbArchivePath" Margin="0,0,10,0" Width="484" Text="{Binding LocalArchiveCredentials.Path}"/>
-                <Button x:Name="btnBrowseArchivePath" Width="80px" HorizontalAlignment="Right" Command="{Binding BrowseLocalArchiveCommand}" Content="Durchsuchen"/>
-            </StackPanel>
-        </StackPanel>
-        <Label Content="Pfad zum temporären Arbeitsordner"/>
-        <StackPanel Orientation="Horizontal">
-            <TextBox x:Name="tbTempDirPath" Margin="0,0,10,0" Width="484" Text="{Binding TempDirPath}"/>
-            <Button x:Name="btnBrowseTempDirPath" Width="80px" HorizontalAlignment="Right" Command="{Binding BrowseTempDirCommand}" Content="Durchsuchen"/>
-        </StackPanel>
-        <Button x:Name="btnOK" Width="100" Command="{Binding SaveNewConfigCommand}" CommandParameter="{Binding ElementName=frmNewConfig}" Content="OK"/>
     </StackPanel>
 
 </Window>

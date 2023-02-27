@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Zebra.Library
 {
-    class MySQLZebraContext:ZebraContext
+    public class MySQLZebraContext:ZebraContext
     {
 
         public MySQLZebraContext(ZebraConfig config) : base(config) { }

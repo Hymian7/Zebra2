@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         xmlns:vm="clr-namespace:ZebraDesktop.ViewModels"
         xmlns:local="clr-namespace:ZebraDesktop"
         mc:Ignorable="d"
@@ -54,17 +55,26 @@
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Width="Auto" Header="ID" DisplayMemberBinding="{Binding Path=SheetID}"></GridViewColumn>
-                                    <GridViewColumn Width="150" Header="Name" DisplayMemberBinding="{Binding Path=Part.Name}"></GridViewColumn>
+                                    <GridViewColumn Width="Auto" Header="Name" DisplayMemberBinding="{Binding Path=PartName}"></GridViewColumn>
                                 </GridView>
                             </ListView.View>
                         </ListView>
                     </TabItem>
-                    <TabItem Header="Verzeichnisse"></TabItem>
+                    <TabItem Header="Verzeichnisse">
+                        <ListView x:Name="lvSetlists" Margin="10,10,10,10" ItemsSource="{Binding CurrentPiece.Setlist}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Width="Auto" Header="ID" DisplayMemberBinding="{Binding Path=SetlistID}"></GridViewColumn>
+                                    <GridViewColumn Width="Auto" Header="Name" DisplayMemberBinding="{Binding Path=Name}"></GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </TabItem>
                 </TabControl>
                 
             </StackPanel>
 
-            <WebBrowser x:Name="dvSheet" Grid.Column="1" Margin="10,10,10,10"></WebBrowser>
+            <wv2:WebView2 x:Name="dvSheet" Grid.Column="1" Margin="10,10,10,10"></wv2:WebView2>
         </Grid>
 
 

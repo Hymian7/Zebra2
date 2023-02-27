@@ -18,6 +18,7 @@
                 <MenuItem x:Name="mitm_NewConfig" Header="Neue Konfiguration" Command="{Binding NewConfigCommand}"></MenuItem>
                 <MenuItem x:Name="mitm_LoadConfig" Header="Konfiguration laden" Command="{Binding LoadConfigCommand}"></MenuItem>
                 <MenuItem x:Name="mitm_UnloadConfig" Header="Konfiguration schließen" Command="{Binding UnloadConfigCommand}"></MenuItem>
+                <MenuItem Header="Update" Command="{Binding UpdateCommand}"></MenuItem>
                 <Separator></Separator>
                 <MenuItem x:Name="mitm_Exit" Header="Programm beenden" Command="{Binding ExitCommand}"></MenuItem>
             </MenuItem>
@@ -79,7 +80,9 @@
             <TabItem Name="tiParts" Header="Stimmen">
                 <Frame Name="tiPartsFrame" NavigationUIVisibility="Hidden" Content="{Binding PartsPage}"></Frame>
             </TabItem>                
-            <TabItem Header="Verzeichnisse"></TabItem>
+            <TabItem Header="Verzeichnisse">
+                <Frame Name="tiSetlistsFrame" NavigationUIVisibility="Hidden" Content="{Binding SetlistsPage}"></Frame>
+            </TabItem>
         </TabControl>
 
     </DockPanel>
