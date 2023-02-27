@@ -345,3 +345,4 @@ healthchecksdb
 # Zebra Config Files
 *.zebraconfig
 configs/
+/ZebraServer/data
