@@ -13,8 +13,15 @@ namespace ZebraDesktop.ViewModels
     public class ConfigSelectorViewModel : ViewModelBase
     {
         #region Properties
-        private ZebraConfig _loadedConfiguration = null;
-        public ZebraConfig LoadedConfiguration { get => _loadedConfiguration; set { _loadedConfiguration = value; NotifyPropertyChanged(); } }
+        //private ZebraConfig _loadedConfiguration = null;
+        //public ZebraConfig LoadedConfiguration { get => _loadedConfiguration; set { _loadedConfiguration = value; NotifyPropertyChanged(); } }
+
+        private App _currentApp;
+        public App CurrentApp
+        {
+            get { return _currentApp; }
+            set { _currentApp = value; NotifyPropertyChanged(); }
+        }
 
         private FileInfo _selectedFile;
         public FileInfo SelectedFile
@@ -50,7 +57,16 @@ namespace ZebraDesktop.ViewModels
             get { return _parentContainer; }
             set { _parentContainer = value; NotifyPropertyChanged();}
         }
-        
+
+        private IDialogPrompt _dialog;
+
+        public IDialogPrompt Dialog
+        {
+            get { return _dialog; }
+            set { _dialog = value; NotifyPropertyChanged();  }
+        }
+
+
 
         #endregion
 
@@ -68,6 +84,9 @@ namespace ZebraDesktop.ViewModels
 
         public ConfigSelectorViewModel()
         {
+
+            CurrentApp = (App)Application.Current;
+
             ConfigFiles = new List<FileInfo>();
 
             NewConfigCommand = new DelegateCommand(ExecuteNewConfigCommand);
@@ -132,15 +151,19 @@ namespace ZebraDesktop.ViewModels
 
         private void LoadConfig()
         {
-            try
-            {
-                LoadedConfiguration = ZebraConfig.FromXML(SelectedFile.FullName);
+            //try
+            //{
+                CurrentApp.ConfigurationService.UnloadConfig();
+                CurrentApp.ConfigurationService.LoadConfigurationFromFile(SelectedFile);
+                Dialog.SetDialogResult(true);
+                MessageBox.Show("Konfiguration erfolgreich geladen!");
+                CloseParentContainer();
                 return;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Fehler beim Laden der Konfiguration");
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message, "Fehler beim Laden der Konfiguration");
+            //}
         }
 
         private void CloseParentContainer()

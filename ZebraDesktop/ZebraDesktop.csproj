@@ -15,7 +15,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj" />
-    <ProjectReference Include="..\PdfHandling\PdfHandling.csproj" />
+    <ProjectReference Include="..\PdfiumLight\PdfiumLight.csproj" />
+    <ProjectReference Include="..\ZebraServer\ZebraServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +38,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="configs\Temp.zebraconfig">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="configs\Zebra2.zebraconfig">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

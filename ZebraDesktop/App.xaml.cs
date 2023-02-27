@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -8,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using Zebra.Library;
+using Zebra.Library.Services;
 
 namespace ZebraDesktop
 {
@@ -19,6 +21,7 @@ namespace ZebraDesktop
 
         public App()
         {
+            this.ConfigurationService = new ZebraConfigurationService();
             _ZebraConfig = null;
             _manager = null;
 
@@ -34,10 +37,53 @@ namespace ZebraDesktop
             {
                 MessageBox.Show(ex.Message);
             }
+
+            ConfigurationService.ConfigurationLoaded += ConfigurationService_ConfigurationLoaded;
+            ConfigurationService.ConfigurationUnloaded += ConfigurationService_ConfigurationUnloaded;
         }
 
+        private async void ConfigurationService_ConfigurationUnloaded(object sender, EventArgs e)
+        {
+            Manager = null;
+            if(LocalZebraServer != null)
+            {
+                await LocalZebraServer.StopAsync();
+            }
+        }
+
+        private async void ConfigurationService_ConfigurationLoaded(object sender, EventArgs e)
+        {
+            // If the repository type is local, we need to spin up a local running server
+            if (ConfigurationService.GetRepositoryType() == RepositoryType.Local)
+            {
+                LocalZebraServer = new ZebraServer.ZebraServer(ConfigurationService.GetConfigurationFilePath());
+                await LocalZebraServer.StartAsync();
+            }
+
+            Manager = ZebraDbManagerFactory.GetManager(ConfigurationService.GetZebraConfig());
+        }
+
+        private ZebraServer.ZebraServer _localServer;
+
+        public ZebraServer.ZebraServer LocalZebraServer
+        {
+            get { return _localServer; }
+            set { _localServer = value; }
+        }
+
+        private ZebraConfigurationService _configurationService;
+
+        public ZebraConfigurationService ConfigurationService
+        {
+            get { return _configurationService; }
+            set { _configurationService = value; }
+        }
+
+
+        [Obsolete]
         private ZebraConfig _ZebraConfig;
 
+        [Obsolete]
         public ZebraConfig ZebraConfig
         {
             get { return _ZebraConfig; }
@@ -46,7 +92,7 @@ namespace ZebraDesktop
 
                 if (value != null)
                 {
-                    Manager = new ZebraDBManager(value); 
+                    Manager = ZebraDbManagerFactory.GetManager(value); 
                 }
                 else
                 {
@@ -56,9 +102,9 @@ namespace ZebraDesktop
                     OnPropertyChanged(nameof(ZebraConfig)); }
         }
 
-        private ZebraDBManager _manager;
+        private IZebraDBManager _manager;
 
-        public ZebraDBManager Manager
+        public IZebraDBManager Manager
         {
             get { return _manager; }
             private set { _manager = value; OnPropertyChanged(nameof(Manager)); }

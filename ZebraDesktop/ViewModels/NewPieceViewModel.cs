@@ -36,7 +36,7 @@ namespace ZebraDesktop.ViewModels
             set { _saveCommand = value; NotifyPropertyChanged(); }
         }
 
-        public ZebraDBManager Manager
+        public IZebraDBManager Manager
         { get { return ((Application.Current) as App).Manager; } }
 
         #endregion
@@ -72,9 +72,10 @@ namespace ZebraDesktop.ViewModels
 
         private void executeSaveCommand(object obj)
         {
-            Manager.Context.Add<Piece>(this.Piece);
-            Manager.Context.SaveChanges();
-            (obj as Window).Close();
+            throw new NotImplementedException();
+            //Manager.Context.Add<Piece>(this.Piece);
+            //Manager.Context.SaveChanges();
+            //(obj as Window).Close();
         }
 
         #endregion

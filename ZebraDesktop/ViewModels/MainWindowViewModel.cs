@@ -5,9 +5,11 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.Xml;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using Zebra.Library;
 using ZebraDesktop.Views;
+using ZebraServer;
 
 namespace ZebraDesktop.ViewModels
 {
@@ -37,6 +39,15 @@ namespace ZebraDesktop.ViewModels
             set { _piecesPage = value; NotifyPropertyChanged(); }
         }
 
+        private SetlistsPage _setlistsPage;
+
+        public SetlistsPage SetlistsPage
+        {
+            get { return _setlistsPage; }
+            set { _setlistsPage = value; NotifyPropertyChanged(); }
+        }
+
+
         private PiecesPageViewModel _piecesPageViewModel;
 
         public PiecesPageViewModel PiecesPageViewModel
@@ -52,6 +63,15 @@ namespace ZebraDesktop.ViewModels
             get { return _partsPageViewModel; }
             set { _partsPageViewModel = value; NotifyPropertyChanged(); }
         }
+
+        private SetlistsPageViewModel _setlistsPageViewModel;
+
+        public SetlistsPageViewModel SetlistsPageViewModel
+        {
+            get { return _setlistsPageViewModel; }
+            set { _setlistsPageViewModel = value; NotifyPropertyChanged(); }
+        }
+
 
         private DelegateCommand _loadConfigCommand;
 
@@ -141,6 +161,15 @@ namespace ZebraDesktop.ViewModels
             set { _importPDFBatchCommand = value; NotifyPropertyChanged(); }
         }
 
+        private DelegateCommand _updateCommand;
+
+        public DelegateCommand UpdateCommand
+        {
+            get { return _updateCommand; }
+            set { _updateCommand = value; NotifyPropertyChanged(); }
+        }
+
+
         #endregion
 
         #region Constructors
@@ -165,11 +194,12 @@ namespace ZebraDesktop.ViewModels
 
 
             ImportPDFBatchCommand = new DelegateCommand(ExecuteImportPDFBatchCommand, canExecuteImportPDFBatchCommand);
-            
+
+            UpdateCommand = new DelegateCommand(ExecuteUpdateCommand);
+
+            CurrentApp.ConfigurationService.ConfigurationLoaded += ConfigurationService_ConfigurationLoaded;
+            CurrentApp.ConfigurationService.ConfigurationUnloaded += ConfigurationService_ConfigurationUnloaded;
         }
-
-        
-
 
         #endregion
 
@@ -184,7 +214,7 @@ namespace ZebraDesktop.ViewModels
 
         private void ExecuteUnloadConfigCommand(object obj)
         {
-            UnloadConfig();
+            CurrentApp.ConfigurationService.UnloadConfig();
         }
         private void ExecuteNewConfigCommand(object obj)
         {
@@ -198,21 +228,23 @@ namespace ZebraDesktop.ViewModels
 
         private void ExecuteDeletePieceCommand(object obj)
         {
-            var pc = PiecesPageViewModel?.SelectedPiece;
+            throw new NotImplementedException("Löschen muss noch für RemoteZebraDBManager implementiert werden");
 
-            switch (MessageBox.Show($"Möchten Sie den Notensatz #{pc.PieceID} - {pc.Name} - {pc.Arranger} und alle zugehörigen Notenblätter wirklich löschen? Die Änderung kann nicht rückgängig gemacht werden!", "Löschen bestätigen", MessageBoxButton.YesNo, MessageBoxImage.Warning))
-            {
-                case MessageBoxResult.Yes:
+            //var pc = PiecesPageViewModel?.SelectedPiece;
 
-                    foreach (Sheet sht in pc.Sheet)
-                    {
-                        CurrentApp.Manager.Context.Remove<Sheet>(sht);
-                    }
+            //switch (MessageBox.Show($"Möchten Sie den Notensatz #{pc.PieceID} - {pc.Name} - {pc.Arranger} und alle zugehörigen Notenblätter wirklich löschen? Die Änderung kann nicht rückgängig gemacht werden!", "Löschen bestätigen", MessageBoxButton.YesNo, MessageBoxImage.Warning))
+            //{
+            //    case MessageBoxResult.Yes:
 
-                    CurrentApp.Manager.Context.Remove<Piece>(pc);
+            //        foreach (Sheet sht in pc.Sheet)
+            //        {
+            //            CurrentApp.Manager.Context.Remove<Sheet>(sht);
+            //        }
 
-                    break;
-            }
+            //        CurrentApp.Manager.Context.Remove<Piece>(pc);
+
+            //        break;
+            //}
         }
         private bool canExecuteImportPDFBatchCommand(object obj)
         {
@@ -221,7 +253,7 @@ namespace ZebraDesktop.ViewModels
 
         private void ExecuteImportPDFBatchCommand(object obj)
         {
-            frmPdfBatchImporter frm = new frmPdfBatchImporter(CurrentApp.Manager.Context);
+            frmPdfBatchImporter frm = new frmPdfBatchImporter();
             frm.Show();
         }
 
@@ -278,6 +310,17 @@ namespace ZebraDesktop.ViewModels
             frmNewPart frm = new frmNewPart();
             frm.Show();
         }
+
+        private async void ExecuteUpdateCommand(object obj)
+        {
+            var tasklist = new List<Task>();
+            
+            tasklist.Add(SetlistsPageViewModel.UpdateAsync());
+            tasklist.Add(PiecesPageViewModel.UpdateAsync());
+            tasklist.Add(PartsPageViewModel.UpdateAsync());
+
+            await Task.WhenAll(tasklist.ToArray());
+        }
         #endregion
 
         #region Methods
@@ -285,55 +328,93 @@ namespace ZebraDesktop.ViewModels
         private async void LoadConfig()
         {
             frmConfigSelector frmConfigSelector = new frmConfigSelector();
-            frmConfigSelector.ShowDialog();
+            
+            
+            // Show Config Selector Dialog and cancel if no config was selected
+            if (frmConfigSelector.ShowDialog() is not true) return;   
+
+            // if ((frmConfigSelector.DataContext as ConfigSelectorViewModel).LoadedConfiguration == null) return;
+
+            
+                //var conf = (frmConfigSelector.DataContext as ConfigSelectorViewModel).LoadedConfiguration;
+                //CurrentApp.ConfigurationService.LoadConfiguration(conf);
+                //CurrentApp.ZebraConfig = conf;
+
+                //var pendingMigrations = await CurrentApp.Manager.Context.Database.GetPendingMigrationsAsync();
+
+                //var message = "Folgende Migrations müssen angewendet werden, bevor die Datenbank verwendet werden kann:\n\n";
+                //bool migrationRequired = false;
+
+                //foreach (var mig in pendingMigrations)
+                //{
+                //    migrationRequired = true;
+                //    message += mig + "\n";
+                //}
+
+                //message += "\nWollen Sie die Migrationen jetzt durchführen?";
+
+                //if(migrationRequired && MessageBox.Show(message, "Achtung", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                //{
+                //    //Abort Migration
+                //    CurrentApp.ZebraConfig = null; return;
+                //}            
+
+                //await CurrentApp.Manager.Context.Database.MigrateAsync();
+
+        }
 
 
-            if (!(CurrentApp.Manager == null))
-            {
-                UnloadConfig();
-            }
+        //private void UnloadConfig()
+        //{
+            // Cleanup
+            //CurrentApp.ZebraConfig = null;
 
-            if ((frmConfigSelector.DataContext as ConfigSelectorViewModel).LoadedConfiguration != null)
-            {
-                var conf = (frmConfigSelector.DataContext as ConfigSelectorViewModel).LoadedConfiguration;
-                CurrentApp.ZebraConfig = conf;
+            //PiecesPage = null;
+            //PartsPage = null;
+            //SetlistsPage = null;
 
-                await CurrentApp.Manager.EnsureDatabaseCreatedAsync();
-                // TODO: Check for pending migrations
-                
-                //await CurrentApp.Manager.Context.Database.GetPendingMigrationsAsync();
+            //PiecesPageViewModel = null;
+            //PartsPageViewModel =  null;
+            //SetlistsPageViewModel = null;
 
+            //MessageBox.Show("Konfiguration erfolgreich geschlossen", "Konfiguration geschlossen");
 
-                //TODO: Make Creation of ViewModels Async
-                PiecesPageViewModel = new PiecesPageViewModel();
-                PartsPageViewModel = new PartsPageViewModel();
-                
-                //Register Eventhandler for Button States to be updated
-                PiecesPageViewModel.PropertyChanged += ChildSelectionChanged;
-                PartsPageViewModel.PropertyChanged += ChildSelectionChanged;
+            //UpdateButtonStatus();
+        //}
 
-                PiecesPage = new PiecesPage();
-                PiecesPage.DataContext = PiecesPageViewModel;
-                PartsPage = new PartsPage();
-                PartsPage.DataContext = PartsPageViewModel;
-            }
+        private void ConfigurationService_ConfigurationUnloaded(object sender, EventArgs e)
+        {
+            PiecesPage = null;
+            PartsPage = null;
+            SetlistsPage = null;
+
+            PiecesPageViewModel = null;
+            PartsPageViewModel = null;
+            SetlistsPageViewModel = null;
+
+            //MessageBox.Show("Konfiguration erfolgreich geschlossen", "Konfiguration geschlossen");
 
             UpdateButtonStatus();
         }
 
-
-        private void UnloadConfig()
+        private void ConfigurationService_ConfigurationLoaded(object sender, EventArgs e)
         {
-            // Cleanup
-            CurrentApp.ZebraConfig = null;
+            //TODO: Make Creation of ViewModels Async
+            PiecesPageViewModel = new PiecesPageViewModel();
+            PartsPageViewModel = new PartsPageViewModel();
+            SetlistsPageViewModel = new SetlistsPageViewModel();
 
-            PiecesPage = null;
-            PartsPage = null;
+            //Register Eventhandler for Button States to be updated
+            PiecesPageViewModel.PropertyChanged += ChildSelectionChanged;
+            PartsPageViewModel.PropertyChanged += ChildSelectionChanged;
+            SetlistsPageViewModel.PropertyChanged += ChildSelectionChanged;
 
-            PiecesPageViewModel = null;
-            PartsPageViewModel =  null;
-
-            MessageBox.Show("Konfiguration erfolgreich geschlossen", "Konfiguration geschlossen");
+            PiecesPage = new PiecesPage();
+            PiecesPage.DataContext = PiecesPageViewModel;
+            PartsPage = new PartsPage();
+            PartsPage.DataContext = PartsPageViewModel;
+            SetlistsPage = new SetlistsPage();
+            SetlistsPage.DataContext = SetlistsPageViewModel;
 
             UpdateButtonStatus();
         }

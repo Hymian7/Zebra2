@@ -19,7 +19,7 @@ namespace ZebraDesktop.Views
     /// </summary>
     public partial class frmPartDetail : Window
     {
-        public frmPartDetail(Part part)
+        public frmPartDetail(PartDTO part)
         {
             InitializeComponent();
             this.DataContext = new PartDetailViewModel(part);

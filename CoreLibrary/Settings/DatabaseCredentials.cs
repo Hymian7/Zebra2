@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 
 namespace Zebra.Library
@@ -8,7 +9,7 @@ namespace Zebra.Library
     [XmlInclude(typeof(MySQLCredentials))]
     [XmlInclude(typeof(AccessCredentials))]
     [XmlInclude(typeof(SQLiteCredentials))]
-    public abstract class DatabaseCredentials
+    public class DatabaseCredentials
     {
         public DatabaseCredentials() { }
     }

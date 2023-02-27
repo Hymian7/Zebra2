@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Zebra.Library;
+using Zebra.Library.PdfHandling;
 
 namespace Zebra.PdfHandling
 {
@@ -48,7 +49,7 @@ namespace Zebra.PdfHandling
 
             //Extract page
             Extractor.InputFile = new FileInfo(importCandidate.DocumentPath);
-            Extractor.OutputPath = new DirectoryInfo(Manager.ZebraConfig.TempDir);
+            Extractor.OutputPath = new DirectoryInfo(Manager.ZebraConfig.TempDirectory);
             Extractor.OutputName = FileNameResolver.GetFileName(newSheet);
 
             int[] pages = new int[importCandidate.Pages.Count];
@@ -64,7 +65,7 @@ namespace Zebra.PdfHandling
                 await Extractor.ExtractAsync(pages);
 
                 //Push file to archive
-                Manager.Archive.PushFile(new FileInfo(Manager.ZebraConfig.TempDir + "\\" + FileNameResolver.GetFileName(newSheet)), newSheet, FileImportMode.Copy, false);
+                Manager.Archive.PushFile(new FileInfo(Manager.ZebraConfig.TempDirectory + "\\" + FileNameResolver.GetFileName(newSheet)), newSheet, FileImportMode.Copy, false);
             }
             catch (Exception)
             {
@@ -77,9 +78,9 @@ namespace Zebra.PdfHandling
             finally
             {
                 //Remove temp file if it has been created
-                if (File.Exists(Manager.ZebraConfig.TempDir + "\\" + FileNameResolver.GetFileName(newSheet)))
+                if (File.Exists(Manager.ZebraConfig.TempDirectory + "\\" + FileNameResolver.GetFileName(newSheet)))
                 {
-                    File.Delete(Manager.ZebraConfig.TempDir + "\\" + FileNameResolver.GetFileName(newSheet));
+                    File.Delete(Manager.ZebraConfig.TempDirectory + "\\" + FileNameResolver.GetFileName(newSheet));
                 }
             }
             

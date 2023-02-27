@@ -18,15 +18,15 @@ namespace ZebraDesktop.ViewModels
     {
         #region Properties
 
-        private Piece _selectedPiece = null;
-        public Piece SelectedPiece
+        private PieceDTO _selectedPiece = null;
+        public PieceDTO SelectedPiece
         {
             get { return _selectedPiece; }
             set { _selectedPiece = value; NotifyPropertyChanged(); }
         }
 
-        private ObservableCollection<Piece> _allPieces;
-        public ObservableCollection<Piece> AllPieces
+        private ObservableCollection<PieceDTO> _allPieces;
+        public ObservableCollection<PieceDTO> AllPieces
         {
             get { return _allPieces; }
             set { _allPieces = value; NotifyPropertyChanged(); }
@@ -42,12 +42,9 @@ namespace ZebraDesktop.ViewModels
         public ICollectionView FilteredPiecesView
         { get { return FilteredPieces.View; } }
 
-
-        private App _currentApp;
         private App CurrentApp
         {
-            get { return _currentApp; }
-            set { _currentApp = value; NotifyPropertyChanged(); }
+            get { return (App)Application.Current; }
         }
 
         private string _filter;
@@ -74,10 +71,13 @@ namespace ZebraDesktop.ViewModels
 
         public PiecesPageViewModel()
         {
-            CurrentApp = (App)Application.Current;
 
-            CurrentApp.Manager.Context.Piece.LoadAsync<Piece>();
-            AllPieces = CurrentApp.Manager.Context.Piece.Local.ToObservableCollection();
+            //CurrentApp.Manager.Context.Piece.LoadAsync<Piece>();
+            //AllPieces = CurrentApp.Manager.Context.Piece.Local.ToObservableCollection();
+
+            AllPieces = new ObservableCollection<PieceDTO>();
+
+            UpdateAsync();
 
             FilteredPieces = new CollectionViewSource();
             FilteredPieces.Source = AllPieces;
@@ -90,14 +90,30 @@ namespace ZebraDesktop.ViewModels
         #endregion
 
         #region Commands
-        private void ExecuteItemDoubleClick(object obj)
+        private async void ExecuteItemDoubleClick(object obj)
         {
-            frmPieceDetail frm = new frmPieceDetail(SelectedPiece);
+            
+            frmPieceDetail frm = new frmPieceDetail(await CurrentApp.Manager.GetPieceAsync(SelectedPiece.PieceID));
             frm.Show();
         }
         #endregion
 
         #region Methods
+
+        public async Task UpdateAsync()
+        {
+            var collection = await CurrentApp.Manager.GetAllPiecesAsync();
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+
+            {
+                AllPieces.Clear();
+                foreach (var item in collection)
+                {
+                    AllPieces.Add(item);
+                }
+
+            })); ;
+        }
 
         private void ApplyFilter(object sender, FilterEventArgs e)
         {
@@ -105,7 +121,7 @@ namespace ZebraDesktop.ViewModels
             { e.Accepted = true; }
             else
             {
-                Piece itm = e.Item as Piece;
+                PieceDTO itm = e.Item as PieceDTO;
 
                 if (itm.Arranger == null)
                 {

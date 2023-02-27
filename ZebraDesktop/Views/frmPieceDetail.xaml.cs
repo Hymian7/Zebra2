@@ -21,17 +21,17 @@ namespace ZebraDesktop.Views
     {
 
 
-        public frmPieceDetail(Piece piece)
+        public frmPieceDetail(PieceDTO piece)
         {
             InitializeComponent();
             this.DataContext = new PieceDetailViewModel(piece);
         }
 
-        private void lvSheets_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void lvSheets_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (lvSheets.SelectedIndex !=-1)
             {
-                dvSheet.Navigate((this.DataContext as PieceDetailViewModel).CurrentSheetDocumentPath);
+                dvSheet.Navigate(await ((App)Application.Current).Manager.GetPDFPathAsync((this.DataContext as PieceDetailViewModel).SelectedSheet.SheetID));
             }
         }
     }

@@ -11,15 +11,15 @@ namespace ZebraDesktop.ViewModels
 
         #region Properties
 
-        private Part _currentPart;
+        private PartDTO _currentPart;
 
-        public Part CurrentPart
+        public PartDTO CurrentPart
         {
             get { return _currentPart; }
-            set { _currentPart = value; }
+            set { _currentPart = value; NotifyPropertyChanged(); }
         }
 
-        public ZebraDBManager Manager
+        public IZebraDBManager Manager
         { get { return ((Application.Current) as App).Manager; } }
 
 
@@ -27,7 +27,7 @@ namespace ZebraDesktop.ViewModels
 
         #region Constructors
 
-        public PartDetailViewModel(Part part)
+        public PartDetailViewModel(PartDTO part)
         {
             CurrentPart = part;
         }

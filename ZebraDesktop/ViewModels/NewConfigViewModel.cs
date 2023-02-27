@@ -8,6 +8,7 @@ using System.IO;
 using System.Net;
 using System.Windows;
 using Zebra.Library;
+using Zebra.Library.Services;
 using ZebraDesktop.Enums;
 using ZebraDesktop.Views;
 
@@ -25,21 +26,39 @@ namespace ZebraDesktop.ViewModels
             set { _configName = value; NotifyPropertyChanged(); }
         }
 
-        private EnumSelection<DatabaseProvider> _dbProvider;
+        private String _repositoryPath;
 
-        public EnumSelection<DatabaseProvider> DBProvider
+        public String RepositoryPath
         {
-            get { return _dbProvider; }
-            set { _dbProvider = value; NotifyPropertyChanged(); }
+            get { return _repositoryPath; }
+            set { _repositoryPath = value; NotifyPropertyChanged(); }
         }
 
-        private EnumSelection<ArchiveType> enumSelection;
+        private string _IPAddress;
 
-        public EnumSelection<ArchiveType> ArchiveType
+        public string IPAddress
         {
-            get { return enumSelection; }
-            set { enumSelection = value; NotifyPropertyChanged(); }
+            get { return _IPAddress; }
+            set { _IPAddress = value; NotifyPropertyChanged(); }
         }
+
+        private string _port;
+
+        public string Port
+        {
+            get { return _port; }
+            set { _port = value; NotifyPropertyChanged(); }
+        }
+
+
+        private EnumSelection<RepositoryType> _repositoryType = new EnumSelection<RepositoryType>(Zebra.Library.RepositoryType.Remote);
+
+        public EnumSelection<RepositoryType> RepositoryType
+        {
+            get { return _repositoryType; }
+            set { _repositoryType = value; NotifyPropertyChanged(); }
+        }
+
 
         private ZebraConfig zebraConfig;
 
@@ -49,84 +68,13 @@ namespace ZebraDesktop.ViewModels
             set { zebraConfig = value; NotifyPropertyChanged(); }
         }
 
-        private SQLiteCredentials _sqLiteCredentials;
 
-        public SQLiteCredentials SQLiteCredentials
+        private DelegateCommand _browseRepositoryDirectoryCommand;
+
+        public DelegateCommand BrowseRepositoryDirectoryCommand
         {
-            get { return _sqLiteCredentials; }
-            set { _sqLiteCredentials = value; NotifyPropertyChanged(); }
-        }
-
-        private MySQLCredentials _mySQLCredentials;
-
-        public MySQLCredentials MySQLCredentials
-        {
-            get { return _mySQLCredentials; }
-            set { _mySQLCredentials = value; NotifyPropertyChanged(); }
-        }
-
-        private LocalArchiveCredentials _localArchiveCredentials;
-
-        public LocalArchiveCredentials LocalArchiveCredentials
-        {
-            get { return _localArchiveCredentials; }
-            set { _localArchiveCredentials = value; NotifyPropertyChanged(); }
-        }
-
-        private FTPCredentials _ftpCredentials;
-
-        public FTPCredentials FTPCredentials
-        {
-            get { return _ftpCredentials; }
-            set { _ftpCredentials = value; NotifyPropertyChanged(); }
-        }
-
-        private String _tempDirPath;
-
-        public String TempDirPath
-        {
-            get { return _tempDirPath; }
-            set { _tempDirPath = value; NotifyPropertyChanged(); }
-        }
-
-        private DelegateCommand _browseLocalDBCommand;
-
-        public DelegateCommand BrowseLocalDBCommand
-        {
-            get { return _browseLocalDBCommand; }
-            set { _browseLocalDBCommand = value; NotifyPropertyChanged(); }
-        }
-
-        private DelegateCommand _browseLocalArchiveCommand;
-
-        public DelegateCommand BrowseLocalArchiveCommand
-        {
-            get { return _browseLocalArchiveCommand; }
-            set { _browseLocalArchiveCommand = value; NotifyPropertyChanged(); }
-        }
-
-        private DelegateCommand _browseTempDirCommand;
-
-        public DelegateCommand BrowseTempDirCommand
-        {
-            get { return _browseTempDirCommand; }
-            set { _browseTempDirCommand = value; NotifyPropertyChanged(); }
-        }
-
-        private DelegateCommand _testMySQLServerCredentialsCommand;
-
-        public DelegateCommand TestMySQLServerCredentialsCommand
-        {
-            get { return _testMySQLServerCredentialsCommand; }
-            set { _testMySQLServerCredentialsCommand = value; NotifyPropertyChanged(); }
-        }
-
-        private DelegateCommand _testFTPArchiveCredentialsCommand;
-
-        public DelegateCommand TestFTPArchiveCredentialsCommand
-        {
-            get { return _testFTPArchiveCredentialsCommand; }
-            set { _testFTPArchiveCredentialsCommand = value; NotifyPropertyChanged(); }
+            get { return _browseRepositoryDirectoryCommand; }
+            set { _browseRepositoryDirectoryCommand = value; NotifyPropertyChanged(); }
         }
 
         private DelegateCommand _saveNewConfigCommand;
@@ -149,20 +97,11 @@ namespace ZebraDesktop.ViewModels
 
         public NewConfigViewModel()
         {
-            DBProvider = new EnumSelection<DatabaseProvider>(DatabaseProvider.SQLite);
-            ArchiveType = new EnumSelection<ArchiveType>(Zebra.Library.ArchiveType.Local);
 
-            LocalArchiveCredentials = new LocalArchiveCredentials();
-            FTPCredentials = new FTPCredentials();
+            RepositoryType = new EnumSelection<RepositoryType>(Zebra.Library.RepositoryType.Local);
 
-            SQLiteCredentials = new SQLiteCredentials();
-            MySQLCredentials = new MySQLCredentials();
-
-            BrowseLocalDBCommand = new DelegateCommand(ExecuteBrowseLocalDBCommand, canExecuteBrowseLocalDBCommand);
-            BrowseLocalArchiveCommand = new DelegateCommand(ExecuteBrowseLocalArchiveCommand, canExecuteBrowseLocalArchiveCommand);
-            BrowseTempDirCommand = new DelegateCommand(ExecuteBrowseTempDirCommand);
-            TestMySQLServerCredentialsCommand = new DelegateCommand(ExecuteTestMySQLServerCredentialsCommand, canExecuteTestMySQLServerCredentialsCommand);
-            TestFTPArchiveCredentialsCommand = new DelegateCommand(ExecuteTestFTPArchiveCredentialsCommand, canExecuteFTPArchiveCredentialsCommand);
+            BrowseRepositoryDirectoryCommand = new DelegateCommand(ExecuteBrowseRepositoryPathCommand);
+            
             SaveNewConfigCommand = new DelegateCommand(ExecuteSaveNewConfigCommand, canExecuteSaveNewConfigCommand);
 
             this.PropertyChanged += UpdateButtonStatus;
@@ -174,161 +113,67 @@ namespace ZebraDesktop.ViewModels
         #region Commands
         private bool canExecuteSaveNewConfigCommand(object obj)
         {
-            if (ConfigName.IsNullOrEmpty() || TempDirPath.IsNullOrEmpty()) return false;
-
-            switch (ArchiveType.Value)
-            {
-                case Zebra.Library.ArchiveType.FTP:
-                    if (this.FTPCredentials.Server.IsNullOrEmpty() || FTPCredentials.Path.IsNullOrEmpty() || FTPCredentials.Username.IsNullOrEmpty() || FTPCredentials.Password.IsNullOrEmpty() || FTPCredentials.Port.IsNullOrEmpty()) return false;
-                    break;
-                case Zebra.Library.ArchiveType.SFTP:
-                    return false;
-                    break;
-                case Zebra.Library.ArchiveType.Local:
-                    if (LocalArchiveCredentials.Path.IsNullOrEmpty()) return false;
-                    break;
-                default:
-                    break;
-            }
-
-            switch (DBProvider.Value)
-            {
-                case DatabaseProvider.MySQL:
-                    if (MySQLCredentials.Server.IsNullOrEmpty() || MySQLCredentials.Port.IsNullOrEmpty() || MySQLCredentials.Username.IsNullOrEmpty() || MySQLCredentials.Password.IsNullOrEmpty() || MySQLCredentials.DatabaseName.IsNullOrEmpty()) return false;
-                    break;
-                case DatabaseProvider.Acces:
-                    return false;
-                    break;
-                case DatabaseProvider.SQLite:
-                    if (SQLiteCredentials.Path.IsNullOrEmpty()) return false;
-                    break;
-            }
-
             return true;
-
         }
 
         private void ExecuteSaveNewConfigCommand(object obj)
         {
-            ZebraConfig conf = new ZebraConfig()
+            // Check if Name and Path are emtpy
+            if (String.IsNullOrEmpty(ConfigName) || String.IsNullOrEmpty(RepositoryPath))
             {
-                ConfigName = this.ConfigName,
-                ArchiveType = this.ArchiveType.Value,
-                DatabaseProvider = this.DBProvider.Value,
-                TempDir = this.TempDirPath
-            };
-
-            switch (this.DBProvider.Value)
-            {
-                case DatabaseProvider.MySQL:
-                    conf.DatabaseCredentials = MySQLCredentials;
-                    break;
-                case DatabaseProvider.Acces:
-                    break;
-                case DatabaseProvider.SQLite:
-                    conf.DatabaseCredentials = SQLiteCredentials;
-                    break;
+                MessageBox.Show("Bitte alle Felder ausfüllen");
+                return;
             }
 
-            switch (this.ArchiveType.Value)
+            if(RepositoryType.Value == Zebra.Library.RepositoryType.Remote && (String.IsNullOrEmpty(IPAddress) || String.IsNullOrEmpty(Port)))
             {
-                case Zebra.Library.ArchiveType.FTP:
-                    conf.ArchiveCredentials = FTPCredentials;
-                    break;
-                case Zebra.Library.ArchiveType.SFTP:
-                    break;
-                case Zebra.Library.ArchiveType.Local:
-                    conf.ArchiveCredentials = LocalArchiveCredentials;
-                    break;
+                MessageBox.Show("Bitte alle Felder ausfüllen");
+                return;
             }
 
-            try
+            if(Directory.Exists(RepositoryPath) && Directory.GetFiles(RepositoryPath).Length > 0)
             {
-                if(!Directory.Exists(@"configs"))
-                {
-                    Directory.CreateDirectory(@"configs");
-                }
-                conf.Serialize(@"configs");
-                ParentContainer.Close();
+                MessageBox.Show("Bitte einen leeren Ordner wählen");
+                return;
             }
-            catch (Exception ex)
+
+            if (RepositoryType.Value == Zebra.Library.RepositoryType.Remote && (IPAddress != "localhost" && (System.Net.IPAddress.TryParse(IPAddress, out _) == false)|| long.TryParse(Port, out _) == false))
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("IP Adresse oder Port sind ungültig");
+                return;
             }
+
+
+
+            if (!Directory.Exists(RepositoryPath))
+            {
+                Directory.CreateDirectory(RepositoryPath);
+            }
+
+            ZebraConfig conf;
+
+            if(RepositoryType.Value == Zebra.Library.RepositoryType.Remote)
+            {
+                conf = new ZebraConfig(ConfigName, new DirectoryInfo(RepositoryPath), IPAddress, Port);
+            }
+            else
+            {
+                conf = new ZebraConfig(ConfigName, new DirectoryInfo(RepositoryPath));
+            }
+
+
+            ZebraConfigurationService.CreateConfigurationFile(conf);
+            ParentContainer.Close();
 
         }
 
-        private bool canExecuteFTPArchiveCredentialsCommand(object obj)
-        {
-            if (this.FTPCredentials.Server.IsNullOrEmpty() || FTPCredentials.Path.IsNullOrEmpty() || FTPCredentials.Username.IsNullOrEmpty() || FTPCredentials.Password.IsNullOrEmpty() || FTPCredentials.Port.IsNullOrEmpty()) return false;
-            return true;
-        }
+        
 
-        private void ExecuteTestFTPArchiveCredentialsCommand(object obj)
-        {
-            try
-            {
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create($"ftp://{FTPCredentials.Server}/{FTPCredentials.Path}/");
-                request.Credentials = new NetworkCredential(FTPCredentials.Username, FTPCredentials.Password);
-                request.Method = WebRequestMethods.Ftp.PrintWorkingDirectory;
-
-                FtpWebResponse response = (FtpWebResponse)request.GetResponse();
-
-                MessageBox.Show("Erfolgreich");
-            }
-            catch (WebException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private bool canExecuteTestMySQLServerCredentialsCommand(object obj)
-        {
-            if (MySQLCredentials.Server.IsNullOrEmpty() || MySQLCredentials.Port.IsNullOrEmpty() || MySQLCredentials.Username.IsNullOrEmpty() || MySQLCredentials.Password.IsNullOrEmpty() || MySQLCredentials.DatabaseName.IsNullOrEmpty()) return false;
-            return true;
-        }
-
-        private void ExecuteTestMySQLServerCredentialsCommand(object obj)
-        {
-            using (Zebra.Library.ConnectionTesting.MySQLTestContext con = new Zebra.Library.ConnectionTesting.MySQLTestContext(this.MySQLCredentials))
-            {
-                try
-                {
-                    con.Database.CanConnect();
-                    MessageBox.Show("Erfolgreich verbunden");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message ,"Fehler");
-                }
-
-            }
-        }
-
-        private void ExecuteBrowseTempDirCommand(object obj)
+        private void ExecuteBrowseRepositoryPathCommand(object obj)
         {
             MessageBox.Show("Einfach Pfad in die Textbox kopieren");
         }
 
-        private bool canExecuteBrowseLocalArchiveCommand(object obj)
-        {
-            return true;
-        }
-
-        private void ExecuteBrowseLocalArchiveCommand(object obj)
-        {
-            MessageBox.Show("Einfach Pfad in die Textbox kopieren");
-        }
-
-        private bool canExecuteBrowseLocalDBCommand(object obj)
-        {
-            return true;
-        }
-
-        private void ExecuteBrowseLocalDBCommand(object obj)
-        {
-            MessageBox.Show("Einfach Pfad in die Textbox kopieren");
-        } 
         #endregion
     }
 }

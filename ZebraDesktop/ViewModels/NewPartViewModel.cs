@@ -12,9 +12,9 @@ namespace ZebraDesktop.ViewModels
 
         #region Properties
 
-        private Part _part;
+        private PartDTO _part;
 
-        public Part Part
+        public PartDTO Part
         {
             get { return _part; }
             set { _part = value; NotifyPropertyChanged(); }
@@ -36,7 +36,7 @@ namespace ZebraDesktop.ViewModels
             set { _saveCommand = value; NotifyPropertyChanged(); }
         }
 
-        public ZebraDBManager Manager
+        public IZebraDBManager Manager
         { get { return ((Application.Current) as App).Manager; } }
 
         #endregion
@@ -45,7 +45,7 @@ namespace ZebraDesktop.ViewModels
 
         public NewPartViewModel()
         {
-            Part = new Part("<Neue Stimme>");
+            Part = new PartDTO() { Name = "<Neue Stimme>" };
 
             CancelCommand = new DelegateCommand(executeCancelCommand, canExecuteCancelCommand);
             SaveCommand = new DelegateCommand(executeSaveCommand, canExecuteSaveCommand);
@@ -72,8 +72,7 @@ namespace ZebraDesktop.ViewModels
 
         private void executeSaveCommand(object obj)
         {
-            Manager.Context.Add<Part>(this.Part);
-            Manager.Context.SaveChanges();
+            Manager.PostPartAsync(Part);
             (obj as Window).Close();
         }
 
