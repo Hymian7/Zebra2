@@ -182,8 +182,8 @@ namespace ZebraServer
             mvcBuilder.AddApplicationPart(typeof(PiecesController).Assembly);
             mvcBuilder.AddApplicationPart(typeof(SetlistsController).Assembly);
 
+            //builder.WebHost.UseUrls(new string[] { "https://localhost:5001", "http://localhost:5000" });
             builder.WebHost.UseUrls(new string[] { "http://*:80;https://*:443" });
-
 
             // Configure Services
 
